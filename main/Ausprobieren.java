@@ -14,10 +14,12 @@ public class Ausprobieren {
 
 	public static void main(String[] args) {
 		// TODO Automatisch generierter Methodenstub
+
+ /* Bestimmen des Betriebssysteme */
 		String OS = System.getProperty("os.name");
 		System.out.println(OS);
 
-		
+ /* eindeutige UID generieren lassen (für neue Events) */		
 //		String uniqueID = UUID.randomUUID().toString();
 //		System.out.println(uniqueID);
 //		 uniqueID = UUID.randomUUID().toString();
@@ -27,7 +29,7 @@ public class Ausprobieren {
 //		 uniqueID = UUID.randomUUID().toString();
 //		System.out.println(uniqueID);
 
-
+ /* Erkennen der korrekten Dateienstruktur auf Windows-Laptop */
 
 //		BufferedReader temp = null;
 //		String inPath = "C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics";
