@@ -51,7 +51,8 @@ public class GuKKiCalParser {
 			GuKKiCalParser parser = new GuKKiCalParser();
 
 			parser.kalenderEinlesen(
-					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender.ics",
+//					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender.ics",
+					"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics",
 					parser.kalendersammlung);
 //			parser.kalenderEinlesen(
 //					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", kalendersammlung);

@@ -8,16 +8,15 @@ import java.util.ArrayList;
 /**
  * 
  * @author gukkdevel <br>
- *         <br>
+ * <br>
  * 
- *         Die Klasse GuKKiCalvCalendar enthält alle Daten für einen Kalender im iCal
- *         Format
+ *         Die Klasse GuKKiCalvCalendar enthält alle Daten für einen Kalender
+ *         im iCal Format
  * 
  *         Definition nach RFC 5545
  *
- *         icalobject = "BEGIN" ":" "VCALENDAR" CRLF 
- *         				icalbody 
- *         				"END" ":" "VCALENDAR" CRLF
+ *         icalobject = "BEGIN" ":" "VCALENDAR" CRLF icalbody "END" ":"
+ *         "VCALENDAR" CRLF
  *
  *
  *         icalbody = calprops component
@@ -69,23 +68,30 @@ public class GuKKiCalvCalendar {
 	String nz = "\n";
 	String zeile = "";
 
-	public GuKKiCalvCalendar(GuKKiCal kalendersammlung, String vCalendarDaten, String kalenderPfad, int kalenderNummer)
-			throws Exception {
-		System.out.println("GuKKiCalvCalendar-Konstruktor: " + kalenderPfad + "-----" + kalenderNummer);
+	public GuKKiCalvCalendar(GuKKiCal kalendersammlung, String vCalendarDaten,
+			String kalenderPfad, int kalenderNummer) throws Exception {
+		System.out.println("GuKKiCalvCalendar-Konstruktor: " + kalenderPfad
+				+ "-----" + kalenderNummer);
 		try {
-//			System.out.println(vCalendarDaten);
-			BufferedReader vCalendarDatenstrom = new BufferedReader(new StringReader(vCalendarDaten));
+			// System.out.println(vCalendarDaten);
+			BufferedReader vCalendarDatenstrom = new BufferedReader(
+					new StringReader(vCalendarDaten));
 			vCalendarRestinformationen = "";
 			while ((zeile = vCalendarDatenstrom.readLine()) != null) {
-//				System.out.println("Datenstrom: " + zeile);
-				if (!zeile.equals("BEGIN:VCALENDAR") & !zeile.equals("END:VCALENDAR")) {
-					if (zeile.length() >= 7 & zeile.substring(0, 7).equals("PRODID:"))
+				// System.out.println("Datenstrom: " + zeile);
+				if (!zeile.equals("BEGIN:VCALENDAR")
+						& !zeile.equals("END:VCALENDAR")) {
+					if (zeile.length() >= 7
+							& zeile.substring(0, 7).equals("PRODID:"))
 						vCalendarPRODID = zeile.substring(7);
-					else if (zeile.length() >= 8 & zeile.substring(0, 8).equals("VERSION:"))
+					else if (zeile.length() >= 8
+							& zeile.substring(0, 8).equals("VERSION:"))
 						vCalendarVERSION = zeile.substring(8);
-					else if (zeile.length() >= 9 & zeile.substring(0, 9).equals("CALSCALE:"))
+					else if (zeile.length() >= 9
+							& zeile.substring(0, 9).equals("CALSCALE:"))
 						vCalendarCALSCALE = zeile.substring(9);
-					else if (zeile.length() >= 7 & zeile.substring(0, 7).equals("METHOD:"))
+					else if (zeile.length() >= 7
+							& zeile.substring(0, 7).equals("METHOD:"))
 						vCalendarMETHOD = zeile.substring(7);
 					else
 						vCalendarRestinformationen += zeile + "\n";
@@ -97,14 +103,16 @@ public class GuKKiCalvCalendar {
 		this.kalenderName = bestimmenKalenderName(kalenderPfad);
 		this.kalenderNummer = kalenderNummer;
 		this.kalendersammlung = kalendersammlung;
-//		kalendersammlung.addvCalendar(kalendersammlung, this); /* sollte im übergeordneten Modul erfolgen */
+		// kalendersammlung.addvCalendar(kalendersammlung, this); /* sollte im
+		// übergeordneten Modul erfolgen */
 		System.out.println("GuKKiCalvCalendar-Konstruktor beendet");
 	}
 
-//	public GuKKiCalvCalendar(GuKKiCalvCalendar vKalender) {
-//	}
+	// public GuKKiCalvCalendar(GuKKiCalvCalendar vKalender) {
+	// }
 	/**
-	 * Modul erhält die Daten für ein einzelnes Event als Datenstrom (vEventDaten), erstellt dieses Element und fügt es in den Kalender ein.
+	 * Modul erhält die Daten für ein einzelnes Event als Datenstrom
+	 * (vEventDaten), erstellt dieses Element und fügt es in den Kalender ein.
 	 * Zusätzlich wird das Event auch in die Kalendersammlung eingefügt.
 	 * 
 	 * @param kalendersammlung
@@ -112,11 +120,14 @@ public class GuKKiCalvCalendar {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean vEventNeu(GuKKiCal kalendersammlung, String vEventDaten) throws Exception {
+	public boolean vEventNeu(GuKKiCal kalendersammlung, String vEventDaten)
+			throws Exception {
 		System.out.println("GuKKiCalvCalendar.vEventNeu begonnen");
 		GuKKiCalvEvent neuesEvent = null;
-		KalenderKennung = this.kalenderName+String.format("%03d", this.kalenderNummer);
-		neuesEvent = new GuKKiCalvEvent(kalendersammlung, KalenderKennung, vEventDaten);
+		KalenderKennung = this.kalenderName
+				+ String.format("%03d", this.kalenderNummer);
+		neuesEvent = new GuKKiCalvEvent(kalendersammlung, KalenderKennung,
+				vEventDaten);
 		this.vEvent.add(neuesEvent);
 		System.out.println("GuKKiCalvCalendar.vEventNeu beendet");
 		return true;
@@ -130,12 +141,29 @@ public class GuKKiCalvCalendar {
 	 * @return
 	 */
 	private String bestimmenKalenderName(String kalenderPfad) {
+		// System.out.println("GuKKiCalvCalendar.bestimmenKalenderName begonnen");
+		/*
+		 * Bestimmen, welches Betriebssystem gerade l�uft, um den
+		 * Verzeichnis-Trenner zu setzen
+		 */
+		String vzt = "\\";
+		if (System.getProperty("os.name").equals("Linux"))
+			vzt = "/";
+
 		String stringNeu = kalenderPfad;
 		int startIndex = stringNeu.length();
 		int endeIndex = stringNeu.length();
-		while (startIndex > 0 && stringNeu.substring(startIndex, endeIndex).indexOf("/") < 0) {
+		while (startIndex > 0
+				&& stringNeu.substring(startIndex, endeIndex).indexOf(vzt) < 0) {
+//			System.out.println("StartIndex=" + startIndex + " Substring="
+//					+ stringNeu.substring(startIndex, endeIndex));
 			startIndex -= 1;
 		}
+
+//		System.out.println("StartIndex=" + startIndex + " EndeIndex="
+//				+ endeIndex + "Kalenderkennung="
+//				+ stringNeu.substring(startIndex + 1, endeIndex - 4));
+//		System.out.println("GuKKiCalvCalendar.bestimmenKalenderName beendet");
 		return stringNeu.substring(startIndex + 1, endeIndex - 4);
 	}
 
@@ -144,12 +172,17 @@ public class GuKKiCalvCalendar {
 	 * @param ausgabeLevel
 	 * @return
 	 */
-	public String toString() {return super.toString();}
+	public String toString() {
+		return super.toString();
+	}
+
 	public String toString(int ausgabeLevel) {
 		String ausgabeString = "";
 		if (ausgabeLevel >= 0) {
-			ausgabeString += nz + "vCalendarInformationen:" + nz + kalenderPfad + " --- " + kalenderName + " --- "
-					+ String.format("%03d", kalenderNummer) + nz + "vCalendarDaten:" + nz;
+			ausgabeString += nz + "vCalendarInformationen:" + nz + kalenderPfad
+					+ " --- " + kalenderName + " --- "
+					+ String.format("%03d", kalenderNummer) + nz
+					+ "vCalendarDaten:" + nz;
 			if (vCalendarPRODID != null)
 				ausgabeString += "PRODID:" + vCalendarPRODID + nz;
 			if (vCalendarVERSION != null)
@@ -160,8 +193,9 @@ public class GuKKiCalvCalendar {
 				ausgabeString += "CALSCALE:(GREGORIAN)" + nz;
 			if (vCalendarMETHOD != null)
 				ausgabeString += "METHOD:" + vCalendarMETHOD + nz;
-//			if (vCalendarRestinformationen != null)
-//				ausgabeString += nz+"vCalendarRestinformationen:"+nz+vCalendarRestinformationen;
+			// if (vCalendarRestinformationen != null)
+			// ausgabeString +=
+			// nz+"vCalendarRestinformationen:"+nz+vCalendarRestinformationen;
 		}
 		return ausgabeString;
 	}
