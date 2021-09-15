@@ -11,25 +11,6 @@ import java.util.UUID;
 
  ;
  ; The following are OPTIONAL,
- ; but MUST NOT occur more than once.
- ;
- class / created / description / geo /
- last-mod / location / organizer / priority /
- seq / status / summary / transp /
- url / recurid /
- ;
- ; The following is OPTIONAL,
- ; but SHOULD NOT occur more than once.
- ;
- rrule /
- ;
- ; Either ’dtend’ or ’duration’ MAY appear in
- ; a ’eventprop’, but ’dtend’ and ’duration’
- ; MUST NOT occur in the same ’eventprop’.
- ;
- dtend / duration /
- ;
- ; The following are OPTIONAL,
  ; and MAY occur more than once.
  ;
  attach / attendee / categories / comment /
@@ -42,16 +23,18 @@ import java.util.UUID;
 /**
  * 
  * @author gukkdevel <br>
- * <br>
+ *         <br>
  * 
- *         Die Klasse GuKKKalender enthält alle Daten für einen Kalender im
- *         iCal Format
+ *         Die Klasse GuKKKalender enthält alle Daten für einen Kalender im iCal
+ *         Format
+ * 
+ * // @formatter:off
  * 
  *         Definition nach RFC 5545
  * 
  *         eventc = "BEGIN" ":" "VEVENT" CRLF eventprop *alarmc "END" ":"
  *         "VEVENT" CRLF
- *
+ * 
  *         eventprop = *(
  *
  *         The following are REQUIRED, but MUST NOT occur more than once.
@@ -64,7 +47,21 @@ import java.util.UUID;
  *
  *         dtstart /
  *
+ *         The following are OPTIONAL, but MUST NOT occur more than once.
  *
+ *         class / created / description / geo / last-mod / location / organizer
+ *         / priority / seq / status / summary / transp / url / recurid /
+ *
+ *         The following is OPTIONAL, but SHOULD NOT occur more than once.
+ * 
+ *         rrule /
+ * 
+ *         Either ’dtend’ or ’duration’ MAY appear in a 'eventprop’, but ’dtend’
+ *         and ’duration’ MUST NOT occur in the same ’eventprop’.
+ * 
+ *         dtend / duration /
+ *         
+ *	//@formatter:on
  */
 public class GuKKiCalvEvent {
 	/*
@@ -78,10 +75,22 @@ public class GuKKiCalvEvent {
 	String vEventDTSTAMP = null;
 	String vEventUID = null;
 	String vEventDTSTART = null;
-
+	String vEventCLASS = null;
 	String vEventCREATED = null;
-	String vEventLASTMODIFIED = null;
+	String vEventDESCRIPTION = null;
+	String vEventGEO = null;
+	String vEventLASTMOD = null;
+//	String vEventLASTMODIFIED = null;
+	String vEventLOCATOIN = null;
+	String vEventORGANIZER = null;
+	String vEventPRIORITY = null;
+	String vEventSEQ = null;
+	String vEventSTATUS = null;
 	String vEventSUMMARY = null;
+	String vEventTRANSP = null;
+	String vEventURL = null;
+	String vEventRECURID = null;
+	String vEventRRULE = null;
 	String vEventDTEND = null;
 	String vEventDURATION = null;
 	String vEventRestinformationen = "";
@@ -92,46 +101,36 @@ public class GuKKiCalvEvent {
 	String nz = "\n";
 	String zeile = "";
 
-	public GuKKiCalvEvent(GuKKiCal kalendersammlung, String kalenderKennung,
-			String vEventDaten) throws Exception {
+	public GuKKiCalvEvent(GuKKiCal kalendersammlung, String kalenderKennung, String vEventDaten) throws Exception {
 		// TODO Automatisch generierter Konstruktorstub
-		System.out.println("GuKKiCalvEvent-Konstruktor begonnen: "
-				+ kalenderKennung);
+		System.out.println("GuKKiCalvEvent-Konstruktor begonnen: " + kalenderKennung);
 
 		try {
 			// System.out.println(vEventDaten);
-			BufferedReader vEventDatenstrom = new BufferedReader(
-					new StringReader(vEventDaten));
+			BufferedReader vEventDatenstrom = new BufferedReader(new StringReader(vEventDaten));
 			vEventRestinformationen = "";
 			while ((zeile = vEventDatenstrom.readLine()) != null) {
 				// System.out.println("Datenstrom: " + zeile);
 				if (!zeile.equals("BEGIN:VEVENT") & !zeile.equals("END:VEVENT")) {
-					if (zeile.length() >= 8
-							&& zeile.substring(0, 8).equals("DTSTAMP:")) {
+					if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DTSTAMP:")) {
 						vEventDTSTAMP = zeile.substring(8);
 						System.out.println("DTSTAMP=" + vEventDTSTAMP);
-					} else if (zeile.length() >= 4
-							&& zeile.substring(0, 4).equals("UID:")) {
+					} else if (zeile.length() >= 4 && zeile.substring(0, 4).equals("UID:")) {
 						vEventUID = zeile.substring(4);
 						System.out.println("UID=" + vEventUID);
 					} else if (zeile.length() >= 8
-							&& (zeile.substring(0, 8).equals("DTSTART:") || zeile
-									.substring(0, 8).equals("DTSTART;"))) {
+							&& (zeile.substring(0, 8).equals("DTSTART:") || zeile.substring(0, 8).equals("DTSTART;"))) {
 						vEventDTSTART = dtstartErmitteln(zeile.substring(7));
 						System.out.println("DTSTART=" + vEventDTSTART);
-					} else if (zeile.length() >= 8
-							&& zeile.substring(0, 8).equals("CREATED:")) {
+					} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("CREATED:")) {
 						vEventCREATED = zeile.substring(8);
 						System.out.println("CREATED=" + vEventCREATED);
-					} else if (zeile.length() >= 14
-							&& zeile.substring(0, 14).equals("LAST-MODIFIED:")) {
-						vEventLASTMODIFIED = zeile.substring(14);
-						System.out
-								.println("LASTMODIFIED=" + vEventLASTMODIFIED);
+					} else if (zeile.length() >= 14 && zeile.substring(0, 14).equals("LAST-MODIFIED:")) {
+						vEventLASTMOD = zeile.substring(14);
+						System.out.println("LASTMODIFIED=" + vEventLASTMOD);
 					} else {
 						vEventRestinformationen += zeile + nz;
-						System.out.println("Restinformationen="
-								+ vEventRestinformationen);
+						System.out.println("Restinformationen=" + vEventRestinformationen);
 					}
 
 				}
@@ -141,8 +140,7 @@ public class GuKKiCalvEvent {
 		{
 
 		}
-		System.out.println("GuKKiCalvEvent-Konstruktor beendet: UID ="
-				+ this.vEventUID);
+		System.out.println("GuKKiCalvEvent-Konstruktor beendet: UID =" + this.vEventUID);
 	}
 
 	/**

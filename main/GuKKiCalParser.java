@@ -49,11 +49,15 @@ public class GuKKiCalParser {
 		System.out.println("GuKKiCalParser.main <static> begonnen");
 		try {
 			GuKKiCalParser parser = new GuKKiCalParser();
-
-			parser.kalenderEinlesen(
-//					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender.ics",
-					"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics",
-					parser.kalendersammlung);
+			if (System.getProperty("os.name").equals("Linux")) {
+				parser.kalenderEinlesen(
+						"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender.ics",
+						parser.kalendersammlung);
+			} else {
+				parser.kalenderEinlesen(
+						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics",
+						parser.kalendersammlung);
+			}
 //			parser.kalenderEinlesen(
 //					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", kalendersammlung);
 
@@ -278,11 +282,11 @@ public class GuKKiCalParser {
 				}
 				default: {
 					vEventInformationen += zeile + nz;
-				} //default
-				} //switch
-			} //while
+				} // default
+				} // switch
+			} // while
 		} finally {
-			
+
 		}
 //		aktuellerKalender.vEventNeu(kalendersammlung, vEventDaten);
 

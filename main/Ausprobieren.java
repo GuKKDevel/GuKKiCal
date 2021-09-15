@@ -19,7 +19,7 @@ public class Ausprobieren {
 		String OS = System.getProperty("os.name");
 		System.out.println(OS);
 
- /* eindeutige UID generieren lassen (für neue Events) */		
+ /* eindeutige UID generieren lassen (fÃ¼r neue Events) */		
 //		String uniqueID = UUID.randomUUID().toString();
 //		System.out.println(uniqueID);
 //		 uniqueID = UUID.randomUUID().toString();
