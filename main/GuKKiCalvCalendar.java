@@ -70,7 +70,7 @@ public class GuKKiCalvCalendar {
 
 	public GuKKiCalvCalendar(GuKKiCal kalendersammlung, String vCalendarDaten, String kalenderPfad, int kalenderNummer)
 			throws Exception {
-		System.out.println("GuKKiCalvCalendar-Konstruktor: " + kalenderPfad + "-----" + kalenderNummer);
+//		System.out.println("GuKKiCalvCalendar-Konstruktor: " + kalenderPfad + "-----" + kalenderNummer);
 		try {
 			// System.out.println(vCalendarDaten);
 			BufferedReader vCalendarDatenstrom = new BufferedReader(new StringReader(vCalendarDaten));
@@ -98,7 +98,7 @@ public class GuKKiCalvCalendar {
 		this.kalendersammlung = kalendersammlung;
 		// kalendersammlung.addvCalendar(kalendersammlung, this); /* sollte im
 		// übergeordneten Modul erfolgen */
-		System.out.println("GuKKiCalvCalendar-Konstruktor beendet");
+//		System.out.println("GuKKiCalvCalendar-Konstruktor beendet");
 	}
 
 	// public GuKKiCalvCalendar(GuKKiCalvCalendar vKalender) {
@@ -168,9 +168,9 @@ public class GuKKiCalvCalendar {
 		return super.toString();
 	}
 
-	public String toString(int ausgabeLevel) {
+	public String toString(String ausgabeLevel) {
 		String ausgabeString = "";
-		if (ausgabeLevel >= 0) {
+		if (ausgabeLevel.toUpperCase().indexOf("C") >= 0) {
 			ausgabeString += nz + "vCalendarInformationen:" + nz + kalenderPfad + " --- " + kalenderName + " --- "
 					+ String.format("%03d", kalenderNummer) + nz + "vCalendarDaten:" + nz;
 			if (vCalendarPRODID != null)
@@ -186,6 +186,12 @@ public class GuKKiCalvCalendar {
 			// if (vCalendarRestinformationen != null)
 			// ausgabeString +=
 			// nz+"vCalendarRestinformationen:"+nz+vCalendarRestinformationen;
+		}
+		if (ausgabeLevel.toUpperCase().indexOf("E") >= 0) {
+			for (GuKKiCalvEvent pvEvent : vEvent) {
+				
+				System.out.println(pvEvent.toString(ausgabeLevel));
+			}
 		}
 		return ausgabeString;
 	}

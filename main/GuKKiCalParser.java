@@ -40,13 +40,13 @@ public class GuKKiCalParser {
 	String nz = "\n";
 
 	public GuKKiCalParser() throws Exception {
-		System.out.println("GuKKiCalParser Konstruktor begonnen");
+//		System.out.println("GuKKiCalParser Konstruktor begonnen");
 		// TODO Automatisch generierter Konstruktorstub
-		System.out.println("GuKKiCalParser Konstruktor beendet");
+//		System.out.println("GuKKiCalParser Konstruktor beendet");
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("GuKKiCalParser.main <static> begonnen");
+//		System.out.println("GuKKiCalParser.main <static> begonnen");
 		try {
 			GuKKiCalParser parser = new GuKKiCalParser();
 			if (System.getProperty("os.name").equals("Linux")) {
@@ -64,7 +64,7 @@ public class GuKKiCalParser {
 		} finally {
 
 		}
-		System.out.println("GuKKiCalParser.main <static> beendet");
+//		System.out.println("GuKKiCalParser.main <static> beendet");
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class GuKKiCalParser {
 	 */
 
 	private void kalenderEinlesen(String inPath, GuKKiCal kalendersammlung) throws Exception {
-		System.out.println("GuKKiCalParser.kalenderEinlesen begonnen");
+//		System.out.println("GuKKiCalParser.kalenderEinlesen begonnen");
 		int kalenderNummer = 0;
 		/*
 		 * Datenstrom zur Verarbeitung der Kalenderdaten
@@ -238,23 +238,23 @@ public class GuKKiCalParser {
 				iCalDatenstrom.close();
 			}
 		}
-		System.out.println(aktuellerKalender.toString(0));
-		System.out.println("GuKKiCalParser.kalenderEinlesen beendet");
+//		System.out.println(aktuellerKalender.toString("C"));
+//		System.out.println("GuKKiCalParser.kalenderEinlesen beendet");
 //		return true;
 
 	} // kalenderEinlesen
 
 	private void kalenderAufbauen(GuKKiCal kalendersammlung, String vCalendarDaten, String inPath,
 			Integer kalenderNummer) throws Exception {
-		System.out.println("GuKKiCAlParser.kalenderAufbauen begonnen");
+//		System.out.println("GuKKiCAlParser.kalenderAufbauen begonnen");
 
 		aktuellerKalender = new GuKKiCalvCalendar(kalendersammlung, vCalendarDaten, inPath, kalenderNummer);
 		kalendersammlung.addvCalendar(kalendersammlung, aktuellerKalender);
 		eventsAufbauen(kalendersammlung, aktuellerKalender, vEventDaten);
 
-		System.out.println(aktuellerKalender.toString(1));
+		System.out.println(aktuellerKalender.toString("CE"));
 
-		System.out.println("GuKKiCAlParser.kalenderAufbauen beendet");
+//		System.out.println("GuKKiCAlParser.kalenderAufbauen beendet");
 
 	} // kalenderAufbauen
 
