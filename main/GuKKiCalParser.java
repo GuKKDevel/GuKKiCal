@@ -163,18 +163,18 @@ public class GuKKiCalParser {
 					vTimezoneDaten += zeile + nz;
 					break;
 				}
-				case "BEGIN:VALARM": {
-					vAlarmBearbeiten = true;
-//					System.out.println("BEGIN:VALARM gefunden");
-					vAlarmDaten += zeile + nz;
-					break;
-				}
-				case "END:VALARM": {
-					vAlarmBearbeiten = false;
-//					System.out.println("END:VALARM gefunden");
-					vAlarmDaten += zeile + nz;
-					break;
-				}
+//				case "BEGIN:VALARM": {
+//					vAlarmBearbeiten = true;
+////					System.out.println("BEGIN:VALARM gefunden");
+//					vAlarmDaten += zeile + nz;
+//					break;
+//				}
+//				case "END:VALARM": {
+//					vAlarmBearbeiten = false;
+////					System.out.println("END:VALARM gefunden");
+//					vAlarmDaten += zeile + nz;
+//					break;
+//				}
 				default: {
 					if (vEventBearbeiten) {
 						if (vTodoBearbeiten | vJournalBearbeiten | vFreeBusyBearbeiten | vTimezoneBearbeiten
@@ -216,6 +216,7 @@ public class GuKKiCalParser {
 					}
 //					System.out.println("vC="+vCalendarBearbeiten+ "<-->"+vCalendarDaten+"<-----"+nz);
 //					System.out.println("vE="+vEventBearbeiten+"<-->"+vEventDaten+"<-----"+nz);
+//					System.out.println("vT="+vTodoBearbeiten+"<-->"+vTodoDaten+"<-----"+nz);
 //					System.out.println(vTodoDaten);
 //					System.out.println(vJournalDaten);
 //					System.out.println(vFreeBusyDaten);
@@ -251,8 +252,9 @@ public class GuKKiCalParser {
 		aktuellerKalender = new GuKKiCalvCalendar(kalendersammlung, vCalendarDaten, inPath, kalenderNummer);
 		kalendersammlung.addvCalendar(kalendersammlung, aktuellerKalender);
 		eventsAufbauen(kalendersammlung, aktuellerKalender, vEventDaten);
+		todosAufbauen(kalendersammlung, aktuellerKalender, vTodoDaten);
 
-		System.out.println(aktuellerKalender.toString("CE"));
+		System.out.println(aktuellerKalender.toString("CETA"));
 
 //		System.out.println("GuKKiCAlParser.kalenderAufbauen beendet");
 
@@ -260,7 +262,7 @@ public class GuKKiCalParser {
 
 	private void eventsAufbauen(GuKKiCal kalendersammlung, GuKKiCalvCalendar aktuellerKalender, String vEventDaten)
 			throws Exception {
-		System.out.println("GuKKiCAlParser.eventsAufbauen begonnen");
+//		System.out.println("GuKKiCAlParser.eventsAufbauen begonnen");
 		try {
 //			System.out.println(vCalendarDaten);
 			BufferedReader vEventDatenstrom = new BufferedReader(new StringReader(vEventDaten));
@@ -288,8 +290,41 @@ public class GuKKiCalParser {
 		} finally {
 
 		}
-//		aktuellerKalender.vEventNeu(kalendersammlung, vEventDaten);
+//		System.out.println("GuKKiCAlParser.eventsAufbauen beendet");
 
-		System.out.println("GuKKiCAlParser.eventsAufbauen beendet");
 	} // eventsAufbauen
+	
+	private void todosAufbauen(GuKKiCal kalendersammlung, GuKKiCalvCalendar aktuellerKalender, String vTodoDaten)
+			throws Exception {
+		System.out.println("GuKKiCAlParser.todosAufbauen begonnen");
+		try {
+//			System.out.println(vCalendarDaten);
+			BufferedReader vTodoDatenstrom = new BufferedReader(new StringReader(vTodoDaten));
+			String vTodoInformationen = "";
+			String zeile;
+			while ((zeile = vTodoDatenstrom.readLine()) != null) {
+//				System.out.println("Datenstrom: " + zeile);
+				switch (zeile) {
+				case "BEGIN:VTODO": {
+//					System.out.println("BEGIN:VTODO gefunden");
+					vTodoInformationen = zeile + nz;
+					break;
+				}
+				case "END:VTODO": {
+//					System.out.println("END:VTODO gefunden");
+					vTodoInformationen += zeile + nz;
+					aktuellerKalender.vTodoNeu(kalendersammlung, vTodoInformationen);
+					break;
+				}
+				default: {
+					vTodoInformationen += zeile + nz;
+				} // default
+				} // switch
+			} // while
+		} finally {
+
+		}
+		System.out.println("GuKKiCAlParser.todosAufbauen beendet");
+
+	} // todosAufbauen
 }

@@ -114,15 +114,33 @@ public class GuKKiCalvCalendar {
 	 * @throws Exception
 	 */
 	public boolean vEventNeu(GuKKiCal kalendersammlung, String vEventDaten) throws Exception {
-		System.out.println("GuKKiCalvCalendar.vEventNeu begonnen");
+//		System.out.println("GuKKiCalvCalendar.vEventNeu begonnen");
 		GuKKiCalvEvent neuesEvent = null;
 		KalenderKennung = this.kalenderName + String.format("%03d", this.kalenderNummer);
 		neuesEvent = new GuKKiCalvEvent(kalendersammlung, KalenderKennung, vEventDaten);
 		this.vEvent.add(neuesEvent);
-		System.out.println("GuKKiCalvCalendar.vEventNeu beendet");
+//		System.out.println("GuKKiCalvCalendar.vEventNeu beendet");
 		return true;
 	}
-
+	/**
+	 * Modul erhält die Daten für ein einzelnes Todo als Datenstrom (vTodoDaten),
+	 * erstellt dieses Element und fügt es in den Kalender ein. Zusätzlich wird das
+	 * Event auch in die Kalendersammlung eingefügt.
+	 * 
+	 * @param kalendersammlung
+	 * @param vTodoDaten
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean vTodoNeu(GuKKiCal kalendersammlung, String vTodoDaten) throws Exception {
+		System.out.println("GuKKiCalvCalendar.vTodoNeu begonnen");
+		GuKKiCalvTodo neuesTodo = null;
+		KalenderKennung = this.kalenderName + String.format("%03d", this.kalenderNummer);
+		neuesTodo = new GuKKiCalvTodo(kalendersammlung, KalenderKennung, vTodoDaten);
+		this.vTodo.add(neuesTodo);
+		System.out.println("GuKKiCalvCalendar.vTodoNeu beendet");
+		return true;
+	}
 	/**
 	 * Bestimmt aus der Pfadangabe für den Kalender den Kalendernamen aus dem
 	 * Dateinamen
@@ -139,8 +157,8 @@ public class GuKKiCalvCalendar {
 		String vzt = "\\";
 		if (System.getProperty("os.name").equals("Linux"))
 			vzt = "/";
-		
-		/* 
+
+		/*
 		 * Analysieren des Pfades um den Kalendernamen zu bestimmen
 		 */
 		String stringNeu = kalenderPfad;
@@ -188,9 +206,15 @@ public class GuKKiCalvCalendar {
 			// nz+"vCalendarRestinformationen:"+nz+vCalendarRestinformationen;
 		}
 		if (ausgabeLevel.toUpperCase().indexOf("E") >= 0) {
+			ausgabeString += nz;
 			for (GuKKiCalvEvent pvEvent : vEvent) {
-				
-				System.out.println(pvEvent.toString(ausgabeLevel));
+				ausgabeString += pvEvent.toString(ausgabeLevel) + nz;
+			}
+		}
+		if (ausgabeLevel.toUpperCase().indexOf("T") >= 0) {
+			ausgabeString += nz;
+			for (GuKKiCalvTodo pvTodo : vTodo) {
+				ausgabeString += pvTodo.toString(ausgabeLevel) + nz;
 			}
 		}
 		return ausgabeString;
