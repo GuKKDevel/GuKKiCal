@@ -7,17 +7,40 @@ import java.io.InputStreamReader;
 import java.util.UUID;
 
 public class Ausprobieren {
-
+	
+//	GuKKiCal kalendersammlung = new GuKKiCal();
+	
 	public Ausprobieren() {
 		// TODO Automatisch generierter Konstruktorstub
 	}
-
 	public static void main(String[] args) throws Exception {
-		// TODO Automatisch generierter Methodenstub
-		GuKKiCalProperty property = null;
-//		property = new GuKKiCalProperty("CREATED:20151123T103732Z", "CREATED");
-//		property = new GuKKiCalProperty("X-LIC-ERROR;X-LIC-ERRORTYPE=VALUE-PARSE-ERROR:No value for DESCRIPTION property. Removing entire property:", "X-LIC-ERROR");
-		property = new GuKKiCalProperty("SUMMARY;CN=TEST:Angiologie\\;Ulrich", "SUMMARY");}
+//		System.out.println("GuKKiCalParser.main <static> begonnen");
+		GuKKiCal kalendersammlung = new GuKKiCal();
+		try {
+			GuKKiCalParser parser = new GuKKiCalParser();
+			if (System.getProperty("os.name").equals("Linux")) {
+				parser.kalenderEinlesen(											// Standard-KHG TestKalender
+						"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender.ics",
+						kalendersammlung);
+			} else {
+				parser.kalenderEinlesen(
+						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics",
+						kalendersammlung);
+			}
+//			parser.kalenderEinlesen(
+//					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", kalendersammlung);
+
+		} finally {
+
+		}
+//		System.out.println("GuKKiCalParser.main <static> beendet");
+	}
+//	public static void main(String[] args) throws Exception {
+//		// TODO Automatisch generierter Methodenstub
+//		GuKKiCalProperty property = null;
+////		property = new GuKKiCalProperty("CREATED:20151123T103732Z", "CREATED");
+////		property = new GuKKiCalProperty("X-LIC-ERROR;X-LIC-ERRORTYPE=VALUE-PARSE-ERROR:No value for DESCRIPTION property. Removing entire property:", "X-LIC-ERROR");
+//		property = new GuKKiCalProperty("SUMMARY;CN=\"TEST:Angiologie;Ulrich\"", "SUMMARY");}
 	
 //	static GuKKiCalProperty eintragen(String propertyZeile) throws Exception {
 ////		System.out.println("GuKKiCalvComponent.checkDTSTAMP begonnen");

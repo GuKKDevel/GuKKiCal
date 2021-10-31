@@ -45,35 +45,13 @@ public class GuKKiCalParser {
 //		System.out.println("GuKKiCalParser Konstruktor beendet");
 	}
 
-	public static void main(String[] args) throws Exception {
-//		System.out.println("GuKKiCalParser.main <static> begonnen");
-		try {
-			GuKKiCalParser parser = new GuKKiCalParser();
-			if (System.getProperty("os.name").equals("Linux")) {
-				parser.kalenderEinlesen(
-						"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender.ics",
-						parser.kalendersammlung);
-			} else {
-				parser.kalenderEinlesen(
-						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics",
-						parser.kalendersammlung);
-			}
-//			parser.kalenderEinlesen(
-//					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", kalendersammlung);
-
-		} finally {
-
-		}
-//		System.out.println("GuKKiCalParser.main <static> beendet");
-	}
-
 	/**
 	 * @param inPath Pfad der Eingabedatei für den Kalender als String
 	 * 
 	 * @throws IOException
 	 */
 
-	private void kalenderEinlesen(String inPath, GuKKiCal kalendersammlung) throws Exception {
+	protected void kalenderEinlesen(String inPath, GuKKiCal kalendersammlung) throws Exception {
 //		System.out.println("GuKKiCalParser.kalenderEinlesen begonnen");
 		int kalenderNummer = 0;
 		/*
@@ -209,8 +187,8 @@ public class GuKKiCalParser {
 						} else {
 							vTimezoneDaten += zeile + nz;
 						}
-					} else if (vAlarmBearbeiten) {
-						vAlarmDaten += zeile + nz;
+//					} else if (vAlarmBearbeiten) {
+//						vAlarmDaten += zeile + nz;
 					} else {
 						vCalendarDaten += zeile + nz;
 					}

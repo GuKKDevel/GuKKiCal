@@ -849,93 +849,103 @@ class GuKKiCalProperty {
 	int anzahl = 0;
 
 	protected GuKKiCalProperty(String kennung) {
-		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " begonnen");
+//		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " begonnen");
 		this.propertyLiteral = kennung;
-		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " beendet");
+//		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " beendet");
 	}
 
-	public GuKKiCalProperty(String propertyZeile, String kennung) {
-		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " begonnen -->" + propertyZeile);
+	public GuKKiCalProperty(String propertyDaten, String kennung) {
+//		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " begonnen -->" + propertyZeile);
 		this.propertyLiteral = kennung;
-		if (propertyZeile.substring(kennung.length(), kennung.length() + 1).equals(":")) {
-			this.propertyWert = propertyZeile.substring(kennung.length() + 1);
+		if (propertyDaten.substring(kennung.length(), kennung.length() + 1).equals(":")) {
+			this.propertyWert = propertyDaten.substring(kennung.length() + 1);
 		} else {
-			parameterAnalysieren(propertyZeile.substring(kennung.length()));
+			parameterAnalysieren(propertyDaten.substring(kennung.length()));
 		}
-		System.out.println(this);
-		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " beendet");
+//		System.out.println(this);
+//		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " beendet");
 	}
 
-	void parameterAnalysieren(String parameterkette) {
+	void parameterAnalysieren(String propertyDaten) {
 		System.out.println("GuKKiCalProperty parameterAnalysieren begonnen");
-		System.out.println("Parameterkette=" + parameterkette);
+		System.out.println("Parameterkette=" + propertyDaten);
 
-		boolean hochkomma = false;
-		boolean trenner = false;
-		boolean doppelpunkt = false;
-		boolean semikolon = false;
+		boolean backslash = false;
 		boolean literal = false;
+//		boolean hochkomma = false;
+//		boolean doppelpunkt = false;
+//		boolean semikolon = false;
+		String trenner = "";
 		String zeichen = "";
 		String parameter = "";
 
-		for (int i = 0; i < parameterkette.length(); i++) {
-//			System.out.println("i=" + i + " Zeichen=" + parameterkette.substring(i, i + 1));
-			zeichen = parameterkette.substring(i, i + 1);
+		for (int i = 0; i < propertyDaten.length(); i++) {
+			System.out.println("i=" + i + " Zeichen=" + propertyDaten.substring(i, i + 1));
+			zeichen = propertyDaten.substring(i, i + 1);
+
 			switch (zeichen) {
 
+				case ("\\"): {
+					if (backslash) {
+						backslash = false;
+					}
+					else {
+						backslash = true;
+					}
+					parameter += zeichen;
+					break;
+				}
 				case ("\""): {
-					hochkomma = true;
-					if (literal) {
-						literal = false;
+					if (! backslash) {
+						if (! literal) {
+							literal = true;
+						} else {
+							literal = false;
+						}
 					} else {
-						literal = true;
+						backslash = false;
 					}
 					parameter += zeichen;
 					break;
 				}
 				case (":"): {
-					if (literal) {
-						parameter += zeichen;
-					} else {
-						trenner = true;
-						doppelpunkt = true;
+					if (! backslash && ! literal && ! trenner.equals(":")) {
 						if (parameter.length() > 0) {
 							parameterBestimmen(parameter, ":");
 						}
+						trenner =":";
 						parameter = "";
-//						System.out.println(":Parameter=" + parameter);
+					} else {
+						parameter += zeichen;
+						backslash = false;
 					}
 					break;
 				}
 				case (";"): {
-					if (literal) {
-						parameter += zeichen;
-					} else {
-						trenner = true;
-						semikolon = true;
+					if (! backslash && ! literal&& ! trenner.equals(":")) {
 						if (parameter.length() > 0) {
 							parameterBestimmen(parameter, ";");
 						}
 						parameter = "";
-						System.out.println(";Parameter=" + parameter);
+					} else {
+						parameter += zeichen;
+						backslash = false;
 					}
 					break;
 				}
 				default: {
-					hochkomma = false;
-					trenner = false;
-					doppelpunkt = false;
-					semikolon = false;
 					parameter += zeichen;
+					backslash = false;
 				}
 			} // Ende switch
-//			System.out.println("---->" + parameter);
+
+			System.out.println("---->" + parameter);
+
 		} // Ende for-Schleife
-		
+
 		if (parameter.length() > 0) {
 			this.propertyWert = parameter;
 		}
-//			System.out.println("HK=" + hochkomma + "; TR=" + trenner + "; LI=" + literal);
 
 		System.out.println("GuKKiCalProperty parameterAnalysieren beendet");
 	}
@@ -984,11 +994,13 @@ class GuKKiCalProperty {
 		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("VALUE=")) {
 			this.propertyVALUETYPE = parameter.substring(6);
 		} else {
+			System.out.println(trenner+"unbekannter Parameter="+parameter);
 			if (propertyUNKNOWN == null) {
 				this.propertyUNKNOWN = parameter + trenner;
 			} else {
 				this.propertyUNKNOWN += parameter + trenner;
 			}
+			System.out.println(propertyUNKNOWN);
 		}
 
 		System.out.println("GuKKiCalProperty parameterBestimmen beendet");
@@ -1002,10 +1014,25 @@ class GuKKiCalProperty {
 		this.propertyWert = propertyWert;
 	}
 
+	String getPropertyLiteral() {
+		return propertyLiteral;
+	}
+
+	void setPropertyLiteral(String propertyLiteral) {
+		this.propertyLiteral = propertyLiteral;
+	}
+
+	String getPropertyUNKNOWN() {
+		return propertyUNKNOWN;
+	}
+
+	void setPropertyUNKNOWN(String propertyUNKNOWN) {
+		this.propertyUNKNOWN = propertyUNKNOWN;
+	}
+
 	public String toString() {
 		String nz = "\n";
 		String ausgabe = "Literal=" + propertyLiteral + nz;
-		ausgabe += "Wert=" + propertyWert + nz;
 		if (propertyALTREP != null)
 			ausgabe += "altrepparm=" + propertyALTREP + nz;
 		if (propertyCN != null)
@@ -1048,6 +1075,7 @@ class GuKKiCalProperty {
 			ausgabe += "valuetypeparam=" + propertyVALUETYPE + nz;
 		if (propertyUNKNOWN != null)
 			ausgabe += "other-param=" + propertyUNKNOWN + nz;
+		ausgabe += "Wert=" + propertyWert + nz;
 
 		return ausgabe.substring(0, ausgabe.length() - 1);
 	}

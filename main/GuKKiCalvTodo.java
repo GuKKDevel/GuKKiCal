@@ -78,6 +78,7 @@ import java.util.ArrayList;
  *				
  *			)
  *
+ * @formatter:on
  *
  */
 public class GuKKiCalvTodo extends GuKKiCalvComponent {
@@ -96,54 +97,54 @@ public class GuKKiCalvTodo extends GuKKiCalvComponent {
 	/*
 	 * The following are REQUIRED, but MUST NOT occur more than once.
 	 */
-	private String vTodoDTSTAMP = null;
-	private String vTodoUID = null;
+	private GuKKiCalProperty vTodoDTSTAMP = null;
+	private GuKKiCalProperty vTodoUID = null;
 	/*
 	 * The following are OPTIONAL, but MUST NOT occur more than once.
 	 */
-	private String vTodoCLASS = null;
-	private String vTodoCOMPLETED = null;
-	private String vTodoCREATED = null;
-	private String vTodoDESCRIPTION = null;
-	private String vTodoDTSTART = null;
-	private String vTodoGEO = null;
-	private String vTodoLASTMODIFIED = null;
-	private String vTodoLOCATION = null;
-	private String vTodoORGANIZER = null;
-	private String vTodoPERCENT = null;			
-	private String vTodoPRIORITY = null;
-	private String vTodoRECURID = null;
-	private String vTodoSEQUENCE = null;
-	private String vTodoSTATUS = null;	
-	private String vTodoSUMMARY = null;
-	private String vTodoURL = null;
+	private GuKKiCalProperty vTodoCLASS = null;
+	private GuKKiCalProperty vTodoCOMPLETED = null;
+	private GuKKiCalProperty vTodoCREATED = null;
+	private GuKKiCalProperty vTodoDESCRIPTION = null;
+	private GuKKiCalProperty vTodoDTSTART = null;
+	private GuKKiCalProperty vTodoGEO = null;
+	private GuKKiCalProperty vTodoLASTMODIFIED = null;
+	private GuKKiCalProperty vTodoLOCATION = null;
+	private GuKKiCalProperty vTodoORGANIZER = null;
+	private GuKKiCalProperty vTodoPERCENT = null;
+	private GuKKiCalProperty vTodoPRIORITY = null;
+	private GuKKiCalProperty vTodoRECURID = null;
+	private GuKKiCalProperty vTodoSEQUENCE = null;
+	private GuKKiCalProperty vTodoSTATUS = null;
+	private GuKKiCalProperty vTodoSUMMARY = null;
+	private GuKKiCalProperty vTodoURL = null;
 	/*
 	 * The following is OPTIONAL, but SHOULD NOT occur more than once.
 	 */
-	private String vTodoRRULE = null;
+	private GuKKiCalProperty vTodoRRULE = null;
 	/*
 	 * Either ’dtend’ or ’duration’ MAY appear in a ’todoprop’, but ’dtend’ and
 	 * ’duration’ MUST NOT occur in the same ’todoprop’.
 	 */
-	private String vTodoDUE = null;		
+	private GuKKiCalProperty vTodoDUE = null;
 	// TODO vTodoDUE
-	private String vTodoDURATION = null;
+	private GuKKiCalProperty vTodoDURATION = null;
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 */
-	private ArrayList<String> vTodoATTACH = new ArrayList<String>();
-	private ArrayList<String> vTodoATTENDEE = new ArrayList<String>();
-	private ArrayList<String> vTodoCATEGORIES = new ArrayList<String>();
-	private ArrayList<String> vTodoCOMMENT = new ArrayList<String>();
-	private ArrayList<String> vTodoCONTACT = new ArrayList<String>();
-	private ArrayList<String> vTodoEXDATE = new ArrayList<String>();
-	private ArrayList<String> vTodoRSTATUS = new ArrayList<String>();
-	private ArrayList<String> vTodoRELATED = new ArrayList<String>();
-	private ArrayList<String> vTodoRESOURCES = new ArrayList<String>();
-	private ArrayList<String> vTodoRDATE = new ArrayList<String>();
-	private ArrayList<String> vTodoXMOZGENERATION = new ArrayList<String>();
-	private ArrayList<String> vTodoIANAPROP = new ArrayList<String>();
-		
+	private ArrayList<GuKKiCalProperty> vTodoATTACH = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoATTENDEE = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoCATEGORIES = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoCOMMENT = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoCONTACT = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoEXDATE = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoRSTATUS = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoRELATED = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoRESOURCES = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vTodoRDATE = new ArrayList<GuKKiCalProperty>();
+	private String vTodoXNAMEPROP = "";
+	private String vTodoIANAPROP = "";
+
 	private String vTodoRestinformationen = "";
 
 	/*
@@ -153,11 +154,11 @@ public class GuKKiCalvTodo extends GuKKiCalvComponent {
 	String zeile = "";
 	String folgezeile = "";
 	boolean datenVorhanden;
-	
-	
+
 	public GuKKiCalvTodo() {
 		// TODO Automatisch generierter Konstruktorstub
 	}
+
 	/**
 	 * Konstruktor zum Aufbereiten des VTODO aus einem Eingabestring
 	 * 
@@ -168,6 +169,8 @@ public class GuKKiCalvTodo extends GuKKiCalvComponent {
 	 */
 	public GuKKiCalvTodo(GuKKiCal kalendersammlung, String kalenderKennung, String vTodoDaten) throws Exception {
 //		System.out.println("GuKKiCalvTodo-Konstruktor begonnen: " + kalenderKennung);
+
+		this.kalenderKennung = kalenderKennung;
 
 		try {
 //			System.out.println(vTodoDaten);
@@ -198,124 +201,122 @@ public class GuKKiCalvTodo extends GuKKiCalvComponent {
 		}
 //		System.out.println("GuKKiCalvTodo-Konstruktor beendet: UID=" + this.vTodoUID);
 	}
+
 	private void verarbeitenZeile() {
 		// TODO Auto-generated method stub
 //		System.out.println("Zeile="+ zeile);
 //
 		if (!zeile.equals("BEGIN:VTODO") & !zeile.equals("END:VTODO")) {
 			if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
-				vTodoDTSTAMP = eintragenProperty(zeile, "DTSTAMP");
+				vTodoDTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
 //				System.out.println("DTSTAMP=" + vTodoDTSTAMP);
 			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("UID")) {
-				vTodoUID = eintragenProperty(zeile, "UID");
+				vTodoUID = new GuKKiCalProperty(zeile, "UID");
 //				System.out.println("UID=" + vTodoUID);
 			} else if (zeile.length() >= 7 && (zeile.substring(0, 7).equals("DTSTART"))) {
-				vTodoDTSTART = eintragenProperty(zeile, "DTSTART");
+				vTodoDTSTART = new GuKKiCalProperty(zeile, "DTSTART");
 //				System.out.println("DTSTART=" + vTodoDTSTART);
 			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("CLASS")) {
-				vTodoCLASS = eintragenProperty(zeile, "CLASS");
+				vTodoCLASS = new GuKKiCalProperty(zeile, "CLASS");
 //				System.out.println("CLASS=" + vTodoCLASS);
 			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CREATED")) {
-				vTodoCREATED = eintragenProperty(zeile, "CREATED");
+				vTodoCREATED = new GuKKiCalProperty(zeile, "CREATED");
 //				System.out.println("CREATED=" + vTodoCREATED);
 			} else if (zeile.length() >= 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
-				vTodoDESCRIPTION = eintragenProperty(zeile, "DESCRIPTION");
+				vTodoDESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
 //				System.out.println("DESCRIPTION=" + vTodoDESCRIPTION);
 			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("GEO")) {
-				vTodoGEO = eintragenProperty(zeile, "GEO");
+				vTodoGEO = new GuKKiCalProperty(zeile, "GEO");
 //				System.out.println("GEO=" + vTodoGEO);
 			} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
-				vTodoLASTMODIFIED = eintragenProperty(zeile, "LAST-MODIFIED");
+				vTodoLASTMODIFIED = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
 //				System.out.println("LASTMODIFIED=" + vTodoLASTMODIFIED);
 			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("LOCATION")) {
-				vTodoLOCATION = eintragenProperty(zeile, "LOCATION");
+				vTodoLOCATION = new GuKKiCalProperty(zeile, "LOCATION");
 //				System.out.println("LOCATION=" + vTodoLOCATION);
 			} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
-				vTodoORGANIZER = eintragenProperty(zeile, "ORGANIZER");
+				vTodoORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
 //				System.out.println("ORGANIZER=" + vTodoORGANIZER);
 			} else if (zeile.length() >= 16 && zeile.substring(0, 16).equals("PERCENT-COMPLETE")) {
-				vTodoPERCENT = eintragenProperty(zeile, "PERCENT-COMPLETE");
+				vTodoPERCENT = new GuKKiCalProperty(zeile, "PERCENT-COMPLETE");
 //				System.out.println("ORGANIZER=" + vTodoORGANIZER);
 			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("PRIORITY")) {
-				vTodoPRIORITY = eintragenProperty(zeile, "PRIORITY");
+				vTodoPRIORITY = new GuKKiCalProperty(zeile, "PRIORITY");
 //				System.out.println("PRIORITY=" + vTodoPRIORITY);
 			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("SEQUENCE")) {
-				vTodoSEQUENCE = eintragenProperty(zeile, "SEQUENCE");
+				vTodoSEQUENCE = new GuKKiCalProperty(zeile, "SEQUENCE");
 //				System.out.println("SEQUENCE=" + vTodoSEQUENCE);
 			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("STATUS")) {
-				vTodoSTATUS = eintragenProperty(zeile, "STATUS");
+				vTodoSTATUS = new GuKKiCalProperty(zeile, "STATUS");
 //				System.out.println("STATUS=" + vTodoSTATUS);
 			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("SUMMARY")) {
-				vTodoSUMMARY = eintragenProperty(zeile, "SUMMARY");
+				vTodoSUMMARY = new GuKKiCalProperty(zeile, "SUMMARY");
 //				System.out.println("SUMMARY=" + vTodoSUMMARY);
 			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("URL")) {
-				vTodoURL = eintragenProperty(zeile, "URL");
+				vTodoURL = new GuKKiCalProperty(zeile, "URL");
 //				System.out.println("URL=" + vTodoURL);
 			} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("RECURRENCE-ID")) {
-				vTodoRECURID = eintragenProperty(zeile, "RECURRENCE-ID");
+				vTodoRECURID = new GuKKiCalProperty(zeile, "RECURRENCE-ID");
 //				System.out.println("RECURID=" + vTodoRECURID);
 			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RRULE")) {
-				vTodoRRULE = eintragenProperty(zeile, "RRULE");
+				vTodoRRULE = new GuKKiCalProperty(zeile, "RRULE");
 //				System.out.println("RRULE=" + vTodoRRULE);
 			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("DUE")) {
-				vTodoDUE = eintragenProperty(zeile, "DUE");
+				vTodoDUE = new GuKKiCalProperty(zeile, "DUE");
 //				System.out.println("DUE=" + vTodoDUE);
 			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DURATION")) {
-				vTodoDURATION = eintragenProperty(zeile, "DURATION");
+				vTodoDURATION = new GuKKiCalProperty(zeile, "DURATION");
 //				System.out.println("DURATION=" + vTodoDURATION);
 			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
-				vTodoATTACH.add(eintragenProperty(zeile, "ATTACH"));
+				vTodoATTACH.add(new GuKKiCalProperty(zeile, "ATTACH"));
 //				System.out.println("ATTACH=" + vTodoATTACH.get(vTodoATTACH.size() -1));
 			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
-				vTodoATTENDEE.add(eintragenProperty(zeile, "ATTENDEE"));
+				vTodoATTENDEE.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
 //				System.out.println("ATTENDEE=" + vTodoATTENDEE.get(vTodoATTENDEE.size() -1));
 			} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("CATEGORIES")) {
-				vTodoCATEGORIES.add(eintragenProperty(zeile, "CATEGORIES"));
+				vTodoCATEGORIES.add(new GuKKiCalProperty(zeile, "CATEGORIES"));
 //				System.out.println("CATEGORIES=" + vTodoCATEGORIES.get(vTodoCATEGORIES.size() -1));
 			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("COMMENT")) {
-				vTodoCOMMENT.add(eintragenProperty(zeile, "COMMENT"));
+				vTodoCOMMENT.add(new GuKKiCalProperty(zeile, "COMMENT"));
 //				System.out.println("COMMENT=" + vTodoCOMMENT.get(vTodoCOMMENT.size() -1));
 			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CONTACT")) {
-				vTodoCONTACT.add(eintragenProperty(zeile, "CONTACT"));
+				vTodoCONTACT.add(new GuKKiCalProperty(zeile, "CONTACT"));
 //				System.out.println("CONTACT=" + vTodoCONTACT.get(vTodoCONTACT.size() -1));
 			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("EXDATE")) {
-				vTodoEXDATE.add(eintragenProperty(zeile, "EXDATE"));
+				vTodoEXDATE.add(new GuKKiCalProperty(zeile, "EXDATE"));
 //				System.out.println("EXDATE=" + vTodoEXDATE.get(vTodoEXDATE.size() -1));
 			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RSTATUS")) {
-				vTodoRSTATUS.add(eintragenProperty(zeile, "RSTATUS"));
+				vTodoRSTATUS.add(new GuKKiCalProperty(zeile, "RSTATUS"));
 //				System.out.println("RSTATUS=" + vTodoRSTATUS.get(vTodoRSTATUS.size() -1));
 			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RELATED")) {
-				vTodoRELATED.add(eintragenProperty(zeile, "RELATED"));
+				vTodoRELATED.add(new GuKKiCalProperty(zeile, "RELATED"));
 //				System.out.println("RELATED=" + vTodoRELATED.get(vTodoRELATED.size() -1));
 			} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("RESOURCES")) {
-				vTodoRESOURCES.add(eintragenProperty(zeile, "RESOURCES"));
+				vTodoRESOURCES.add(new GuKKiCalProperty(zeile, "RESOURCES"));
 //				System.out.println("RESOURCES=" + vTodoRESOURCES.get(vTodoRESOURCES.size() -1));
 			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RDATE")) {
-				vTodoRDATE.add(eintragenProperty(zeile, "RDATE"));
+				vTodoRDATE.add(new GuKKiCalProperty(zeile, "RDATE"));
 //				System.out.println("RDATE=" + vTodoRDATE.get(vTodoRDATE.size() -1));
-			} else if (zeile.length() >= 16 && zeile.substring(0, 16).equals("X-MOZ-GENERATION")) {
-				vTodoXMOZGENERATION.add(eintragenProperty(zeile, "X-MOZ-GENERATION"));
-//				System.out.println("X-MOZ-GENERATION=" + vTodoXMOZGENERATION.get(vTodoXMOZGENERATION.size() -1));
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("IANAPROP")) {
-				vTodoIANAPROP.add(eintragenProperty(zeile, "IANAPROP"));
-//				System.out.println("IANAPROP=" + vTodoAIANAPROP.get(vTodoIANAPROP.size() -1));
 			} else {
 				vTodoRestinformationen += zeile + nz;
 				System.out.println("Restinformationen=" + vTodoRestinformationen);
 			}
 		}
 	}
+
 	/**
 	 * Gibt statt der Adresse die UID des vTodo zurück
 	 */
 	public String toString() {
-		return "vTodoUID=" + vTodoUID;
+		return kalenderKennung + "," + (vTodoUID == null ? "" : vTodoUID.getPropertyWert()) + ","
+				+ (vTodoSEQUENCE == null ? "" : vTodoSEQUENCE.getPropertyWert()) + ","
+				+ (vTodoRECURID == null ? "" : vTodoRECURID.getPropertyWert());
 	}
 
 	/**
 	 * Gibt sämtliche Daten des vEvent aus
 	 */
 	public String toString(String ausgabeLevel) {
-		return this.toString() + "<-->" + vTodoSUMMARY;
+		return "vTodoUID=" + this.toString() + "<-->" + (vTodoSUMMARY == null ? "" : vTodoSUMMARY.getPropertyWert());
 	}
 }

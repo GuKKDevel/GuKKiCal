@@ -77,14 +77,14 @@ public class GuKKiCalvCalendar {
 			vCalendarRestinformationen = "";
 			while ((zeile = vCalendarDatenstrom.readLine()) != null) {
 				// System.out.println("Datenstrom: " + zeile);
-				if (!zeile.equals("BEGIN:VCALENDAR") & !zeile.equals("END:VCALENDAR")) {
-					if (zeile.length() >= 7 & zeile.substring(0, 7).equals("PRODID:"))
+				if (!zeile.equals("BEGIN:VCALENDAR") && !zeile.equals("END:VCALENDAR")) {
+					if (zeile.length() >= 7 && zeile.substring(0, 7).equals("PRODID:"))
 						vCalendarPRODID = zeile.substring(7);
-					else if (zeile.length() >= 8 & zeile.substring(0, 8).equals("VERSION:"))
+					else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("VERSION:"))
 						vCalendarVERSION = zeile.substring(8);
-					else if (zeile.length() >= 9 & zeile.substring(0, 9).equals("CALSCALE:"))
+					else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("CALSCALE:"))
 						vCalendarCALSCALE = zeile.substring(9);
-					else if (zeile.length() >= 7 & zeile.substring(0, 7).equals("METHOD:"))
+					else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("METHOD:"))
 						vCalendarMETHOD = zeile.substring(7);
 					else
 						vCalendarRestinformationen += zeile + "\n";

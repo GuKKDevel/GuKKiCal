@@ -124,54 +124,54 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	 * The following are REQUIRED, but MUST NOT occur more than once.
 	 */
 	private GuKKiCalProperty vEventDTSTAMP = null;
-	private String vEventUID = null;
+	private GuKKiCalProperty vEventUID = null;
 	/*
 	 * The following is REQUIRED if the component appears in an iCalendar object
 	 * that doesn’t specify the "METHOD" property; otherwise, it is OPTIONAL in
 	 * any case, it MUST NOT occur more than once.
 	 */
-	private String vEventDTSTART = null;
+	private GuKKiCalProperty vEventDTSTART = null;
 	/*
 	 * The following are OPTIONAL, but MUST NOT occur more than once.
 	 */
-	private String vEventCLASS = null;
-	private String vEventCREATED = null;
-	private String vEventDESCRIPTION = null;
-	private String vEventGEO = null;
-	private String vEventLASTMODIFIED = null;
-	private String vEventLOCATION = null;
-	private String vEventORGANIZER = null;
-	private String vEventPRIORITY = null;
-	private String vEventSEQUENCE = null;
-	private String vEventSUMMARY = null;
-	private String vEventTRANSP = null;
-	private String vEventURL = null;
-	private String vEventRECURID = null;
+	private GuKKiCalProperty vEventCLASS = null;
+	private GuKKiCalProperty vEventCREATED = null;
+	private GuKKiCalProperty vEventDESCRIPTION = null;
+	private GuKKiCalProperty vEventGEO = null;
+	private GuKKiCalProperty vEventLASTMODIFIED = null;
+	private GuKKiCalProperty vEventLOCATION = null;
+	private GuKKiCalProperty vEventORGANIZER = null;
+	private GuKKiCalProperty vEventPRIORITY = null;
+	private GuKKiCalProperty vEventSEQUENCE = null;
+	private GuKKiCalProperty vEventSUMMARY = null;
+	private GuKKiCalProperty vEventTRANSP = null;
+	private GuKKiCalProperty vEventURL = null;
+	private GuKKiCalProperty vEventRECURID = null;
 	/*
 	 * The following is OPTIONAL, but SHOULD NOT occur more than once.
 	 */
-	private String vEventRRULE = null;
+	private GuKKiCalProperty vEventRRULE = null;
 	/*
 	 * Either ’dtend’ or ’duration’ MAY appear in a ’eventprop’, but ’dtend’ and
 	 * ’duration’ MUST NOT occur in the same ’eventprop’.
 	 */
-	private String vEventDTEND = null;
-	private String vEventDURATION = null;
+	private GuKKiCalProperty vEventDTEND = null;
+	private GuKKiCalProperty vEventDURATION = null;
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 */
-	private ArrayList<String> vEventATTACH = new ArrayList<String>();
-	private ArrayList<String> vEventATTENDEE = new ArrayList<String>();
-	private ArrayList<String> vEventCATEGORIES = new ArrayList<String>();
-	private ArrayList<String> vEventCOMMENT = new ArrayList<String>();
-	private ArrayList<String> vEventCONTACT = new ArrayList<String>();
-	private ArrayList<String> vEventEXDATE = new ArrayList<String>();
-	private ArrayList<String> vEventRSTATUS = new ArrayList<String>();
-	private ArrayList<String> vEventRELATED = new ArrayList<String>();
-	private ArrayList<String> vEventRESOURCES = new ArrayList<String>();
-	private ArrayList<String> vEventRDATE = new ArrayList<String>();
-	private ArrayList<String> vEventXMOZGENERATION = new ArrayList<String>();
-	private ArrayList<String> vEventIANAPROP = new ArrayList<String>();
+	private ArrayList<GuKKiCalProperty> vEventATTACH = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventATTENDEE = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventCATEGORIES = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventCOMMENT = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventCONTACT = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventEXDATE = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventRSTATUS = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventRELATED = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventRESOURCES = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vEventRDATE = new ArrayList<GuKKiCalProperty>();
+	private String vEventXNAMEPROP = "";
+	private String vEventIANAPROP = "";
 
 	private String vEventRestinformationen = "";
 
@@ -182,6 +182,10 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	String zeile = "";
 	String folgezeile = "";
 	boolean datenVorhanden;
+
+	String vAlarmDaten = "";
+	boolean vAlarmDatenSammeln = false;
+	private GuKKiCalvAlarm vAlarmEvent = null;
 
 	public GuKKiCalvEvent() {
 		// TODO Automatisch generierter Konstruktorstub
@@ -197,6 +201,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	 */
 	public GuKKiCalvEvent(GuKKiCal kalendersammlung, String kalenderKennung, String vEventDaten) throws Exception {
 //		System.out.println("GuKKiCalvEvent-Konstruktor begonnen: " + kalenderKennung);
+		this.kalenderKennung = kalenderKennung;
 
 		try {
 //			System.out.println(vEventDaten);
@@ -229,121 +234,212 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	}
 
 	private void verarbeitenZeile() throws Exception {
-		// TODO Auto-generated method stub
-//		System.out.println("Zeile="+ zeile);
-//
+
+//		System.out.println("Zeile=" + zeile);
 		if (!zeile.equals("BEGIN:VEVENT") & !zeile.equals("END:VEVENT")) {
-			if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
-				vEventDTSTAMP = eintragenDTSTAMP(zeile);
-//				System.out.println("DTSTAMP=" + vEventDTSTAMP);
-			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("UID")) {
-				vEventUID = eintragenProperty(zeile, "UID");
-//				System.out.println("UID=" + vEventUID);
-			} else if (zeile.length() >= 7 && (zeile.substring(0, 7).equals("DTSTART"))) {
-				vEventDTSTART = eintragenProperty(zeile, "DTSTART");
-//				System.out.println("DTSTART=" + vEventDTSTART);
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("CLASS")) {
-				vEventCLASS = eintragenProperty(zeile, "CLASS");
-//				System.out.println("CLASS=" + vEventCLASS);
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CREATED")) {
-				vEventCREATED = eintragenProperty(zeile, "CREATED");
-//				System.out.println("CREATED=" + vEventCREATED);
-			} else if (zeile.length() >= 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
-				vEventDESCRIPTION = eintragenProperty(zeile, "DESCRIPTION");
-//				System.out.println("DESCRIPTION=" + vEventDESCRIPTION);
-			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("GEO")) {
-				vEventGEO = eintragenProperty(zeile, "GEO");
-//				System.out.println("GEO=" + vEventGEO);
-			} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
-				vEventLASTMODIFIED = eintragenProperty(zeile, "LAST-MODIFIED");
-//				System.out.println("LASTMODIFIED=" + vEventLASTMODIFIED);
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("LOCATION")) {
-				vEventLOCATION = eintragenProperty(zeile, "LOCATION");
-//				System.out.println("LOCATION=" + vEventLOCATION);
-			} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
-				vEventORGANIZER = eintragenProperty(zeile, "ORGANIZER");
-//				System.out.println("ORGANIZER=" + vEventORGANIZER);
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("PRIORITY")) {
-				vEventPRIORITY = eintragenProperty(zeile, "PRIORITY");
-//				System.out.println("PRIORITY=" + vEventPRIORITY);
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("SEQUENCE")) {
-				vEventSEQUENCE = eintragenProperty(zeile, "SEQUENCE");
-//				System.out.println("SEQUENCE=" + vEventSEQUENCE);
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("SUMMARY")) {
-				vEventSUMMARY = eintragenProperty(zeile, "SUMMARY");
-//				System.out.println("SUMMARY=" + vEventSUMMARY);
-			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("TRANSP")) {
-				vEventTRANSP = eintragenProperty(zeile, "TRANSP");
-//				System.out.println("TRANSP=" + vEventTRANSP);
-			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("URL")) {
-				vEventURL = eintragenProperty(zeile, "URL");
-//				System.out.println("URL=" + vEventURL);
-			} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("RECURRENCE-ID")) {
-				vEventRECURID = eintragenProperty(zeile, "RECURRENCE-ID");
-//				System.out.println("RECURID=" + vEventRECURID);
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RRULE")) {
-				vEventRRULE = eintragenProperty(zeile, "RRULE");
-//				System.out.println("RRULE=" + vEventRRULE);
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("DTEND")) {
-				vEventDTEND = eintragenProperty(zeile, "DTEND");
-//				System.out.println("DTEND=" + vEventDTEND);
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DURATION")) {
-				vEventDURATION = eintragenProperty(zeile, "DURATION");
-//				System.out.println("DURATION=" + vEventDURATION);
-			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
-				vEventATTACH.add(eintragenProperty(zeile, "ATTACH"));
-//				System.out.println("ATTACH=" + vEventATTACH.get(vEventATTACH.size() -1));
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
-				vEventATTENDEE.add(eintragenProperty(zeile, "ATTENDEE"));
-//				System.out.println("ATTENDEE=" + vEventATTENDEE.get(vEventATTENDEE.size() -1));
-			} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("CATEGORIES")) {
-				vEventCATEGORIES.add(eintragenProperty(zeile, "CATEGORIES"));
-//				System.out.println("CATEGORIES=" + vEventCATEGORIES.get(vEventCATEGORIES.size() -1));
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("COMMENT")) {
-				vEventCOMMENT.add(eintragenProperty(zeile, "COMMENT"));
-//				System.out.println("COMMENT=" + vEventCOMMENT.get(vEventCOMMENT.size() -1));
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CONTACT")) {
-				vEventCONTACT.add(eintragenProperty(zeile, "CONTACT"));
-//				System.out.println("CONTACT=" + vEventCONTACT.get(vEventCONTACT.size() -1));
-			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("EXDATE")) {
-				vEventEXDATE.add(eintragenProperty(zeile, "EXDATE"));
-//				System.out.println("EXDATE=" + vEventEXDATE.get(vEventEXDATE.size() -1));
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RSTATUS")) {
-				vEventRSTATUS.add(eintragenProperty(zeile, "RSTATUS"));
-//				System.out.println("RSTATUS=" + vEventRSTATUS.get(vEventRSTATUS.size() -1));
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RELATED")) {
-				vEventRELATED.add(eintragenProperty(zeile, "RELATED"));
-//				System.out.println("RELATED=" + vEventRELATED.get(vEventRELATED.size() -1));
-			} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("RESOURCES")) {
-				vEventRESOURCES.add(eintragenProperty(zeile, "RESOURCES"));
-//				System.out.println("RESOURCES=" + vEventRESOURCES.get(vEventRESOURCES.size() -1));
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RDATE")) {
-				vEventRDATE.add(eintragenProperty(zeile, "RDATE"));
-//				System.out.println("RDATE=" + vEventRDATE.get(vEventRDATE.size() -1));
-			} else if (zeile.length() >= 16 && zeile.substring(0, 16).equals("X-MOZ-GENERATION")) {
-				vEventXMOZGENERATION.add(eintragenProperty(zeile, "X-MOZ-GENERATION"));
-//				System.out.println("X-MOZ-GENERATION=" + vEventXMOZGENERATION.get(vEventXMOZGENERATION.size() -1));
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("IANAPROP")) {
-				vEventIANAPROP.add(eintragenProperty(zeile, "IANAPROP"));
-//				System.out.println("IANAPROP=" + vEventAIANAPROP.get(vEventIANAPROP.size() -1));
+			if (zeile.equals("BEGIN:VALARM")) {
+				vAlarmDatenSammeln = true;
+				vAlarmDaten = zeile + nz;
+			} else if (zeile.equals("END:VALARM")) {
+				vAlarmDaten += zeile + nz;
+				vAlarmNeu();
+				vAlarmDatenSammeln = false;
+				vAlarmDaten = "";
+			} else if (vAlarmDatenSammeln) {
+				vAlarmDaten += zeile + nz;
 			} else {
-				vEventRestinformationen += zeile + nz;
-				System.out.println("Restinformationen=" + vEventRestinformationen);
+				if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
+					vEventDTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
+					if (vEventDTSTAMP.getPropertyUNKNOWN() != null)
+						System.out.println(vEventDTSTAMP.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("DTSTAMP=" + vEventDTSTAMP);
+				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("UID")) {
+					vEventUID = new GuKKiCalProperty(zeile, "UID");
+					if (vEventUID.getPropertyUNKNOWN() != null)
+						System.out.println(vEventUID.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("UID=" + vEventUID);
+				} else if (zeile.length() >= 7 && (zeile.substring(0, 7).equals("DTSTART"))) {
+					vEventDTSTART = new GuKKiCalProperty(zeile, "DTSTART");
+					if (vEventDTSTART.getPropertyUNKNOWN() != null)
+						System.out.println(vEventDTSTART.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("DTSTART=" + vEventDTSTART);
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("CLASS")) {
+					vEventCLASS = new GuKKiCalProperty(zeile, "CLASS");
+					if (vEventCLASS.getPropertyUNKNOWN() != null)
+						System.out.println(vEventCLASS.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("CLASS=" + vEventCLASS);
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CREATED")) {
+					vEventCREATED = new GuKKiCalProperty(zeile, "CREATED");
+					if (vEventCREATED.getPropertyUNKNOWN() != null)
+						System.out.println(vEventCREATED.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("CREATED=" + vEventCREATED);
+				} else if (zeile.length() >= 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
+					vEventDESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
+					if (vEventDESCRIPTION.getPropertyUNKNOWN() != null)
+						System.out.println(vEventDESCRIPTION.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("DESCRIPTION=" + vEventDESCRIPTION);
+				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("GEO")) {
+					vEventGEO = new GuKKiCalProperty(zeile, "GEO");
+					if (vEventGEO.getPropertyUNKNOWN() != null)
+						System.out.println(vEventGEO.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("GEO=" + vEventGEO);
+				} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
+					vEventLASTMODIFIED = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
+					if (vEventLASTMODIFIED.getPropertyUNKNOWN() != null)
+						System.out.println(vEventLASTMODIFIED.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("LASTMODIFIED=" + vEventLASTMODIFIED);
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("LOCATION")) {
+					vEventLOCATION = new GuKKiCalProperty(zeile, "LOCATION");
+					if (vEventLOCATION.getPropertyUNKNOWN() != null)
+						System.out.println(vEventLOCATION.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("LOCATION=" + vEventLOCATION);
+				} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
+					vEventORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
+					if (vEventORGANIZER.getPropertyUNKNOWN() != null)
+						System.out.println(vEventORGANIZER.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("ORGANIZER=" + vEventORGANIZER);
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("PRIORITY")) {
+					vEventPRIORITY = new GuKKiCalProperty(zeile, "PRIORITY");
+					if (vEventPRIORITY.getPropertyUNKNOWN() != null)
+						System.out.println(vEventPRIORITY.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("PRIORITY=" + vEventPRIORITY);
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("SEQUENCE")) {
+					vEventSEQUENCE = new GuKKiCalProperty(zeile, "SEQUENCE");
+					if (vEventSEQUENCE.getPropertyUNKNOWN() != null)
+						System.out.println(vEventSEQUENCE.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("SEQUENCE=" + vEventSEQUENCE);
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("SUMMARY")) {
+					vEventSUMMARY = new GuKKiCalProperty(zeile, "SUMMARY");
+					if (vEventSUMMARY.getPropertyUNKNOWN() != null)
+						System.out.println(vEventSUMMARY.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("SUMMARY=" + vEventSUMMARY);
+				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("TRANSP")) {
+					vEventTRANSP = new GuKKiCalProperty(zeile, "TRANSP");
+					if (vEventTRANSP.getPropertyUNKNOWN() != null)
+						System.out.println(vEventTRANSP.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("TRANSP=" + vEventTRANSP);
+				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("URL")) {
+					vEventURL = new GuKKiCalProperty(zeile, "URL");
+					if (vEventURL.getPropertyUNKNOWN() != null)
+						System.out.println(vEventURL.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("URL=" + vEventURL);
+				} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("RECURRENCE-ID")) {
+					vEventRECURID = new GuKKiCalProperty(zeile, "RECURRENCE-ID");
+					if (vEventRECURID.getPropertyUNKNOWN() != null)
+						System.out.println(vEventRECURID.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("RECURID=" + vEventRECURID);
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RRULE")) {
+					vEventRRULE = new GuKKiCalProperty(zeile, "RRULE");
+					if (vEventRRULE.getPropertyUNKNOWN() != null)
+						System.out.println(vEventRRULE.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("RRULE=" + vEventRRULE);
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("DTEND")) {
+					vEventDTEND = new GuKKiCalProperty(zeile, "DTEND");
+					if (vEventDTEND.getPropertyUNKNOWN() != null)
+						System.out.println(vEventDTEND.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("DTEND=" + vEventDTEND);
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DURATION")) {
+					vEventDURATION = new GuKKiCalProperty(zeile, "DURATION");
+					if (vEventDURATION.getPropertyUNKNOWN() != null)
+						System.out.println(vEventDURATION.getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("DURATION=" + vEventDURATION);
+				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
+					vEventATTACH.add(new GuKKiCalProperty(zeile, "ATTACH"));
+					if (vEventATTACH.get(vEventATTACH.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(
+								vEventATTACH.get(vEventATTACH.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("ATTACH=" + vEventATTACH.get(vEventATTACH.size() -1));
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
+					vEventATTENDEE.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
+					if (vEventATTENDEE.get(vEventATTENDEE.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(
+								vEventATTENDEE.get(vEventATTENDEE.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile+nz+this);
+//				System.out.println("ATTENDEE=" + vEventATTENDEE.get(vEventATTENDEE.size() -1));
+				} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("CATEGORIES")) {
+					vEventCATEGORIES.add(new GuKKiCalProperty(zeile, "CATEGORIES"));
+					if (vEventCATEGORIES.get(vEventCATEGORIES.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(vEventCATEGORIES.get(vEventCATEGORIES.size() - 1).getPropertyUNKNOWN()
+								+ "<-->" + zeile);
+//				System.out.println("CATEGORIES=" + vEventCATEGORIES.get(vEventCATEGORIES.size() -1));
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("COMMENT")) {
+					vEventCOMMENT.add(new GuKKiCalProperty(zeile, "COMMENT"));
+					if (vEventCOMMENT.get(vEventCOMMENT.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(
+								vEventCOMMENT.get(vEventCOMMENT.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("COMMENT=" + vEventCOMMENT.get(vEventCOMMENT.size() -1));
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CONTACT")) {
+					vEventCONTACT.add(new GuKKiCalProperty(zeile, "CONTACT"));
+					if (vEventCONTACT.get(vEventCONTACT.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(
+								vEventCONTACT.get(vEventCONTACT.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("CONTACT=" + vEventCONTACT.get(vEventCONTACT.size() -1));
+				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("EXDATE")) {
+					vEventEXDATE.add(new GuKKiCalProperty(zeile, "EXDATE"));
+					if (vEventEXDATE.get(vEventEXDATE.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(
+								vEventEXDATE.get(vEventEXDATE.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("EXDATE=" + vEventEXDATE.get(vEventEXDATE.size() -1));
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RSTATUS")) {
+					vEventRSTATUS.add(new GuKKiCalProperty(zeile, "RSTATUS"));
+					if (vEventRSTATUS.get(vEventRSTATUS.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(
+								vEventRSTATUS.get(vEventRSTATUS.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("RSTATUS=" + vEventRSTATUS.get(vEventRSTATUS.size() -1));
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RELATED")) {
+					vEventRELATED.add(new GuKKiCalProperty(zeile, "RELATED"));
+					if (vEventRELATED.get(vEventRELATED.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(
+								vEventRELATED.get(vEventRELATED.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("RELATED=" + vEventRELATED.get(vEventRELATED.size() -1));
+				} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("RESOURCES")) {
+					vEventRESOURCES.add(new GuKKiCalProperty(zeile, "RESOURCES"));
+					if (vEventRESOURCES.get(vEventRESOURCES.size() - 1).getPropertyUNKNOWN() != null)
+						System.out.println(
+								vEventRESOURCES.get(vEventRESOURCES.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("RESOURCES=" + vEventRESOURCES.get(vEventRESOURCES.size() -1));
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RDATE")) {
+					vEventRDATE.add(new GuKKiCalProperty(zeile, "RDATE"));
+					if (vEventRDATE.get(vEventRDATE.size() - 1).getPropertyUNKNOWN() != null)
+						System.out
+								.println(vEventRDATE.get(vEventRDATE.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+//				System.out.println("RDATE=" + vEventRDATE.get(vEventRDATE.size() -1));
+//				} else if (zeile.length() >= 2 && zeile.substring(0, 2).equals("X-")) {
+//					vEventXNAMEPROP += zeile + nz;
+//					
+////				System.out.println("vEventXNAMEPROP=" + vEventXNAMEPROP);
+//				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("IANAPROP")) {
+//					vEventIANAPROP.add(new GuKKiCalProperty(zeile, "IANAPROP"));
+//					if (vEventIANAPROP.get(vEventIANAPROP.size() - 1).getPropertyUNKNOWN() != null)
+//						System.out.println(
+//								vEventIANAPROP.get(vEventIANAPROP.size() - 1).getPropertyUNKNOWN() + "<-->" + zeile);
+////				System.out.println("IANAPROP=" + vEventAIANAPROP.get(vEventIANAPROP.size() -1));
+				} else {
+					vEventRestinformationen += zeile + nz;
+					System.out.println("Restinformationen=" + vEventRestinformationen);
+				}
 			}
 		}
+	}
+
+	private void vAlarmNeu() {
+		// TODO Automatisch generierter Methodenstub
+		System.out.println("VALARM-einrichten:" + nz + vAlarmDaten);
 	}
 
 	/**
 	 * Gibt statt der Adresse die UID des vEvent zurück
 	 */
 	public String toString() {
-		return "vEventUID=" + vEventUID;
+//		System.out.println(vEventSEQUENCE);
+		return this.kalenderKennung + "," + vEventUID.getPropertyWert() + ","
+				+ (vEventSEQUENCE == null ? "" : vEventSEQUENCE.getPropertyWert()) + ","
+				+ (vEventRECURID == null ? "" : vEventRECURID.getPropertyWert()) + "";
 	}
 
 	/**
 	 * Gibt sämtliche Daten des vEvent aus
 	 */
 	public String toString(String ausgabeLevel) {
-		return this.toString() + "<-->" + vEventSUMMARY;
+		return "vEventUID=" + this.toString() + "<-->" + (vEventSUMMARY == null ? "" : vEventSUMMARY.getPropertyWert());
 	}
 }
