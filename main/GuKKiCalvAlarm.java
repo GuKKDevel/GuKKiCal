@@ -1,9 +1,11 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 
 /**
- * Die Klasse GuKKiCalvEvent enthält alle Daten für eine VTODO-Komponente im iCal Format
+ * Die Klasse GuKKiCalvAlarm enthält alle Daten für eine VALARM-Komponente im iCal Format
  * 
  * @author GuKKDevel
  * 
@@ -193,36 +195,74 @@ public class GuKKiCalvAlarm extends GuKKiCalvComponent {
 	/*
 	 * Rückverweis auf das enthaltende VCALENDAR-Element
 	 */
-	private GuKKiCalvCalendar kalender = null;
-	private String kalenderKennung = "";
+	private String vCalendarKennung = "";
 	/*
-	 * Rückverweis auf ddie enthaltende VCALENDAR-Componente
+	 * Rückverweis auf die enthaltende VEVENT bzw. VTODO CALENDAR-Componente
 	 */
-	private GuKKiCalvEvent event = null; 		// Art = E
-	private GuKKiCalvTodo todo = null; // Art = T
-	private GuKKiCalvJournal journal = null; // Art = J
+	private String vComponentKennung = "";
 
-	private GuKKiCalProperty action = null; 
-	private GuKKiCalProperty trigger = null;
-	private GuKKiCalProperty duration = null;
-	private GuKKiCalProperty repeat = null; 
-	private GuKKiCalProperty description = null;
-	private GuKKiCalProperty summary = null; 
-	private ArrayList<GuKKiCalProperty> attach = new ArrayList<GuKKiCalProperty>(); 
-	private ArrayList<GuKKiCalProperty> attendee = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> x_prop = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> iana_prop = new ArrayList<GuKKiCalProperty>();
+	private GuKKiCalProperty vAlarmACTION = null;
+	private GuKKiCalProperty vAlarmTRIGGER = null;
+	private GuKKiCalProperty vAlarmDURATION = null;
+	private GuKKiCalProperty vAlarmREPEAT = null;
+	private GuKKiCalProperty vAlarmDESCRIPTION = null;
+	private GuKKiCalProperty vAlarmSUMMARY = null;
+	private ArrayList<GuKKiCalProperty> vAlarmATTACH = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> vAlarmATTENDEE = new ArrayList<GuKKiCalProperty>();
 
-	public GuKKiCalvAlarm()
-	{
-		// TODO Automatisch generierter Konstruktorstub
+	private String vAlarmRestinformationen = "";
+
+	/*
+	 * allgemeine Variablen
+	 */
+	String nz = "\n";
+	String zeile = "";
+	String folgezeile = "";
+	boolean datenVorhanden;
+
+	public GuKKiCalvAlarm(GuKKiCal kalendersammlung, String vCalendarKennung, String vComponentKennung,
+			String vAlarmDaten) throws Exception {
+
+//		System.out.println("GuKKiCalvAlarm begonnen für:" + vComponentKennung);
+
+		this.vCalendarKennung = vCalendarKennung;
+		this.vComponentKennung = vComponentKennung;
+		verarbeitenDatenstrom(vAlarmDaten);
+
+//		System.out.println("GuKKiCalvAlarm beendet für:" + vComponentKennung);
+	}
+
+	@Override
+	protected void verarbeitenZeile(String zeile) throws Exception {
+//		System.out.println("GuKKiCalvAlarm verarbeitenZeile begonnen");
+//		System.out.println("Zeile=" + zeile);
+		if (!zeile.equals("BEGIN:VALARM") & !zeile.equals("END:VALARM")) {
+			if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ACTION")) {
+				vAlarmACTION = new GuKKiCalProperty(zeile, "ACTION");
+			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("TRIGGER")) {
+				vAlarmTRIGGER = new GuKKiCalProperty(zeile, "TRIGGER");
+			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DURATION")) {
+				vAlarmDURATION = new GuKKiCalProperty(zeile, "DURATION");
+			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("REPEAT")) {
+				vAlarmREPEAT = new GuKKiCalProperty(zeile, "REPEAT");
+			} else if (zeile.length() >= 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
+				vAlarmDESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
+			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
+				vAlarmATTACH.add(new GuKKiCalProperty(zeile, "ATTACH"));
+			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
+				vAlarmATTENDEE.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
+			} else {
+				vAlarmRestinformationen += zeile + nz;
+//					System.out.println("Restinformationen=" + vEventRestinformationen);
+			}
+		}
+//		System.out.println("GuKKiCalvAlarm verarbeitenZeile beendet");
 	}
 
 	/**
 	 * Gibt die UID des vAlarm aus
 	 */
-	public String toString()
-	{
-		return "Ausgabe-Valarm";
+	public String toString() {
+		return "Alarm=" + vAlarmACTION.getPropertyWert() + "," + vAlarmTRIGGER.getPropertyWert();
 	}
 }

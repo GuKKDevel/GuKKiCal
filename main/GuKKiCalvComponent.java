@@ -1,9 +1,18 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.util.UUID;
 
 public class GuKKiCalvComponent {
+	/*
+	 * Standard-Variablen (Konstanten)
+	 */
+	String nz = "\n";
 
+	/**
+	 * Konstruktor
+	 */
 	public GuKKiCalvComponent() {
 		// TODO Automatisch generierter Konstruktorstub
 	}
@@ -13,6 +22,41 @@ public class GuKKiCalvComponent {
 	 * Generelle Bearbeitungsfunktionen
 	 * 
 	 */
+	protected void verarbeitenDatenstrom(String vComponentDaten) throws Exception {
+
+		String zeile = "";
+		String folgezeile = "";
+		boolean datenVorhanden = true;
+
+		try {
+//			System.out.println(vComponentDaten);
+			BufferedReader vComponentDatenstrom = new BufferedReader(new StringReader(vComponentDaten));
+			zeile = vComponentDatenstrom.readLine();
+			if (zeile == null) {
+				datenVorhanden = false;
+			}
+			while (datenVorhanden) {
+				folgezeile = vComponentDatenstrom.readLine();
+				if (folgezeile == null) {
+					verarbeitenZeile(zeile);
+					datenVorhanden = false;
+				} else {
+					if (folgezeile.substring(0, 1).equals(" ")) {
+						zeile = zeile.substring(0, zeile.length()) + folgezeile.substring(1);
+					} else {
+						verarbeitenZeile(zeile);
+						zeile = folgezeile;
+					}
+				}
+			} /* end while-Schleife */
+		} finally {
+		}
+	}
+
+	protected void verarbeitenZeile(String zeile) throws Exception {
+		System.out.println("verarbeitenZeile in Component");
+	}
+
 	String eintragenProperty(String zeichenkette, String kennung) {
 		return zeichenkette.substring(kennung.length());
 	}
@@ -523,17 +567,16 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	GuKKiCalProperty eintragenDTSTAMP(String zeichenkette) throws Exception{
+	GuKKiCalProperty eintragenDTSTAMP(String zeichenkette) throws Exception {
 //		System.out.println("GuKKiCalvComponent.checkDTSTAMP begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		String kennung = "DTSTAMP";
-		GuKKiCalProperty property = new GuKKiCalProperty(zeichenkette, kennung); 
+		GuKKiCalProperty property = new GuKKiCalProperty(zeichenkette, kennung);
 		if (zeichenkette.substring(kennung.length()).equals(":")) {
-			
+
 		}
-		
-		
-		//		System.out.println("Temp=" + zTemp);
+
+		// System.out.println("Temp=" + zTemp);
 //		System.out.println("GuKKiCalvComponent.checkDTSTAMP beendet");
 		return property;
 	}

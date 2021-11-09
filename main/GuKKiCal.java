@@ -23,7 +23,7 @@ public class GuKKiCal {
 	/**
 	 * Diese Funktion fügt einen kompletten vCalendar in die Sammlung ein
 	 * 
-	 * @param kalendersammlung
+	 * @param vCalendarSammlung
 	 * @param vCalendar
 	 * @return boolean
 	 */

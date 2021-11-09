@@ -6,9 +6,12 @@ import java.io.*;
 import java.util.ArrayList;
 
 /**
+ * Die Klasse GuKKiCalvEvent enthält alle Daten für eine VEVENT-Komponente im iCal Format
+ *         
+ * @author GuKKDevel
+ *  
+ * @formatter:off
  * 
- * @author gukkdevel <br>
- *         <br>
  * 
  *         Die Klasse GuKKiCalvCalendar enthält alle Daten für einen Kalender im
  *         iCal Format
@@ -35,13 +38,15 @@ import java.util.ArrayList;
  * 
  *         x-prop / iana-prop
  *
+ * @formatter:on
+ *	
  */
 public class GuKKiCalvCalendar {
 	/*
 	 * Daten für die KalenderDatei
 	 */
-	String KalenderKennung = null;
-	String kalenderPfad = null;
+	String vCalendarKennung = null;
+	String vCalendarPfad = null;
 	String kalenderName = null;
 	int kalenderNummer = 0;
 	/*
@@ -55,7 +60,7 @@ public class GuKKiCalvCalendar {
 	/*
 	 * Sammlungen der KalenderSubElemente
 	 */
-	GuKKiCal kalendersammlung = null;
+	GuKKiCal vCalendarSammlung = null;
 	ArrayList<GuKKiCalvEvent> vEvent = new ArrayList<GuKKiCalvEvent>();
 	ArrayList<GuKKiCalvTodo> vTodo = new ArrayList<GuKKiCalvTodo>();
 	ArrayList<GuKKiCalvJournal> vJournal = new ArrayList<GuKKiCalvJournal>();
@@ -68,9 +73,15 @@ public class GuKKiCalvCalendar {
 	String nz = "\n";
 	String zeile = "";
 
-	public GuKKiCalvCalendar(GuKKiCal kalendersammlung, String vCalendarDaten, String kalenderPfad, int kalenderNummer)
+	public GuKKiCalvCalendar(GuKKiCal vCalendarSammlung, String vCalendarDaten, String kalenderPfad, int kalenderNummer)
 			throws Exception {
-//		System.out.println("GuKKiCalvCalendar-Konstruktor: " + kalenderPfad + "-----" + kalenderNummer);
+//		System.out.println("GuKKiCalvCalendar-Konstruktor: " + vCalendarPfad + "-----" + kalenderNummer);
+		this.vCalendarPfad = kalenderPfad;
+		this.kalenderName = bestimmenKalenderName(kalenderPfad);
+		this.kalenderNummer = kalenderNummer;
+		this.vCalendarSammlung = vCalendarSammlung;
+		this.vCalendarKennung = this.kalenderName + String.format("%03d", this.kalenderNummer);
+
 		try {
 			// System.out.println(vCalendarDaten);
 			BufferedReader vCalendarDatenstrom = new BufferedReader(new StringReader(vCalendarDaten));
@@ -92,11 +103,7 @@ public class GuKKiCalvCalendar {
 			}
 		} finally {
 		}
-		this.kalenderPfad = kalenderPfad;
-		this.kalenderName = bestimmenKalenderName(kalenderPfad);
-		this.kalenderNummer = kalenderNummer;
-		this.kalendersammlung = kalendersammlung;
-		// kalendersammlung.addvCalendar(kalendersammlung, this); /* sollte im
+		// vCalendarSammlung.addvCalendar(vCalendarSammlung, this); /* sollte im
 		// übergeordneten Modul erfolgen */
 //		System.out.println("GuKKiCalvCalendar-Konstruktor beendet");
 	}
@@ -108,16 +115,15 @@ public class GuKKiCalvCalendar {
 	 * erstellt dieses Element und fügt es in den Kalender ein. Zusätzlich wird das
 	 * Event auch in die Kalendersammlung eingefügt.
 	 * 
-	 * @param kalendersammlung
+	 * @param vCalendarSammlung
 	 * @param vEventDaten
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean vEventNeu(GuKKiCal kalendersammlung, String vEventDaten) throws Exception {
+	public boolean vEventNeu(GuKKiCal vCalendarSammlung, String vEventDaten) throws Exception {
 //		System.out.println("GuKKiCalvCalendar.vEventNeu begonnen");
 		GuKKiCalvEvent neuesEvent = null;
-		KalenderKennung = this.kalenderName + String.format("%03d", this.kalenderNummer);
-		neuesEvent = new GuKKiCalvEvent(kalendersammlung, KalenderKennung, vEventDaten);
+		neuesEvent = new GuKKiCalvEvent(vCalendarSammlung, vCalendarKennung, vEventDaten);
 		this.vEvent.add(neuesEvent);
 //		System.out.println("GuKKiCalvCalendar.vEventNeu beendet");
 		return true;
@@ -127,16 +133,15 @@ public class GuKKiCalvCalendar {
 	 * erstellt dieses Element und fügt es in den Kalender ein. Zusätzlich wird das
 	 * Event auch in die Kalendersammlung eingefügt.
 	 * 
-	 * @param kalendersammlung
+	 * @param vCalendarSammlung
 	 * @param vTodoDaten
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean vTodoNeu(GuKKiCal kalendersammlung, String vTodoDaten) throws Exception {
+	public boolean vTodoNeu(GuKKiCal vCalendarSammlung, String vTodoDaten) throws Exception {
 		System.out.println("GuKKiCalvCalendar.vTodoNeu begonnen");
 		GuKKiCalvTodo neuesTodo = null;
-		KalenderKennung = this.kalenderName + String.format("%03d", this.kalenderNummer);
-		neuesTodo = new GuKKiCalvTodo(kalendersammlung, KalenderKennung, vTodoDaten);
+		neuesTodo = new GuKKiCalvTodo(vCalendarSammlung, vCalendarKennung, vTodoDaten);
 		this.vTodo.add(neuesTodo);
 		System.out.println("GuKKiCalvCalendar.vTodoNeu beendet");
 		return true;
@@ -145,7 +150,7 @@ public class GuKKiCalvCalendar {
 	 * Bestimmt aus der Pfadangabe für den Kalender den Kalendernamen aus dem
 	 * Dateinamen
 	 * 
-	 * @param kalenderPfad
+	 * @param vCalendarPfad
 	 * @return
 	 */
 	private String bestimmenKalenderName(String kalenderPfad) {
@@ -189,7 +194,7 @@ public class GuKKiCalvCalendar {
 	public String toString(String ausgabeLevel) {
 		String ausgabeString = "";
 		if (ausgabeLevel.toUpperCase().indexOf("C") >= 0) {
-			ausgabeString += nz + "vCalendarInformationen:" + nz + kalenderPfad + " --- " + kalenderName + " --- "
+			ausgabeString += nz + "vCalendarInformationen:" + nz + vCalendarPfad + " --- " + kalenderName + " --- "
 					+ String.format("%03d", kalenderNummer) + nz + "vCalendarDaten:" + nz;
 			if (vCalendarPRODID != null)
 				ausgabeString += "PRODID:" + vCalendarPRODID + nz;

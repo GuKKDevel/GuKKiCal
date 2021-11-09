@@ -5,7 +5,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 /**
- * Die Klasse GuKKiCalvEvent enthält alle Daten für eine VTODO-Komponente im iCal Format
+ * Die Klasse GuKKiCalvTodo enthält alle Daten für eine VTODO-Komponente im iCal Format
  * 
  * @author GuKKDevel
  * 
@@ -82,18 +82,21 @@ import java.util.ArrayList;
  *
  */
 public class GuKKiCalvTodo extends GuKKiCalvComponent {
+	private GuKKiCal kalendersammlung;
 	/*
 	 * Rückverweis auf das enthaltende VCALENDAR-Element
 	 */
 	private GuKKiCalvCalendar kalender = null;
-	private String kalenderKennung = "";
+	private String vCalendarKennung = "";
 	/*
 	 * Daten für das VTODO-Element (alarmc)
 	 */
 	private ArrayList<GuKKiCalvAlarm> vAlarm = new ArrayList<GuKKiCalvAlarm>();
 	/*
-	 * Daten für das VTODO-Element (todoprop)
+	 * Daten für das VTODO-Element (todoc)
 	 */
+	private String vTodoKennung = "";
+
 	/*
 	 * The following are REQUIRED, but MUST NOT occur more than once.
 	 */
@@ -150,10 +153,14 @@ public class GuKKiCalvTodo extends GuKKiCalvComponent {
 	/*
 	 * allgemeine Variablen
 	 */
-	String nz = "\n";
-	String zeile = "";
-	String folgezeile = "";
-	boolean datenVorhanden;
+//	String nz = "\n";
+//	String zeile = "";
+//	String folgezeile = "";
+//	boolean datenVorhanden;
+	
+	ArrayList<String> vAlarmDatenArray = new ArrayList<String>();
+	boolean vAlarmDatenSammeln = false;
+	private GuKKiCalvAlarm vAlarmEvent = null;
 
 	public GuKKiCalvTodo() {
 		// TODO Automatisch generierter Konstruktorstub
@@ -162,47 +169,29 @@ public class GuKKiCalvTodo extends GuKKiCalvComponent {
 	/**
 	 * Konstruktor zum Aufbereiten des VTODO aus einem Eingabestring
 	 * 
-	 * @param kalendersammlung
-	 * @param kalenderKennung
+	 * @param vCalendarSammlung
+	 * @param vCalendarKennung
 	 * @param vTodoDaten
 	 * @throws Exception
 	 */
 	public GuKKiCalvTodo(GuKKiCal kalendersammlung, String kalenderKennung, String vTodoDaten) throws Exception {
-//		System.out.println("GuKKiCalvTodo-Konstruktor begonnen: " + kalenderKennung);
+//		System.out.println("GuKKiCalvTodo-Konstruktor begonnen: " + vCalendarKennung);
 
-		this.kalenderKennung = kalenderKennung;
+		this.vCalendarKennung = kalenderKennung;
 
-		try {
-//			System.out.println(vTodoDaten);
-			BufferedReader vTodoDatenstrom = new BufferedReader(new StringReader(vTodoDaten));
-			vTodoRestinformationen = "";
-			zeile = vTodoDatenstrom.readLine();
-			if (zeile != null) {
-				datenVorhanden = true;
-			}
-			while (datenVorhanden) {
-				folgezeile = vTodoDatenstrom.readLine();
-				if (folgezeile == null) {
-					verarbeitenZeile();
-					datenVorhanden = false;
-				} else {
-					if (folgezeile.substring(0, 1).equals(" ")) {
-						zeile = zeile.substring(0, zeile.length()) + folgezeile.substring(1);
-					} else {
-						verarbeitenZeile();
-						zeile = folgezeile;
-					}
-				}
-			} /* end while-Schleife */
-		} finally
+		verarbeitenDatenstrom(vTodoDaten);
+		vTodoKennung = this.toString();
 
-		{
-
+		if (vAlarmDatenArray.size() != 0) {
+			vAlarmNeu();
+		}
+		for (GuKKiCalvAlarm alarm : vAlarm) {
+			System.out.println(alarm);
 		}
 //		System.out.println("GuKKiCalvTodo-Konstruktor beendet: UID=" + this.vTodoUID);
 	}
 
-	private void verarbeitenZeile() {
+	@Override protected void verarbeitenZeile(String zeile) {
 		// TODO Auto-generated method stub
 //		System.out.println("Zeile="+ zeile);
 //
@@ -303,20 +292,34 @@ public class GuKKiCalvTodo extends GuKKiCalvComponent {
 			}
 		}
 	}
+	private void vAlarmNeu() throws Exception {
 
+		String vAlarmDaten = "";
+
+		for (String zeile : vAlarmDatenArray) {
+			if (zeile.equals("BEGIN:VALARM")) {
+				vAlarmDaten = zeile + nz;
+			} else if (zeile.equals("END:VALARM")) {
+				vAlarmDaten += zeile + nz;
+				vAlarm.add(new GuKKiCalvAlarm(kalendersammlung, vCalendarKennung, vTodoKennung, vAlarmDaten));
+			} else {
+				vAlarmDaten += zeile + nz;
+			}
+		}
+	}
 	/**
 	 * Gibt statt der Adresse die UID des vTodo zurück
 	 */
 	public String toString() {
-		return kalenderKennung + "," + (vTodoUID == null ? "" : vTodoUID.getPropertyWert()) + ","
+		return vCalendarKennung + ",T," + (vTodoUID == null ? "" : vTodoUID.getPropertyWert()) + ","
 				+ (vTodoSEQUENCE == null ? "" : vTodoSEQUENCE.getPropertyWert()) + ","
 				+ (vTodoRECURID == null ? "" : vTodoRECURID.getPropertyWert());
 	}
 
 	/**
-	 * Gibt sämtliche Daten des vEvent aus
+	 * Gibt sämtliche Daten des vTodo aus
 	 */
 	public String toString(String ausgabeLevel) {
-		return "vTodoUID=" + this.toString() + "<-->" + (vTodoSUMMARY == null ? "" : vTodoSUMMARY.getPropertyWert());
+		return "ToDo-Identifikation=" + this.toString() + "<-->" + (vTodoSUMMARY == null ? "" : vTodoSUMMARY.getPropertyWert());
 	}
 }

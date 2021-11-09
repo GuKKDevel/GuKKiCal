@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class Ausprobieren {
 	
-//	GuKKiCal kalendersammlung = new GuKKiCal();
+//	GuKKiCal vCalendarSammlung = new GuKKiCal();
 	
 	public Ausprobieren() {
 		// TODO Automatisch generierter Konstruktorstub
@@ -19,8 +19,8 @@ public class Ausprobieren {
 		try {
 			GuKKiCalParser parser = new GuKKiCalParser();
 			if (System.getProperty("os.name").equals("Linux")) {
-				parser.kalenderEinlesen(											// Standard-KHG TestKalender
-						"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender.ics",
+				parser.kalenderEinlesen(											// Standard-KHG TestKalender Google
+						"/home/programmieren/TestFiles/iCalender/TestKalender.ics",
 						kalendersammlung);
 			} else {
 				parser.kalenderEinlesen(
@@ -28,7 +28,7 @@ public class Ausprobieren {
 						kalendersammlung);
 			}
 //			parser.kalenderEinlesen(
-//					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", kalendersammlung);
+//					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", vCalendarSammlung);
 
 		} finally {
 

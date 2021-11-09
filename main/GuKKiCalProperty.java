@@ -862,13 +862,16 @@ class GuKKiCalProperty {
 		} else {
 			parameterAnalysieren(propertyDaten.substring(kennung.length()));
 		}
+//		if (propertyUNKNOWN != null) {
+//			System.out.println(propertyUNKNOWN);
+//		}
 //		System.out.println(this);
 //		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " beendet");
 	}
 
 	void parameterAnalysieren(String propertyDaten) {
-		System.out.println("GuKKiCalProperty parameterAnalysieren begonnen");
-		System.out.println("Parameterkette=" + propertyDaten);
+//		System.out.println("GuKKiCalProperty parameterAnalysieren begonnen");
+//		System.out.println("Parameterkette=" + propertyDaten);
 
 		boolean backslash = false;
 		boolean literal = false;
@@ -880,7 +883,7 @@ class GuKKiCalProperty {
 		String parameter = "";
 
 		for (int i = 0; i < propertyDaten.length(); i++) {
-			System.out.println("i=" + i + " Zeichen=" + propertyDaten.substring(i, i + 1));
+//			System.out.println("i=" + i + " Zeichen=" + propertyDaten.substring(i, i + 1));
 			zeichen = propertyDaten.substring(i, i + 1);
 
 			switch (zeichen) {
@@ -888,16 +891,15 @@ class GuKKiCalProperty {
 				case ("\\"): {
 					if (backslash) {
 						backslash = false;
-					}
-					else {
+					} else {
 						backslash = true;
 					}
 					parameter += zeichen;
 					break;
 				}
 				case ("\""): {
-					if (! backslash) {
-						if (! literal) {
+					if (!backslash) {
+						if (!literal) {
 							literal = true;
 						} else {
 							literal = false;
@@ -909,11 +911,11 @@ class GuKKiCalProperty {
 					break;
 				}
 				case (":"): {
-					if (! backslash && ! literal && ! trenner.equals(":")) {
+					if (!backslash && !literal && !trenner.equals(":")) {
 						if (parameter.length() > 0) {
 							parameterBestimmen(parameter, ":");
 						}
-						trenner =":";
+						trenner = zeichen;
 						parameter = "";
 					} else {
 						parameter += zeichen;
@@ -922,10 +924,11 @@ class GuKKiCalProperty {
 					break;
 				}
 				case (";"): {
-					if (! backslash && ! literal&& ! trenner.equals(":")) {
+					if (!backslash && !literal && !trenner.equals(":")) {
 						if (parameter.length() > 0) {
 							parameterBestimmen(parameter, ";");
 						}
+						trenner = zeichen;
 						parameter = "";
 					} else {
 						parameter += zeichen;
@@ -939,7 +942,7 @@ class GuKKiCalProperty {
 				}
 			} // Ende switch
 
-			System.out.println("---->" + parameter);
+//			System.out.println("---->" + parameter);
 
 		} // Ende for-Schleife
 
@@ -947,12 +950,12 @@ class GuKKiCalProperty {
 			this.propertyWert = parameter;
 		}
 
-		System.out.println("GuKKiCalProperty parameterAnalysieren beendet");
+//		System.out.println("GuKKiCalProperty parameterAnalysieren beendet");
 	}
 
 	void parameterBestimmen(String parameter, String trenner) {
-		System.out.println("GuKKiCalProperty parameterBestimmen begonnen");
-		System.out.println("Parameter=" + parameter + " <--> " + trenner);
+//		System.out.println("GuKKiCalProperty parameterBestimmen begonnen");
+//		System.out.println("Parameter=" + parameter + " <--> " + trenner);
 		if (parameter.length() > 7 && parameter.substring(0, 7).equals("ALTREP=")) {
 			this.propertyALTREP = parameter.substring(7);
 		} else if (parameter.length() > 3 && parameter.substring(0, 3).equals("CN=")) {
@@ -994,16 +997,16 @@ class GuKKiCalProperty {
 		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("VALUE=")) {
 			this.propertyVALUETYPE = parameter.substring(6);
 		} else {
-			System.out.println(trenner+"unbekannter Parameter="+parameter);
+//			System.out.println(trenner + "unbekannter Parameter=" + parameter);
 			if (propertyUNKNOWN == null) {
 				this.propertyUNKNOWN = parameter + trenner;
 			} else {
 				this.propertyUNKNOWN += parameter + trenner;
 			}
-			System.out.println(propertyUNKNOWN);
+//			System.out.println(propertyUNKNOWN);
 		}
 
-		System.out.println("GuKKiCalProperty parameterBestimmen beendet");
+//		System.out.println("GuKKiCalProperty parameterBestimmen beendet");
 	}
 
 	String getPropertyWert() {
