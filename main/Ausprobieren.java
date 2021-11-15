@@ -14,13 +14,13 @@ public class Ausprobieren {
 		// TODO Automatisch generierter Konstruktorstub
 	}
 	public static void main(String[] args) throws Exception {
-//		System.out.println("GuKKiCalParser.main <static> begonnen");
+		System.out.println("GuKKiCalParser.main <static> begonnen");
 		GuKKiCal kalendersammlung = new GuKKiCal();
 		try {
 			GuKKiCalParser parser = new GuKKiCalParser();
 			if (System.getProperty("os.name").equals("Linux")) {
-				parser.kalenderEinlesen(											// Standard-KHG TestKalender Google
-						"/home/programmieren/TestFiles/iCalender/TestKalender.ics",
+				parser.kalenderEinlesen(											// Standard-KHG TestKalender Google temp
+						"/home/programmieren/TestFiles/iCalender/temp.ics",
 						kalendersammlung);
 			} else {
 				parser.kalenderEinlesen(
@@ -33,7 +33,7 @@ public class Ausprobieren {
 		} finally {
 
 		}
-//		System.out.println("GuKKiCalParser.main <static> beendet");
+		System.out.println("GuKKiCalParser.main <static> beendet");
 	}
 //	public static void main(String[] args) throws Exception {
 //		// TODO Automatisch generierter Methodenstub

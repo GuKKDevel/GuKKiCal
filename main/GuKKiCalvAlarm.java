@@ -263,6 +263,7 @@ public class GuKKiCalvAlarm extends GuKKiCalvComponent {
 	 * Gibt die UID des vAlarm aus
 	 */
 	public String toString() {
-		return "Alarm=" + vAlarmACTION.getPropertyWert() + "," + vAlarmTRIGGER.getPropertyWert();
+		return "Alarm=" + (vAlarmACTION == null ? "" : vAlarmACTION.getPropertyWert()) + ","
+				+ (vAlarmTRIGGER == null ? "" : vAlarmTRIGGER.getPropertyWert());
 	}
 }

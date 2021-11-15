@@ -23,7 +23,7 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 	protected void verarbeitenDatenstrom(String vComponentDaten) throws Exception {
-
+//		System.out.println("GuKKiCalvComponent verarbeiten Datenstrom begonnen");
 		String zeile = "";
 		String folgezeile = "";
 		boolean datenVorhanden = true;
@@ -32,29 +32,36 @@ public class GuKKiCalvComponent {
 //			System.out.println(vComponentDaten);
 			BufferedReader vComponentDatenstrom = new BufferedReader(new StringReader(vComponentDaten));
 			zeile = vComponentDatenstrom.readLine();
+//			System.out.println("-->" + zeile + "<--");
 			if (zeile == null) {
 				datenVorhanden = false;
 			}
 			while (datenVorhanden) {
 				folgezeile = vComponentDatenstrom.readLine();
+//				System.out.println("-->" + folgezeile + "<--");
+
 				if (folgezeile == null) {
 					verarbeitenZeile(zeile);
 					datenVorhanden = false;
 				} else {
-					if (folgezeile.substring(0, 1).equals(" ")) {
-						zeile = zeile.substring(0, zeile.length()) + folgezeile.substring(1);
-					} else {
-						verarbeitenZeile(zeile);
-						zeile = folgezeile;
+					if (folgezeile.length() > 0) {
+						if (folgezeile.substring(0, 1).equals(" ")) {
+							zeile = zeile.substring(0, zeile.length()) + folgezeile.substring(1);
+						} else {
+							verarbeitenZeile(zeile);
+							zeile = folgezeile;
+						}
 					}
 				}
 			} /* end while-Schleife */
 		} finally {
 		}
+//		System.out.println("GuKKiCalvComponent verarbeiten Datenstrom beendet");
+
 	}
 
 	protected void verarbeitenZeile(String zeile) throws Exception {
-		System.out.println("verarbeitenZeile in Component");
+//		System.out.println("GuKKiCalvComponent verarbeitenZeile");
 	}
 
 	String eintragenProperty(String zeichenkette, String kennung) {

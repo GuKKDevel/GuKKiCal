@@ -1,20 +1,20 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 /**
  * 
- * @author gukkdevel 
+ * @author GuKKDevel 
  *
  */
 public class GuKKiCal {
 	
-	private ArrayList<GuKKiCalvCalendar> auflistungvCalendar = new ArrayList<GuKKiCalvCalendar>();
-	private ArrayList<GuKKiCalvEvent> auflistungvEvent = new ArrayList<GuKKiCalvEvent>();
-	private ArrayList<GuKKiCalvTodo> auflistungvTodo = new ArrayList<GuKKiCalvTodo>();
-	private ArrayList<GuKKiCalvJournal> auflistungvJournal = new ArrayList<GuKKiCalvJournal>();
-	private ArrayList<GuKKiCalvFreeBusy> auflistungvFreeBusy = new ArrayList<GuKKiCalvFreeBusy>();
-	private ArrayList<GuKKiCalvTimezone> auflistungvTimezone = new ArrayList<GuKKiCalvTimezone>();
-	private ArrayList<GuKKiCalvAlarm> auflistungvAlarm = new ArrayList<GuKKiCalvAlarm>();
+	private ArrayList<GuKKiCalvCalendar> vCalendarSammlung = new ArrayList<GuKKiCalvCalendar>();
+	private ArrayList<GuKKiCalvEvent> vEventSammlung = new ArrayList<GuKKiCalvEvent>();
+	private ArrayList<GuKKiCalvTodo> vTodoSammlung = new ArrayList<GuKKiCalvTodo>();
+	private ArrayList<GuKKiCalvJournal> vJournalSammlung = new ArrayList<GuKKiCalvJournal>();
+	private ArrayList<GuKKiCalvFreeBusy> vFreeBusySammlung = new ArrayList<GuKKiCalvFreeBusy>();
+	private HashMap<String, GuKKiCalvTimezone> vTimezoneSammlung = new HashMap<String, GuKKiCalvTimezone>();
 	
 	
 	public GuKKiCal() {
@@ -28,8 +28,18 @@ public class GuKKiCal {
 	 * @return boolean
 	 */
 	public boolean addvCalendar (GuKKiCal kalendersammlung, GuKKiCalvCalendar vCalendar) {
-		auflistungvCalendar.add(vCalendar);
+		vCalendarSammlung.add(vCalendar);
 		return true;
 	}
-
+	/**
+	 * Diese Funktion fügt ein vEvent in die Sammlung ein
+	 * 
+	 * @param vCalendarSammlung
+	 * @param vCalendar
+	 * @return boolean
+	 */
+	public boolean addvEvent (GuKKiCal kalendersammlung, GuKKiCalvEvent vEvent) {
+		vEventSammlung.add(vEvent);
+		return true;
+	}
 }

@@ -199,7 +199,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	 */
 
 	public GuKKiCalvEvent(GuKKiCal kalendersammlung, String vCalendarKennung, String vEventDaten) throws Exception {
-		System.out.println("GuKKiCalvEvent-Konstruktor begonnen: " + vCalendarKennung);
+//		System.out.println("GuKKiCalvEvent-Konstruktor begonnen: " + vCalendarKennung);
 		this.kalendersammlung = kalendersammlung;
 		this.vCalendarKennung = vCalendarKennung;
 
@@ -210,11 +210,11 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		if (vAlarmDatenArray.size() != 0) {
 			vAlarmNeu();
 		}
-		for (GuKKiCalvAlarm alarm : vAlarm) {
-			System.out.println(alarm);
-		}
+//		for (GuKKiCalvAlarm alarm : vAlarm) {
+//			System.out.println(alarm);
+//		}
 
-		System.out.println("GuKKiCalvEvent-Konstruktor beendet: UID=" + this);
+//		System.out.println("GuKKiCalvEvent-Konstruktor beendet: UID=" + this);
 	}
 
 	@Override
@@ -271,8 +271,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
 					vEventATTACH.add(new GuKKiCalProperty(zeile, "ATTACH"));
 				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
-					GuKKiCalProperty temp = new GuKKiCalProperty(zeile, "ATTENDEE");
-					vEventATTENDEE.add(temp);
+					vEventATTENDEE.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
 				} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("CATEGORIES")) {
 					vEventCATEGORIES.add(new GuKKiCalProperty(zeile, "CATEGORIES"));
 				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("COMMENT")) {
