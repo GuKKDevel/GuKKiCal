@@ -1,6 +1,8 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Grundliegende Struktur für die Property-Parameter
@@ -77,12 +79,17 @@ import java.util.ArrayList;
  * 
  */
 class GuKKiCalProperty {
+	Logger logger = Logger.getLogger("GuKKiCal");
+	Level logLevel = Level.FINEST;
 	/*
 	 * Notwendige Werte
 	 */
-	private String propertyLiteral = "";
-	private String propertyWert = "";
+	private String literal = "";
+	private String wert = "";
 
+	/*
+	 * Es folgen die Parameter für other-parms
+	 */
 	/**
 	 *  Alternate Text Representation
 	 * 
@@ -111,7 +118,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyALTREP = null;
+	private String ALTREP = null;
 
 	/**
 	 * 	Common Name 
@@ -139,7 +146,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyCN = null;
+	private String CN = null;
 
 	/**
 	 * 	Calendar User Type
@@ -175,7 +182,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyCUTYPE = null;
+	private String CUTYPE = null;
 
 	/**
 	 * 	Delegators
@@ -205,7 +212,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyDELFROM = null;
+	private String DELFROM = null;
 
 	/**
 	 * 	Delegatees
@@ -234,7 +241,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyDELTO = null;
+	private String DELTO = null;
 
 	/**
 	 *  Directory Entry Reference
@@ -266,7 +273,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyDIR = null;
+	private String DIR = null;
 
 	/**
 	 *  Inline Encoding
@@ -299,7 +306,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyENCODING = null;
+	private String ENCODING = null;
 
 	/**
 	 * 	Free/Busy Time Type
@@ -342,7 +349,7 @@ class GuKKiCalProperty {
 	 * 	 
 	 */
 
-	private String propertyFBTYPE = null;
+	private String FBTYPE = null;
 
 	/**
 	 * 	Format Type
@@ -372,7 +379,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyFMTTYPE = null;
+	private String FMTTYPE = null;
 
 	/**
 	 * 	Language
@@ -404,7 +411,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyLANGUAGE = null;
+	private String LANGUAGE = null;
 
 	/**
 	 * 	Group or List Membership
@@ -434,7 +441,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyMEMBER = null;
+	private String MEMBER = null;
 
 	/**
 	 * 	Participation Status
@@ -504,7 +511,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyPARTSTAT = null;
+	private String PARTSTAT = null;
 
 	/**
 	 *	Recurrence Identifier Range
@@ -541,7 +548,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyRANGE = null;
+	private String RANGE = null;
 
 	/**
 	 * 	Alarm Trigger Relationship
@@ -572,7 +579,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyRELATED = null;
+	private String RELATED = null;
 
 	/**
 	 * 	Relationship Type
@@ -616,7 +623,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyRELTYPE = null;
+	private String RELTYPE = null;
 
 	/**
 	 *  Participation Role
@@ -657,7 +664,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyROLE = null;
+	private String ROLE = null;
 
 	/**
 	 * 	RSVP Expectation
@@ -688,7 +695,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyRSVP = null;
+	private String RSVP = null;
 
 	/**
 	 * 	Sent By
@@ -716,7 +723,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertySENTBY = null;
+	private String SENTBY = null;
 
 	/**
 	 * 	Time Zone Identifier
@@ -787,7 +794,7 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyTZID = null;
+	private String TZID = null;
 
 	/**
 	 *	Value Data Types
@@ -838,9 +845,13 @@ class GuKKiCalProperty {
 	 * @formatter:on
 	 * 	 
 	 */
-	private String propertyVALUETYPE = null;
+	private String VALUETYPE = null;
+	/*
+	 * X-Name Parameter
+	 */
+	private String X_UID = null;
 
-	private String propertyUNKNOWN = null;
+	private String Restinformationen = "";
 
 	/**
 	 * Konstruktor
@@ -848,70 +859,72 @@ class GuKKiCalProperty {
 	 */
 	int anzahl = 0;
 
-	protected GuKKiCalProperty(String kennung) {
-//		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " begonnen");
-		this.propertyLiteral = kennung;
-//		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " beendet");
+	protected GuKKiCalProperty(String literal) {
+
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		this.literal = literal;
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	}
 
-	public GuKKiCalProperty(String propertyDaten, String kennung) {
-//		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " begonnen -->" + propertyZeile);
-		this.propertyLiteral = kennung;
-		if (propertyDaten.substring(kennung.length(), kennung.length() + 1).equals(":")) {
-			this.propertyWert = propertyDaten.substring(kennung.length() + 1);
-		} else {
-			parameterAnalysieren(propertyDaten.substring(kennung.length()));
+	public GuKKiCalProperty(String propertyDaten, String literal) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		if (propertyUNKNOWN != null) {
-//			System.out.println(propertyUNKNOWN);
-//		}
-//		System.out.println(this);
-//		System.out.println("GuKKiCalProperty Konstruktor für " + kennung + " beendet");
-	}
+		this.literal = literal;
+		if (logger.isLoggable(Level.FINER)) {
+			logger.finer("Literal:" + this.literal);
+			logger.finer("  Daten:" + propertyDaten);
+		}
+		if (propertyDaten.substring(literal.length(), literal.length() + 1).equals(":")) {
+			this.wert = propertyDaten.substring(literal.length() + 1);
+		} else {
+			parameterAnalysieren(propertyDaten.substring(literal.length()));
+		}
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+	} // Ende Konstruktor (String, String)
 
 	void parameterAnalysieren(String propertyDaten) {
-//		System.out.println("GuKKiCalProperty parameterAnalysieren begonnen");
-//		System.out.println("Parameterkette=" + propertyDaten);
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
 
-		boolean backslash = false;
-		boolean literal = false;
-//		boolean hochkomma = false;
-//		boolean doppelpunkt = false;
-//		boolean semikolon = false;
+		boolean istBackslash = false;
+		boolean istLiteral = false;
 		String trenner = "";
 		String zeichen = "";
 		String parameter = "";
 
 		for (int i = 0; i < propertyDaten.length(); i++) {
-//			System.out.println("i=" + i + " Zeichen=" + propertyDaten.substring(i, i + 1));
 			zeichen = propertyDaten.substring(i, i + 1);
 
 			switch (zeichen) {
 
 				case ("\\"): {
-					if (backslash) {
-						backslash = false;
+					if (istBackslash) {
+						istBackslash = false;
 					} else {
-						backslash = true;
+						istBackslash = true;
 					}
 					parameter += zeichen;
 					break;
 				}
 				case ("\""): {
-					if (!backslash) {
-						if (!literal) {
-							literal = true;
+					if (!istBackslash) {
+						if (!istLiteral) {
+							istLiteral = true;
 						} else {
-							literal = false;
+							istLiteral = false;
 						}
 					} else {
-						backslash = false;
+						istBackslash = false;
 					}
 					parameter += zeichen;
 					break;
 				}
 				case (":"): {
-					if (!backslash && !literal && !trenner.equals(":")) {
+					if (!istBackslash && !istLiteral && !trenner.equals(":")) {
 						if (parameter.length() > 0) {
 							parameterBestimmen(parameter, ":");
 						}
@@ -919,12 +932,12 @@ class GuKKiCalProperty {
 						parameter = "";
 					} else {
 						parameter += zeichen;
-						backslash = false;
+						istBackslash = false;
 					}
 					break;
 				}
 				case (";"): {
-					if (!backslash && !literal && !trenner.equals(":")) {
+					if (!istBackslash && !istLiteral && !trenner.equals(":")) {
 						if (parameter.length() > 0) {
 							parameterBestimmen(parameter, ";");
 						}
@@ -932,153 +945,159 @@ class GuKKiCalProperty {
 						parameter = "";
 					} else {
 						parameter += zeichen;
-						backslash = false;
+						istBackslash = false;
 					}
 					break;
 				}
 				default: {
 					parameter += zeichen;
-					backslash = false;
+					istBackslash = false;
 				}
 			} // Ende switch
-
-//			System.out.println("---->" + parameter);
 
 		} // Ende for-Schleife
 
 		if (parameter.length() > 0) {
-			this.propertyWert = parameter;
+			this.wert = parameter;
 		}
 
-//		System.out.println("GuKKiCalProperty parameterAnalysieren beendet");
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
 	}
 
 	void parameterBestimmen(String parameter, String trenner) {
-//		System.out.println("GuKKiCalProperty parameterBestimmen begonnen");
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+		// System.out.println("GuKKiCalProperty parameterBestimmen begonnen");
 //		System.out.println("Parameter=" + parameter + " <--> " + trenner);
 		if (parameter.length() > 7 && parameter.substring(0, 7).equals("ALTREP=")) {
-			this.propertyALTREP = parameter.substring(7);
+			this.ALTREP = parameter.substring(7);
 		} else if (parameter.length() > 3 && parameter.substring(0, 3).equals("CN=")) {
-			this.propertyCN = parameter.substring(3);
+			this.CN = parameter.substring(3);
 		} else if (parameter.length() > 7 && parameter.substring(0, 7).equals("CUTYPE=")) {
-			this.propertyCUTYPE = parameter.substring(7);
+			this.CUTYPE = parameter.substring(7);
 		} else if (parameter.length() > 15 && parameter.substring(0, 15).equals("DELEGATED-FROM=")) {
-			this.propertyDELFROM = parameter.substring(15);
+			this.DELFROM = parameter.substring(15);
 		} else if (parameter.length() > 13 && parameter.substring(0, 13).equals("DELEGATED-TO=")) {
-			this.propertyDELTO = parameter.substring(13);
+			this.DELTO = parameter.substring(13);
 		} else if (parameter.length() > 4 && parameter.substring(0, 4).equals("DIR=")) {
-			this.propertyDIR = parameter.substring(4);
+			this.DIR = parameter.substring(4);
 		} else if (parameter.length() > 9 && parameter.substring(0, 9).equals("ENCODING=")) {
-			this.propertyENCODING = parameter.substring(9);
+			this.ENCODING = parameter.substring(9);
 		} else if (parameter.length() > 7 && parameter.substring(0, 7).equals("FBTYPE=")) {
-			this.propertyFBTYPE = parameter.substring(7);
+			this.FBTYPE = parameter.substring(7);
 		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("FMTTYPE=")) {
-			this.propertyFMTTYPE = parameter.substring(8);
+			this.FMTTYPE = parameter.substring(8);
 		} else if (parameter.length() > 9 && parameter.substring(0, 9).equals("LANGUAGE=")) {
-			this.propertyLANGUAGE = parameter.substring(9);
+			this.LANGUAGE = parameter.substring(9);
 		} else if (parameter.length() > 7 && parameter.substring(0, 7).equals("MEMBER=")) {
-			this.propertyMEMBER = parameter.substring(7);
+			this.MEMBER = parameter.substring(7);
 		} else if (parameter.length() > 9 && parameter.substring(0, 9).equals("PARTSTAT=")) {
-			this.propertyPARTSTAT = parameter.substring(9);
+			this.PARTSTAT = parameter.substring(9);
 		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("RANGE=")) {
-			this.propertyRANGE = parameter.substring(6);
+			this.RANGE = parameter.substring(6);
 		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("RELATED=")) {
-			this.propertyRELATED = parameter.substring(8);
+			this.RELATED = parameter.substring(8);
 		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("RELTYPE=")) {
-			this.propertyRELTYPE = parameter.substring(8);
+			this.RELTYPE = parameter.substring(8);
 		} else if (parameter.length() > 5 && parameter.substring(0, 5).equals("ROLE=")) {
-			this.propertyROLE = parameter.substring(5);
+			this.ROLE = parameter.substring(5);
 		} else if (parameter.length() > 5 && parameter.substring(0, 5).equals("RSVP=")) {
-			this.propertyRSVP = parameter.substring(5);
+			this.RSVP = parameter.substring(5);
 		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("SENT-BY=")) {
-			this.propertySENTBY = parameter.substring(8);
+			this.SENTBY = parameter.substring(8);
 		} else if (parameter.length() > 5 && parameter.substring(0, 5).equals("TZID=")) {
-			this.propertyTZID = parameter.substring(5);
+			this.TZID = parameter.substring(5);
 		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("VALUE=")) {
-			this.propertyVALUETYPE = parameter.substring(6);
+			this.VALUETYPE = parameter.substring(6);
+			/*
+			 * X-Name Parameter
+			 */
+		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("X-UID=")) {
+			this.X_UID = parameter.substring(6);
 		} else {
-//			System.out.println(trenner + "unbekannter Parameter=" + parameter);
-			if (propertyUNKNOWN == null) {
-				this.propertyUNKNOWN = parameter + trenner;
-			} else {
-				this.propertyUNKNOWN += parameter + trenner;
-			}
-//			System.out.println(propertyUNKNOWN);
+			this.Restinformationen += parameter + trenner;
 		}
 
-//		System.out.println("GuKKiCalProperty parameterBestimmen beendet");
+		if (!Restinformationen.equals("")) {
+			logger.log(Level.INFO, this.literal + " Restinformationen\n" + "-->" + Restinformationen + "<--");
+		}
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
 	}
 
-	String getPropertyWert() {
-		return propertyWert;
+	String getWert() {
+		return wert;
 	}
 
-	void setPropertyWert(String propertyWert) {
-		this.propertyWert = propertyWert;
+	void setWert(String propertyWert) {
+		this.wert = propertyWert;
 	}
 
-	String getPropertyLiteral() {
-		return propertyLiteral;
+	String getLiteral() {
+		return literal;
 	}
 
-	void setPropertyLiteral(String propertyLiteral) {
-		this.propertyLiteral = propertyLiteral;
+	void setLiteral(String propertyLiteral) {
+		this.literal = propertyLiteral;
 	}
 
-	String getPropertyUNKNOWN() {
-		return propertyUNKNOWN;
+	String getRestinformationen() {
+		return Restinformationen;
 	}
 
-	void setPropertyUNKNOWN(String propertyUNKNOWN) {
-		this.propertyUNKNOWN = propertyUNKNOWN;
+	void setRestinformationen(String Restinformationen) {
+		this.Restinformationen = Restinformationen;
 	}
 
 	public String toString() {
 		String nz = "\n";
-		String ausgabe = "Literal=" + propertyLiteral + nz;
-		if (propertyALTREP != null)
-			ausgabe += "altrepparm=" + propertyALTREP + nz;
-		if (propertyCN != null)
-			ausgabe += "cnparam=" + propertyCN + nz;
-		if (propertyCUTYPE != null)
-			ausgabe += "cutypeparam=" + propertyCUTYPE + nz;
-		if (propertyDELFROM != null)
-			ausgabe += "delfromparam=" + propertyDELFROM + nz;
-		if (propertyDELTO != null)
-			ausgabe += "deltoparam=" + propertyDELTO + nz;
-		if (propertyDIR != null)
-			ausgabe += "dirparam=" + propertyDIR + nz;
-		if (propertyENCODING != null)
-			ausgabe += "encodingparam=" + propertyENCODING + nz;
-		if (propertyFBTYPE != null)
-			ausgabe += "fbtypeparam=" + propertyFBTYPE + nz;
-		if (propertyFMTTYPE != null)
-			ausgabe += "fmttypeparam=" + propertyFMTTYPE + nz;
-		if (propertyLANGUAGE != null)
-			ausgabe += "languageparam=" + propertyLANGUAGE + nz;
-		if (propertyMEMBER != null)
-			ausgabe += "memberparam=" + propertyMEMBER + nz;
-		if (propertyPARTSTAT != null)
-			ausgabe += "partstatparam=" + propertyPARTSTAT + nz;
-		if (propertyRANGE != null)
-			ausgabe += "rangeparamm=" + propertyRANGE + nz;
-		if (propertyRELATED != null)
-			ausgabe += "trigrelparam=" + propertyRELATED + nz;
-		if (propertyRELTYPE != null)
-			ausgabe += "reltypeparam=" + propertyRELTYPE + nz;
-		if (propertyROLE != null)
-			ausgabe += "roleparam=" + propertyROLE + nz;
-		if (propertyRSVP != null)
-			ausgabe += "rsvpparam=" + propertyRSVP + nz;
-		if (propertySENTBY != null)
-			ausgabe += "sentbyparam=" + propertySENTBY + nz;
-		if (propertyTZID != null)
-			ausgabe += "tzidparam=" + propertyTZID + nz;
-		if (propertyVALUETYPE != null)
-			ausgabe += "valuetypeparam=" + propertyVALUETYPE + nz;
-		if (propertyUNKNOWN != null)
-			ausgabe += "other-param=" + propertyUNKNOWN + nz;
-		ausgabe += "Wert=" + propertyWert + nz;
+		String ausgabe = "Literal=" + literal + nz;
+		if (ALTREP != null)
+			ausgabe += "altrepparm=" + ALTREP + nz;
+		if (CN != null)
+			ausgabe += "cnparam=" + CN + nz;
+		if (CUTYPE != null)
+			ausgabe += "cutypeparam=" + CUTYPE + nz;
+		if (DELFROM != null)
+			ausgabe += "delfromparam=" + DELFROM + nz;
+		if (DELTO != null)
+			ausgabe += "deltoparam=" + DELTO + nz;
+		if (DIR != null)
+			ausgabe += "dirparam=" + DIR + nz;
+		if (ENCODING != null)
+			ausgabe += "encodingparam=" + ENCODING + nz;
+		if (FBTYPE != null)
+			ausgabe += "fbtypeparam=" + FBTYPE + nz;
+		if (FMTTYPE != null)
+			ausgabe += "fmttypeparam=" + FMTTYPE + nz;
+		if (LANGUAGE != null)
+			ausgabe += "languageparam=" + LANGUAGE + nz;
+		if (MEMBER != null)
+			ausgabe += "memberparam=" + MEMBER + nz;
+		if (PARTSTAT != null)
+			ausgabe += "partstatparam=" + PARTSTAT + nz;
+		if (RANGE != null)
+			ausgabe += "rangeparamm=" + RANGE + nz;
+		if (RELATED != null)
+			ausgabe += "trigrelparam=" + RELATED + nz;
+		if (RELTYPE != null)
+			ausgabe += "reltypeparam=" + RELTYPE + nz;
+		if (ROLE != null)
+			ausgabe += "roleparam=" + ROLE + nz;
+		if (RSVP != null)
+			ausgabe += "rsvpparam=" + RSVP + nz;
+		if (SENTBY != null)
+			ausgabe += "sentbyparam=" + SENTBY + nz;
+		if (TZID != null)
+			ausgabe += "tzidparam=" + TZID + nz;
+		if (VALUETYPE != null)
+			ausgabe += "valuetypeparam=" + VALUETYPE + nz;
+		/*
+		 * X-Name Parameter
+		 */
+		if (X_UID != null)
+			ausgabe += "X-UID-param=" + X_UID + nz;
+		if (!Restinformationen.equals(""))
+			ausgabe += "other-param=" + Restinformationen + nz;
+		ausgabe += "wert=" + wert + nz;
 
 		return ausgabe.substring(0, ausgabe.length() - 1);
 	}

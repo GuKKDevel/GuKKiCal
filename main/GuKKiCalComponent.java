@@ -3,8 +3,20 @@ package main;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class GuKKiCalvComponent {
+public class GuKKiCalComponent {
+	Logger logger = Logger.getLogger("GuKKiCal");
+	Level logLevel = Level.FINEST;
+
+	/*
+	 * Standardvariablen für alle Komponenten
+	 */
+	GuKKiCalcKennung kennung = GuKKiCalcKennung.UNDEFINIERT;
+	GuKKiCalcStatus status = GuKKiCalcStatus.UNDEFINIERT;
+	String schluessel = "";
+
 	/*
 	 * Standard-Variablen (Konstanten)
 	 */
@@ -13,7 +25,9 @@ public class GuKKiCalvComponent {
 	/**
 	 * Konstruktor
 	 */
-	public GuKKiCalvComponent() {
+	public GuKKiCalComponent() {
+		logger.log(logLevel, "begonnen\n");
+		logger.log(logLevel, "beendet\n");
 		// TODO Automatisch generierter Konstruktorstub
 	}
 
@@ -23,7 +37,8 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 	protected void verarbeitenDatenstrom(String vComponentDaten) throws Exception {
-//		System.out.println("GuKKiCalvComponent verarbeiten Datenstrom begonnen");
+		logger.log(logLevel, "begonnen\n");
+
 		String zeile = "";
 		String folgezeile = "";
 		boolean datenVorhanden = true;
@@ -56,12 +71,12 @@ public class GuKKiCalvComponent {
 			} /* end while-Schleife */
 		} finally {
 		}
-//		System.out.println("GuKKiCalvComponent verarbeiten Datenstrom beendet");
 
+		logger.log(logLevel, "beendet\n");
 	}
 
 	protected void verarbeitenZeile(String zeile) throws Exception {
-//		System.out.println("GuKKiCalvComponent verarbeitenZeile");
+		System.out.println("GuKKiCalComponent verarbeitenZeile-->" + zeile + "<--");
 	}
 
 	String eintragenProperty(String zeichenkette, String kennung) {
@@ -73,7 +88,32 @@ public class GuKKiCalvComponent {
 	}
 
 	/**
-	 * Bearbeitungsroutinen für die property ATTACH
+	 * Bearbeitungsroutinen für die property XXX
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	RFC 5545 (september 2009) item 3.8.1.1; p. 80
+	 *
+	 *
+	 *
+	 *
+	 * @formatter:on
+	 * 
+	 */
+	String checkXXX(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
+	}
+
+	/**
+	 * Bearbeitungsroutinen für die property Attach
 	 * 
 	 * @formatter:off
 	 * 
@@ -144,22 +184,242 @@ public class GuKKiCalvComponent {
 	 * 		Teil der übergebenen Zeichenkette nach dem Schlüsselwort
 	 * 
 	 */
-
-	String checkATTACH(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkATTACH begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		String kennung = "ATTACH";
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(kennung.length());
-		} else if (aktion == 1) {
-			zTemp = kennung + zeichenkette;
+	String checkATTACH(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkATTACH beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
+	/**
+	 * Bearbeitungsroutinen für die property Attendee
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	RFC 5545 (september 2009) item 3.8.4.1.; p. 107
+	 *
+	 *	Property Name: ATTENDEE
+	 *
+	 *	Purpose: This property defines an "Attendee" within a calendar component.
+	 *
+	 *	Value Type: CAL-ADDRESS
+	 *
+	 *	Property Parameters: IANA, non-standard, language, calendar user
+	 *		type, group or list membership, participation role, participation
+	 *		status, RSVP expectation, delegatee, delegator, sent by, common
+	 *		name, or directory entry reference property parameters can be
+	 *		specified on this property.
+	 *
+	 *	Conformance: This property MUST be specified in an iCalendar object
+	 *		that specifies a group-scheduled calendar entity. This property
+	 *		MUST NOT be specified in an iCalendar object when publishing the
+	 *		calendar information (e.g., NOT in an iCalendar object that
+	 *		specifies the publication of a calendar user’s busy time, event,
+	 *		to-do, or journal). This property is not specified in an
+	 *		iCalendar object that specifies only a time zone definition or
+	 *		that defines calendar components that are not group-scheduled
+	 *		components, but are components only on a single user’s calendar.
+	 *	
+	 *	Description: This property MUST only be specified within calendar
+	 *		components to specify participants, non-participants, and the
+	 *		chair of a group-scheduled calendar entity. The property is
+	 *		specified within an "EMAIL" category of the "VALARM" calendar
+	 *		component to specify an email address that is to receive the email
+	 *		type of iCalendar alarm.
+	 *		The property parameter "CN" is for the common or displayable name
+	 *		associated with the calendar address; "ROLE", for the intended
+	 *		role that the attendee will have in the calendar component;
+	 *		"PARTSTAT", for the status of the attendee’s participation;
+	 *		"RSVP", for indicating whether the favor of a reply is requested;
+	 *		"CUTYPE", to indicate the type of calendar user; 
+	 *		"MEMBER", to indicate the groups that the attendee belongs to; 
+	 *		"DELEGATED-TO",to indicate the calendar users that the original request was
+	 *			delegated to; and 
+	 *		"DELEGATED-FROM", to indicate whom the request was delegated from; 
+	 *		"SENT-BY", to indicate whom is acting on behalf of the "ATTENDEE"; and 
+	 *		"DIR", to indicate the URI that points to the directory information 
+	 *			corresponding to the attendee.
+	 *		These property parameters can be specified on an "ATTENDEE"
+	 *		property in either a "VEVENT", "VTODO", or "VJOURNAL" calendar
+	 *		component. They MUST NOT be specified in an "ATTENDEE" property
+	 *		in a "VFREEBUSY" or "VALARM" calendar component. 
+	 *		If the "LANGUAGE" property parameter is specified, the identified
+	 *		language applies to the "CN" parameter.
+	 *
+	 *		A recipient delegated a request MUST inherit the "RSVP" and "ROLE"
+	 *		values from the attendee that delegated the request to them.
+	 *
+	 *		Multiple attendees can be specified by including multiple 
+	 *		"ATTENDEE" properties within the calendar component.
+	 *
+	 *	Format Definition: This property is defined by the following notation:
+	 *
+	 *		attendee = "ATTENDEE" attparam ":" cal-address CRLF
+	 *
+	 *			attparam = *(
+	 *
+	 *		The following are OPTIONAL, but MUST NOT occur more than once.
+	 *				(";" cutypeparam) / 
+	 *				(";" memberparam) /
+	 *				(";" roleparam) / 
+	 *				(";" partstatparam) /
+	 *				(";" rsvpparam) / 
+	 *				(";" deltoparam) /
+	 *				(";" delfromparam) / 
+	 *				(";" sentbyparam) /
+	 *				(";" cnparam) / 
+	 *				(";" dirparam) /
+	 *				(";" languageparam) /
+	 *
+	 *		The following is OPTIONAL, and MAY occur more than once.
+	 *
+	 *				*(";" other-param)
+	 *				
+	 *				)
+	 *
+	 * @formatter:on
+	 * 
+	 */
+	String checkATTENDEE(GuKKiCalProperty property) {
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "begonnen");
+			}
+			String kennung = property.getLiteral();
+			String zTemp = "";
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "beendet");
+			}
+			return zTemp;
+		}
+
+	/**
+	 * Bearbeitungsroutinen für die property Calendar Scale
+	 * 
+	 * RFC 5545 (september 2009) item 3.7.1.; p. 76 
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	Property Name: CALSCALE
+	 * 
+	 * 	Purpose: This property defines the calendar scale used for the
+	 * 		calendar information specified in the iCalendar object.
+	 * 
+	 * 	Value Type: TEXT
+	 * 
+	 * 	Property Parameters: IANA and non-standard property parameters can
+	 * 		be specified on this property.
+	 * 
+	 * 	Conformance: This property can be specified once in an iCalendar
+	 * 		object. The default value is "GREGORIAN".
+	 * 
+	 * 	Description: This memo is based on the Gregorian calendar scale.
+	 * 		The Gregorian calendar scale is assumed if this property is not
+	 * 		specified in the iCalendar object. It is expected that other
+	 * 		calendar scales will be defined in other specifications or by
+	 * 		future versions of this memo.
+	 * 
+	 * 	Format Definition: This property is defined by the following notation:
+	 * 
+	 * 		calscale = "CALSCALE" calparam ":" calvalue CRLF
+	 * 
+	 * 			calparam = *(";" other-param)
+	 * 
+	 * 			calvalue = "GREGORIAN"
+	 * 
+	 * @formatter:on
+	 * 
+	 */
+	String checkCALSCALE(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
+	}
+	/**
+	 * Bearbeitungsroutinen für die property CATEGORIES
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	RFC 5545 (september 2009) item 3.8.1.2; p. 80
+	 *
+	 * 	Property Name: CATEGORIES
+	 * 
+	 * 	Purpose: This property defines the categories for a calendar component.
+	 * 
+	 * 	Value Type: TEXT
+	 * 
+	 * 	Property Parameters: IANA, non-standard, and language property
+	 * 	parameters can be specified on this property.
+	 * 
+	 * 	Conformance: The property can be specified within "VEVENT", "VTODO",
+	 * 		or "VJOURNAL" calendar components.
+	 * 
+	 * 	Description: This property is used to specify categories or subtypes
+	 * 		of the calendar component. The categories are useful in searching
+	 * 		for a calendar component of a particular type and category.
+	 * 		Within the "VEVENT", "VTODO", or "VJOURNAL" calendar components,
+	 * 		more than one category can be specified as a COMMA-separated list
+	 * 		of categories.
+	 * 	
+	 * 	Format Definition: This property is defined by the following notation:
+	 * 
+	 * 		categories = "CATEGORIES" catparam ":" text *("," text) CRLF
+	 * 
+	 * 			catparam = *(
+	 * 
+	 * 	The following is OPTIONAL, but MUST NOT occur more than once.
+	 * 
+	 * 				(";" languageparam ) /
+	 * 
+	 * 	The following is OPTIONAL, and MAY occur more than once.
+	 * 				
+	 * 				(";" other-param)
+	 *
+	 * 			)
+	 * 
+	 *	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+	 * 
+	 * RFC 7986 (October 2016) item 5.6.; p. 8 
+	 * 
+	 *  CATEGORIES
+	 *  
+	 * 	This specification modifies the definition of the "CATEGORIES"
+	 * 		property to allow it to be defined in an iCalendar object. The
+	 * 		following additions are made to the definition of this property,
+	 * 		originally specified in Section 3.8.1.2 of [RFC5545].
+	 * 
+	 * 	Purpose: This property defines the categories for an entire calendar.
+	 * 
+	 * 	Conformance: This property can be specified multiple times in an iCalendar object.
+	 * 
+	 * 	Description: When multiple properties are present, the set of
+	 * 		categories that apply to the iCalendar object are the union of all
+	 * 		the categories listed in each property value.
+	 *
+	 * @formatter:on
+	 * 
+	 */
+	String checkCATEGORIES(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
+	}
 	/**
 	 * Bearbeitungsroutinen für die property CLASS
 	 * 
@@ -221,27 +481,65 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkCLASS(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkCLASS begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		String kennung = "CLASS";
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(kennung.length());
-		} else if (aktion == 1) {
-			zTemp = kennung + zeichenkette;
-//		} else if (aktion == 2) {
-//			zTemp = zeichenkette.substring(1);
-//			if (!(zTemp.equals("PUBLIC") | zTemp.equals("PRIVATE") | zTemp.equals("CONFIDENTIAL"))) {
-//				zTemp = null;
-//			}
-//		}
-
+	String checkCLASS(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkCLASS beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
+	}
 
+	/**
+	 * Bearbeitungsroutinen für die property COLOR
+	 * 
+	 * RFC 7986 (October 2016) item 5.9.; p. 10 
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	Property Name: COLOR
+	 * 	
+	 * 	Purpose: This property specifies a color used for displaying the
+	 * 		calendar, event, todo, or journal data.
+	 * 
+	 * 	Value Type: TEXT
+	 * 
+	 * 	Property Parameters: IANA and non-standard property parameters can
+	 * 		be specified on this property.
+	 * 	
+	 * 	Conformance: This property can be specified once in an iCalendar
+	 * 		object or in "VEVENT", "VTODO", or "VJOURNAL" calendar components.
+	 * 
+	 * 	Description: This property specifies a color that clients MAY use
+	 * 		when presenting the relevant data to a user. Typically, this
+	 * 		would appear as the "background" color of events or tasks. The
+	 * 		value is a case-insensitive color name taken from the CSS3 set of
+	 * 		names, defined in Section 4.3 of [W3C.REC-css3-color-20110607].
+	 * 		
+	 * 	Format Definition: This property is defined by the following notation:
+	 * 
+	 * 		color = "COLOR" colorparam ":" text CRLF
+	 * 
+	 * 		colorparam = *(";" other-param)
+	 * 
+	 * 		text = Value is CSS3 color name
+	 * 
+	 * @formatter:on
+	 * 
+	 */
+	String checkCOLOR(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
 	}
 
 	/**
@@ -284,18 +582,15 @@ public class GuKKiCalvComponent {
 	 * 		Teil der übergebenen Zeichenkette nach dem Schlüsselwort
 	 * 
 	 */
-	String checkCOMPLETED(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkCOMPLETED begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		String kennung = "COMPLETED";
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(kennung.length());
-		} else if (aktion == 1) {
-			zTemp = kennung + zeichenkette;
+	String checkCOMPLETED(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkCOMPLETED beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -346,18 +641,15 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkCREATED(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkCREATED begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		String kennung = "CREATED";
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(kennung.length());
-		} else if (aktion == 1) {
-			zTemp = kennung + zeichenkette;
+	String checkCREATED(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkCREATED beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -408,6 +700,30 @@ public class GuKKiCalvComponent {
 	 *
 	 *				)
 	 *
+	 *	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -		
+	 *
+	 * RFC 7986 (October 2016) item 5.2.; p. 6 
+	 * 
+	 * 	DESCRIPTION 
+	 * 
+	 * 	This specification modifies the definition of the "DESCRIPTION"
+	 * 		property to allow it to be defined in an iCalendar object. The
+	 * 		following additions are made to the definition of this property,
+	 * 		originally specified in Section 3.8.1.5 of [RFC5545].
+	 * 
+	 * 	Purpose: This property specifies the description of the calendar.
+	 * 
+	 * 	Conformance: This property can be specified multiple times in an
+	 * 		iCalendar object. However, each property MUST represent the
+	 * 		description of the calendar in a different language.
+	 * 	
+	 * 	Description: This property is used to specify a lengthy textual
+	 * 		description of the iCalendar object that can be used by calendar
+	 * 		user agents when describing the nature of the calendar data to a
+	 * 		user. Whilst a calendar only has a single description, multiple
+	 * 		language variants can be specified by including this property
+	 * 		multiple times with different "LANGUAGE" parameter values on each.
+	 *
 	 * @formatter:on
 	 * 
 	 * @param zeichenkette - String
@@ -419,19 +735,15 @@ public class GuKKiCalvComponent {
 	 * 		Teil der übergebenen Zeichenkette nach dem Schlüsselwort
 	 * 
 	 */
-
-	String checkDESCRIPTION(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkDESCRIPTION begonnen");
-//		System.out.println("Zeile=" + zeichenkette);
-		String kennung = "CREATED";
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(kennung.length());
-		} else if (aktion == 1) {
-			zTemp = kennung + zeichenkette;
+	String checkDESCRIPTION(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkDESCRIPTION beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -501,18 +813,15 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkDTEND(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkDTEND begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		String kennung = "CREATED";
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(kennung.length());
-		} else if (aktion == 1) {
-			zTemp = kennung + zeichenkette;
+	String checkDTEND(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkDTEND beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -574,18 +883,16 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	GuKKiCalProperty eintragenDTSTAMP(String zeichenkette) throws Exception {
-//		System.out.println("GuKKiCalvComponent.checkDTSTAMP begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		String kennung = "DTSTAMP";
-		GuKKiCalProperty property = new GuKKiCalProperty(zeichenkette, kennung);
-		if (zeichenkette.substring(kennung.length()).equals(":")) {
-
+	String checkDTSTAMP(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-
-		// System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkDTSTAMP beendet");
-		return property;
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
 	}
 
 	/**
@@ -658,23 +965,20 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkDTSTART(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkDTSTART begonnen");
-//		System.out.println("Zeile=" + zeichenkette);
-		String kennung = "CREATED";
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(kennung.length());
-		} else if (aktion == 1) {
-			zTemp = kennung + zeichenkette;
+	String checkDTSTART(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkDTSTART beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
 	/**
-	 * Bearbeitungsroutinen für die property DTSTART
+	 * Bearbeitungsroutinen für die property DUE
 	 * 
 	 * @formatter:off
 	 * 
@@ -736,18 +1040,15 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkDUE(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkDTSTART begonnen");
-//		System.out.println("Zeile=" + zeichenkette);
-		String kennung = "DUE";
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(kennung.length());
-		} else if (aktion == 1) {
-			zTemp = kennung + zeichenkette;
+	String checkDUE(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkDTSTART beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -802,16 +1103,15 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkDURATION(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkDURATION begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		int laengeLiteral = 5;
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(laengeLiteral);
+	String checkDURATION(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkDURATION beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -899,21 +1199,97 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkGEO(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkGEO begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		int laengeLiteral = 3;
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(laengeLiteral);
+	String checkGEO(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkGEO beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
-
 	/**
-	 * Bearbeitungsroutinen für die property LAST-MODIFIED
+	 * Bearbeitungsroutinen für die property IMAGE
+	 * 
+	 * @formatter:off
+	 * 
+	 * RFC 7986 (October 2016) item 5.10.; p. 11 
+	 * 
+	 * 	Property Name: IMAGE
+	 * 
+	 * 	Purpose: This property specifies an image associated with the
+	 * 		calendar or a calendar component.
+	 * 
+	 * 	Value Type: URI or BINARY -- no default. 
+	 * 		The value MUST be data with a media type of "image" or refer to such data.
+	 * 
+	 * 	Property Parameters: IANA, non-standard, display, inline encoding,
+	 * 		and value data type property parameters can be specified on this
+	 * 		property. The format type parameter can be specified on this
+	 * 		property and is RECOMMENDED for inline binary-encoded content
+	 * 		information.
+	 * 		
+	 * 	Conformance: This property can be specified multiple times in an
+	 * 		iCalendar object or in "VEVENT", "VTODO", or "VJOURNAL" calendar components.
+	 * 
+	 * 	Description: This property specifies an image for an iCalendar
+	 * 		object or a calendar component via a URI or directly with inline
+	 * 		data that can be used by calendar user agents when presenting the
+	 * 		calendar data to a user. Multiple properties MAY be used to
+	 * 		specify alternative sets of images with, for example, varying
+	 * 		media subtypes, resolutions, or sizes. When multiple properties
+	 * 		are present, calendar user agents SHOULD display only one of them,
+	 * 		picking one that provides the most appropriate image quality, or
+	 * 		display none. The "DISPLAY" parameter is used to indicate the
+	 * 		intended display mode for the image. The "ALTREP" parameter,
+	 * 		defined in [RFC5545], can be used to provide a "clickable" image
+	 * 		where the URI in the parameter value can be "launched" by a click
+	 * 		on the image in the calendar user agent.
+	 * 		
+	 * 	Format Definition: This property is defined by the following notation:
+	 * 
+	 * 		image = "IMAGE" imageparam (
+	 * 		
+	 * 			(";" "VALUE" "=" "URI" ":" uri) /
+	 * 			(";" "ENCODING" "=" "BASE64" ";" "VALUE" "=" "BINARY" ":" binary)
+	 * 		
+	 * 			) CRLF
+	 * 
+	 * 		imageparam = *(
+	 * 
+	 * 	The following is OPTIONAL for a URI value, RECOMMENDED for a BINARY value,
+	 * 		and MUST NOT occur more than once.
+	 * 
+	 * 			(";" fmttypeparam) /
+	 * 
+	 * 	The following are OPTIONAL, and MUST NOT occur more than once.;
+	 * 
+	 * 			(";" altrepparam) / (";" displayparam) /
+	 * 
+	 * 	The following is OPTIONAL,and MAY occur more than once.
+	 * 
+	 * 			(";" other-param)
+	 * 
+	 * 			)
+	 * 
+	 * @formatter:on
+	 * 
+	 */
+	String checkIMAGE(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
+	}
+	/**
+	 * Bearbeitungsroutinen für die property LAST-MOD
 	 *
 	 * @formatter:off
 	 * 
@@ -944,7 +1320,23 @@ public class GuKKiCalvComponent {
 	 *		last-mod = "LAST-MODIFIED" lstparam ":" date-time CRLF
 	 *
 	 *			lstparam = *(";" other-param)
+	 *
+	 *	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	 *
+	 * RFC 7986 (October 2016) item 5.4.; p. 8 
 	 * 
+	 * LAST-MODIFIED Property
+	 * 
+	 * 	This specification modifies the definition of the "LAST-MODIFIED"
+	 *		property to allow it to be defined in an iCalendar object. The
+	 *		following additions are made to the definition of this property,
+	 *		originally specified in Section 3.8.7.3 of [RFC5545].
+	 *		
+	 *	Purpose: This property specifies the date and time that the
+	 *		information associated with the calendar was last revised.
+	 *
+	 *	Conformance: This property can be specified once in an iCalendar object.
+	 *
 	 * @formatter:on
 	 * 
 	 * @param zeichenkette - String
@@ -957,16 +1349,15 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkLASTMODIFIED(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkLASTMODIFIED begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		int laengeLiteral = 13;
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(laengeLiteral);
+	String checkLAST_MOD(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkLASTMODIFIED beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -1028,19 +1419,130 @@ public class GuKKiCalvComponent {
 	 * 
 	 */
 
-	String checkLOCATION(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkLOCATION begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		int laengeLiteral = 8;
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(laengeLiteral);
+	String checkLOCATION(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkLOCATION beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
-
+	/**
+	 * Bearbeitungsroutinen für die property Method
+	 * 
+	 * RFC 5545 (september 2009) item 3.7.2.; p. 77 
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	Property Name: METHOD
+	 * 
+	 * 	Purpose: This property defines the iCalendar object method
+	 * 		associated with the calendar object.
+	 * 
+	 * 	Value Type: TEXT
+	 * 
+	 * 	Property Parameters: IANA and non-standard property parameters can
+	 * 		be specified on this property.
+	 * 
+	 * 	Conformance: This property can be specified once in an iCalendar object.
+	 * 
+	 * 	Description: When used in a MIME message entity, the value of this
+	 * 		property MUST be the same as the Content-Type "method" parameter
+	 * 		value. If either the "METHOD" property or the Content-Type
+	 * 		"method" parameter is specified, then the other MUST also be
+	 * 		specified.
+	 * 		No methods are defined by this specification. This is the subject
+	 * 		of other specifications, such as the iCalendar Transport-
+	 * 		independent Interoperability Protocol (iTIP) defined by [2446bis].
+	 * 		If this property is not present in the iCalendar object, then a
+	 * 		scheduling transaction MUST NOT be assumed. In such cases, the
+	 * 		iCalendar object is merely being used to transport a snapshot of
+	 * 		some calendar information; without the intention of conveying a
+	 * 		scheduling semantic.
+	 * 
+	 * 	Format Definition: This property is defined by the following notation:
+	 * 
+	 * 		method = "METHOD" metparam ":" metvalue CRLF
+	 * 
+	 * 		metparam = *(";" other-param)
+	 * 
+	 * 		metvalue = iana-token
+	 * 
+	 * @formatter:on
+	 * 
+	 */
+	String checkMETHOD(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
+	}
+	/**
+	 * Bearbeitungsroutinen für die property NAME
+	 * 
+	 * @formatter:off
+	 * 
+	 * RFC 7986 (October 2016) item 5.1.; p. 5 
+	 * 
+	 * 	Property Name: NAME
+	 * 
+	 * 	Purpose: This property specifies the name of the calendar.
+	 * 
+	 * 	Value Type: TEXT
+	 * 
+	 *	Property Parameters: IANA, non-standard, alternate text
+	 *		representation, and language property parameters can be specified
+	 *		on this property.
+	 *
+	 *	Conformance: This property can be specified multiple times in an
+	 *		iCalendar object. However, each property MUST represent the name
+	 *		of the calendar in a different language.
+	 *	
+	 *	Description: This property is used to specify a name of the
+	 *		iCalendar object that can be used by calendar user agents when
+	 *		presenting the calendar data to a user. Whilst a calendar only
+	 *		has a single name, multiple language variants can be specified by
+	 *		including this property multiple times with different "LANGUAGE"
+	 *		parameter values on each.
+	 *
+	 *	Format Definition: This property is defined by the following notation:
+	 *
+	 *		name = "NAME" nameparam ":" text CRLF
+	 *
+	 *		nameparam = *(
+	 *	
+	 *	The following are OPTIONAL, but MUST NOT occur more than once.
+	 *
+	 *			(";" altrepparam) / (";" languageparam) /
+	 *
+	 *	The following is OPTIONAL, and MAY occur more than once.
+	 *
+	 *			(";" other-param)
+	 *
+	 *			)
+	 * 
+	 * @formatter:on
+	 * 
+	 */
+	String checkNAME(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
+	}
 	/**
 	 * Bearbeitungsroutinen für die property ORGANIZER
 	 *
@@ -1112,22 +1614,20 @@ public class GuKKiCalvComponent {
 	 * 		Teil der übergebenen Zeichenkette nach dem Schlüsselwort
 	 * 
 	 */
-
-	String checkORGANIZER(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkORGANIZER begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		int laengeLiteral = 9;
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(laengeLiteral);
+	String checkORGANIZER(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkORGANIZER beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
 	/**
-	 * Bearbeitungsroutinen für die property ORGANIZER
+	 * Bearbeitungsroutinen für die property PERCENT
 	 *
 	 * @formatter:off
 	 * 
@@ -1177,17 +1677,15 @@ public class GuKKiCalvComponent {
 	 * 		Teil der übergebenen Zeichenkette nach dem Schlüsselwort
 	 * 
 	 */
-
-	String checkPERCENT(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkPERCENT begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		int laengeLiteral = 16;
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(laengeLiteral);
+	String checkPERCENT(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkPERCENT beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -1260,7 +1758,7 @@ public class GuKKiCalvComponent {
 	 */
 
 	String checkPRIORITY(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkPRIORITY begonnen");
+//		System.out.println("GuKKiCalComponent.checkPRIORITY begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		int laengeLiteral = 8;
 		String zTemp = "";
@@ -1268,7 +1766,59 @@ public class GuKKiCalvComponent {
 			zTemp = zeichenkette.substring(laengeLiteral);
 		}
 //		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkPRIORITY beendet");
+//		System.out.println("GuKKiCalComponent.checkPRIORITY beendet");
+		return zTemp;
+	}
+
+	/**
+	 * 	Bearbeitungsroutinen für die property PRODID
+	 * 
+	 * 	RFC 5545 (september 2009) item 3.7.3.; p. 78 
+	 * 
+	 * @formatter:off
+	 * 
+	 *	Property Name: PRODID
+	 *
+	 *	Purpose: This property specifies the identifier for the product that
+	 *		created the iCalendar object.
+	 *
+	 *	Value Type: TEXT
+	 *
+	 *	Property Parameters: IANA and non-standard property parameters can
+	 *		be specified on this property.
+	 *
+	 *	Conformance: The property MUST be specified once in an iCalendar object.
+	 *
+	 *	Description: The vendor of the implementation SHOULD assure that
+	 *		this is a globally unique identifier; using some technique such as
+	 *		an FPI value, as defined in [ISO.9070.1991].
+	 *		This property SHOULD NOT be used to alter the interpretation of an
+	 *		iCalendar object beyond the semantics specified in this memo. For
+	 *		example, it is not to be used to further the understanding of non-
+	 *		standard properties.
+	 *
+	 *	Format Definition: This property is defined by the following notation:
+	 *
+	 *		prodid = "PRODID" pidparam ":" pidvalue CRLF
+	 *
+	 *			pidparam = *(";" other-param)
+	 *
+	 *			pidvalue = text
+	 *		
+	 *		Any text that describes the product and version
+	 *
+	 * @formatter:on
+	 * 	 
+	 */
+	String checkPRODID(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
@@ -1380,7 +1930,7 @@ public class GuKKiCalvComponent {
 	 */
 
 	String checkRECURID(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkRECURID begonnen");
+//		System.out.println("GuKKiCalComponent.checkRECURID begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		int laengeLiteral = 13;
 		String zTemp = "";
@@ -1388,7 +1938,7 @@ public class GuKKiCalvComponent {
 			zTemp = zeichenkette.substring(laengeLiteral);
 		}
 //		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkRECURID beendet");
+//		System.out.println("GuKKiCalComponent.checkRECURID beendet");
 		return zTemp;
 	}
 
@@ -1474,7 +2024,7 @@ public class GuKKiCalvComponent {
 	 */
 
 	String checkRRULE(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkRRULE begonnen");
+//		System.out.println("GuKKiCalComponent.checkRRULE begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		int laengeLiteral = 5;
 		String zTemp = "";
@@ -1482,10 +2032,66 @@ public class GuKKiCalvComponent {
 			zTemp = zeichenkette.substring(laengeLiteral);
 		}
 //		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkRRULE beendet");
+//		System.out.println("GuKKiCalComponent.checkRRULE beendet");
 		return zTemp;
 	}
-
+	/**
+	 * Bearbeitungsroutinen für die property REFRESH-INTERVAL
+	 * 
+	 * RFC 7986 (October 2016) item 5.7.; p. 9 
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	Property Name: REFRESH-INTERVAL
+	 * 
+	 * 	Purpose: This property specifies a suggested minimum interval for
+	 * 		polling for changes of the calendar data from the original source
+	 * 		of that data.
+	 * 
+	 * 	Value Type: DURATION -- no default
+	 * 
+	 * 	Property Parameters: IANA and non-standard property parameters can
+	 * 		be specified on this property.
+	 * 
+	 * 	Conformance: This property can be specified once in an iCalendar object.
+	 * 
+	 * 	Description: This property specifies a positive duration that gives
+	 * 		a suggested minimum polling interval for checking for updates to
+	 * 		the calendar data. The value of this property SHOULD be used by
+	 * 		calendar user agents to limit the polling interval for calendar
+	 * 		data updates to the minimum interval specified.
+	 * 
+	 * 	Format Definition: This property is defined by the following notation:
+	 * 
+	 * 		refresh = "REFRESH-INTERVAL" refreshparam ":" dur-value CRLF
+	 * 		
+	 * 			refreshparam = *(
+	 * 		
+	 * 		The following is REQUIRED, but MUST NOT occur more than once.
+	 * 
+	 * 				(";" "VALUE" "=" "DURATION") /
+	 * 		
+	 * 		The following is OPTIONAL, and MAY occur more than once.
+	 * 
+	 * 				(";" other-param)
+	 * 				)
+	 * 
+	 * 		dur-value = a positive duration of time.
+	 *
+	 * @formatter:on
+	 * 
+	 */
+	String checkREFRESH(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return zTemp;
+	}
 	/**
 	 * Bearbeitungsroutinen für die property SEQUENCE
 	 *
@@ -1545,7 +2151,7 @@ public class GuKKiCalvComponent {
 	 */
 
 	String checkSEQUENCE(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkSEQUENCE begonnen");
+//		System.out.println("GuKKiCalComponent.checkSEQUENCE begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		int laengeLiteral = 8;
 		String zTemp = "";
@@ -1553,12 +2159,67 @@ public class GuKKiCalvComponent {
 			zTemp = zeichenkette.substring(laengeLiteral);
 		}
 //		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkSEQUENCE beendet");
+//		System.out.println("GuKKiCalComponent.checkSEQUENCE beendet");
+		return zTemp;
+	}
+	/**
+	 * Bearbeitungsroutinen für die property SOURCE
+	 * 
+	 * RFC 7986 (October 2016) item 5.8.; p. 9
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	Property Name: SOURCE
+	 * 
+	 * 	Purpose: This property identifies a URI where calendar data can be
+	 * 		refreshed from.
+	 * 
+	 * 	Value Type: URI -- no default
+	 * 
+	 * 	Property Parameters: IANA and non-standard property parameters can
+	 * 		be specified on this property.
+	 * 
+	 * 	Conformance: This property can be specified once in an iCalendar object.
+	 * 
+	 * 	Description: This property identifies a location where a client can
+	 * 		retrieve updated data for the calendar. Clients SHOULD honor any
+	 * 		specified "REFRESH-INTERVAL" value when periodically retrieving
+	 * 		data. Note that this property differs from the "URL" property in
+	 * 		that "URL" is meant to provide an alternative representation of
+	 * 		the calendar data rather than the original location of the data.
+	 * 		
+	 * 	Format Definition: This property is defined by the following notation:
+	 * 
+	 * 		source = "SOURCE" sourceparam ":" uri CRLF
+	 * 
+	 * 		sourceparam = *(
+	 * 
+	 * 	The following is REQUIRED, but MUST NOT occur more than once.
+	 * 
+	 * 			(";" "VALUE" "=" "URI") /
+	 * 		
+	 * 		The following is OPTIONAL, and MAY occur more than once.
+	 * 
+	 * 			(";" other-param)
+	 * 			)
+	 * 
+	 * @formatter:on
+	 * 
+	 */
+	String checkSOURCE(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
 	/**
-	 * Bearbeitungsroutinen für die property SEQUENCE
+	 * Bearbeitungsroutinen für die property STATUS
 	 *
 	 * @formatter:off
 	 * 
@@ -1624,7 +2285,7 @@ public class GuKKiCalvComponent {
 	 */
 
 	String checkSTATUS(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkSTATUS begonnen");
+//		System.out.println("GuKKiCalComponent.checkSTATUS begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		int laengeLiteral = 8;
 		String zTemp = "";
@@ -1632,7 +2293,7 @@ public class GuKKiCalvComponent {
 			zTemp = zeichenkette.substring(laengeLiteral);
 		}
 //		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkSTATUS beendet");
+//		System.out.println("GuKKiCalComponent.checkSTATUS beendet");
 		return zTemp;
 	}
 
@@ -1692,7 +2353,7 @@ public class GuKKiCalvComponent {
 	 */
 
 	String checkSUMMARY(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkSUMMARY begonnen");
+//		System.out.println("GuKKiCalComponent.checkSUMMARY begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		int laengeLiteral = 7;
 		String zTemp = "";
@@ -1700,7 +2361,7 @@ public class GuKKiCalvComponent {
 			zTemp = zeichenkette.substring(laengeLiteral);
 		}
 //		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkSUMMARY beendet");
+//		System.out.println("GuKKiCalComponent.checkSUMMARY beendet");
 		return zTemp;
 	}
 
@@ -1762,7 +2423,7 @@ public class GuKKiCalvComponent {
 	 */
 
 	String checkTRANSP(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkTRANSP begonnen");
+//		System.out.println("GuKKiCalComponent.checkTRANSP begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		int laengeLiteral = 6;
 		String zTemp = "";
@@ -1770,7 +2431,7 @@ public class GuKKiCalvComponent {
 			zTemp = zeichenkette.substring(laengeLiteral);
 		}
 //		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkTRANSP beendet");
+//		System.out.println("GuKKiCalComponent.checkTRANSP beendet");
 		return zTemp;
 	}
 
@@ -1836,6 +2497,48 @@ public class GuKKiCalvComponent {
 	 * 
 	 * 			uidparam = *(";" other-param)
 	 * 
+	 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 *  
+	 * 	RFC 7986 (october 2016) item 5.3.; p. 7 
+	 * 
+	 *  UID Property
+	 * 
+	 * 	This specification modifies the definition of the "UID" property to
+	 * 		allow it to be defined in an iCalendar object. The following
+	 * 		additions are made to the definition of this property, originally
+	 * 		specified in Section 3.8.4.7 of [RFC5545].
+	 * 
+	 * 	Purpose: This property specifies the persistent, globally unique
+	 * 		identifier for the iCalendar object. This can be used, for
+	 * 		example, to identify duplicate calendar streams that a client may
+	 * 		have been given access to. It can be used in conjunction with the
+	 * 		"LAST-MODIFIED" property also specified on the "VCALENDAR" object
+	 * 		to identify the most recent version of a calendar.
+	 * 
+	 * 	Conformance: This property can be specified once in an iCalendar object.
+	 * 
+	 * 	Description: The description of the "UID" property in [RFC5545] contains some
+	 * 		recommendations on how the value can be constructed. In particular,
+	 * 		it suggests use of host names, IP addresses, and domain names to
+	 * 		construct the value. However, this is no longer considered good
+	 * 		practice, particularly from a security and privacy standpoint, since
+	 * 		use of such values can leak key information about a calendar user or
+	 * 		their client and network environment. This specification updates
+	 * 		[RFC5545] by stating that "UID" values MUST NOT include any data that
+	 * 		might identify a user, host, domain, or any other security- or
+	 * 		privacy-sensitive information. It is RECOMMENDED that calendar user
+	 * 		agents now generate "UID" values that are hex-encoded random
+	 * 		Universally Unique Identifier (UUID) values as defined in
+	 * 		Sections 4.4 and 4.5 of [RFC4122].
+	 * 		
+	 * 	The following is an example of such a property value:
+	 * 		UID:5FC53010-1267-4F8E-BC28-1D7AE55A7C99
+	 * 
+	 * 	Additionally, if calendar user agents choose to use other forms of
+	 * 		opaque identifiers for the "UID" value, they MUST have a length less
+	 * 		than 255 octets and MUST conform to the "iana-token" ABNF syntax
+	 * 		defined in Section 3.1 of [RFC5545].
+     *
 	 * @formatter:on
 	 * 
 	 * @param zeichenkette - String
@@ -1847,22 +2550,26 @@ public class GuKKiCalvComponent {
 	 * 		Teil der übergebenen Zeichenkette nach dem Schlüsselwort
 	 * 
 	 */
-
-	String checkUID(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkUID begonnen");
-//		System.out.println("Zeile="+zeichenkette);
-		int laengeLiteral = 3;
-		String zTemp = "";
-		if (aktion == 0) {
-			zTemp = zeichenkette.substring(laengeLiteral);
+	String checkUID(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkUID beendet");
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 
 	private String holenNeueUID() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 		String uniqueID = UUID.randomUUID().toString();
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return uniqueID;
 	}
 
@@ -1899,21 +2606,28 @@ public class GuKKiCalvComponent {
 	 * 		url = "URL" urlparam ":" uri CRLF
 	 * 
 	 *			urlparam = *(";" other-param)
+	 *
+	 *	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+	 * 
+	 * RFC 7986 (October 2016) item 5.5.; p. 8  
+	 * 
+	 * URL Property
+	 *
+	 * 	This specification modifies the definition of the "URL" property to
+	 * 		allow it to be defined in an iCalendar object. The following
+	 * 		additions are made to the definition of this property, originally
+	 * 		specified in Section 3.8.4.6 of [RFC5545].
+	 * 
+	 * 	Purpose: This property may be used to convey a location where a more
+	 * 		dynamic rendition of the calendar information can be found.
+	 * 
+	 * 	Conformance: This property can be specified once in an iCalendar object.
 	 * 
 	 * @formatter:on
 	 * 
-	 * @param zeichenkette - String
-	 * @param aktion - int
-	 * 
-	 * @return 
-	 * 
-	 * 	aktion 0
-	 * 		Teil der übergebenen Zeichenkette nach dem Schlüsselwort
-	 * 
 	 */
-
 	String checkURL(String zeichenkette, int aktion) {
-//		System.out.println("GuKKiCalvComponent.checkURL begonnen");
+//		System.out.println("GuKKiCalComponent.checkURL begonnen");
 //		System.out.println("Zeile="+zeichenkette);
 		int laengeLiteral = 3;
 		String zTemp = "";
@@ -1921,7 +2635,61 @@ public class GuKKiCalvComponent {
 			zTemp = zeichenkette.substring(laengeLiteral);
 		}
 //		System.out.println("Temp=" + zTemp);
-//		System.out.println("GuKKiCalvComponent.checkURL beendet");
+//		System.out.println("GuKKiCalComponent.checkURL beendet");
+		return zTemp;
+	}
+
+	/**
+	 * Bearbeitungsroutinen für die property Version
+	 * 
+	 * RFC 5545 (september 2009) item 3.7.4.; p. 79 
+	 * 
+	 * @formatter:off
+	 * 
+	 * 	Property Name: VERSION
+	 * 
+	 * 	Purpose: This property specifies the identifier corresponding to the
+	 * 		highest version number or the minimum and maximum range of the
+	 * 		iCalendar specification that is required in order to interpret the
+	 * 		iCalendar object.
+	 * 
+	 * 	Value Type: TEXT
+	 * 
+	 * 	Property Parameters: IANA and non-standard property parameters can
+	 * 		be specified on this property.
+	 * 	
+	 * 	Conformance: This property MUST be specified once in an iCalendar object.
+	 * 
+	 * 	Description: A value of "2.0" corresponds to this memo.
+	 * 
+	 * 	Format Definition: This property is defined by the following notation:
+	 * 
+	 * 		version = "VERSION" verparam ":" vervalue CRLF
+	 * 
+	 * 			verparam = *(";" other-param)
+	 * 
+	 * 			vervalue = "2.0" ;This memo
+	 * 				/ maxver
+	 * 				/ (minver ";" maxver)
+	 * 				
+	 * 			minver = <A IANA-registered iCalendar version identifier>
+	 * 				;Minimum iCalendar version needed to parse the iCalendar object.
+	 * 
+	 * 			maxver = <A IANA-registered iCalendar version identifier>
+	 * 				;Maximum iCalendar version needed to parse the iCalendar object.
+	 * 
+	 * @formatter:on
+	 * 
+	 */
+	String checkVERSION(GuKKiCalProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String kennung = property.getLiteral();
+		String zTemp = "";
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 		return zTemp;
 	}
 }

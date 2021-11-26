@@ -3,6 +3,8 @@ package main;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.ArrayList;
 
 /**
@@ -104,91 +106,107 @@ import java.util.ArrayList;
  *			
  *			)
  *
+ *	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+ *	Modifications by RFC 7986 (October 2016) item 4.; p. 4
+ *
+ *			eventprop =/ *(
+ *
+ *	The following are OPTIONAL, but MUST NOT occur more than once.
+ *
+ *				color /
+ *
+ *	The following are OPTIONAL, and MAY occur more than once.
+ *
+ *				conference / image
+ *
+ *				)
+ *
  * @formatter:on
  * 
  */
-public class GuKKiCalvEvent extends GuKKiCalvComponent {
-	private GuKKiCal kalendersammlung;
-	/*
-	 * Rückverweis auf das enthaltende VCALENDAR-Element
-	 */
-	private GuKKiCalvCalendar kalender = null;
-	private String vCalendarKennung = "";
-	/*
-	 * Daten für das VEVENT-Element (alarmc)
-	 */
-	private ArrayList<GuKKiCalvAlarm> vAlarm = new ArrayList<GuKKiCalvAlarm>();
-	/*
-	 * Daten für das VEVENT-Element (eventc)
-	 */
-	private String vEventKennung = "";
+public class GuKKiCalvEvent extends GuKKiCalComponent {
+	Logger logger = Logger.getLogger("GuKKiCal");
+	Level logLevel = Level.FINER;
+
 	/*
 	 * The following are REQUIRED, but MUST NOT occur more than once.
 	 */
-	private GuKKiCalProperty vEventDTSTAMP = null;
-	private GuKKiCalProperty vEventUID = null;
+	private GuKKiCalProperty DTSTAMP = null;
+	private GuKKiCalProperty UID = null;
 	/*
 	 * The following is REQUIRED if the component appears in an iCalendar object
 	 * that doesn’t specify the "METHOD" property; otherwise, it is OPTIONAL in
 	 * any case, it MUST NOT occur more than once.
 	 */
-	private GuKKiCalProperty vEventDTSTART = null;
+	private GuKKiCalProperty DTSTART = null;
 	/*
 	 * The following are OPTIONAL, but MUST NOT occur more than once.
 	 */
-	private GuKKiCalProperty vEventCLASS = null;
-	private GuKKiCalProperty vEventCREATED = null;
-	private GuKKiCalProperty vEventDESCRIPTION = null;
-	private GuKKiCalProperty vEventGEO = null;
-	private GuKKiCalProperty vEventLASTMODIFIED = null;
-	private GuKKiCalProperty vEventLOCATION = null;
-	private GuKKiCalProperty vEventORGANIZER = null;
-	private GuKKiCalProperty vEventPRIORITY = null;
-	private GuKKiCalProperty vEventSEQUENCE = null;
-	private GuKKiCalProperty vEventSUMMARY = null;
-	private GuKKiCalProperty vEventTRANSP = null;
-	private GuKKiCalProperty vEventURL = null;
-	private GuKKiCalProperty vEventRECURID = null;
+	private GuKKiCalProperty CLASS = null;
+	private GuKKiCalProperty COLOR = null;
+	private GuKKiCalProperty CREATED = null;
+	private GuKKiCalProperty DESCRIPTION = null;
+	private GuKKiCalProperty GEO = null;
+	private GuKKiCalProperty LAST_MOD = null;
+	private GuKKiCalProperty LOCATION = null;
+	private GuKKiCalProperty ORGANIZER = null;
+	private GuKKiCalProperty PRIORITY = null;
+	private GuKKiCalProperty SEQUENCE = null;
+	private GuKKiCalProperty STATUS = null;
+	private GuKKiCalProperty SUMMARY = null;
+	private GuKKiCalProperty TRANSP = null;
+	private GuKKiCalProperty URL = null;
+	private GuKKiCalProperty RECURID = null;
 	/*
 	 * The following is OPTIONAL, but SHOULD NOT occur more than once.
 	 */
-	private GuKKiCalProperty vEventRRULE = null;
+	private GuKKiCalProperty RRULE = null;
 	/*
 	 * Either ’dtend’ or ’duration’ MAY appear in a ’eventprop’, but ’dtend’ and
 	 * ’duration’ MUST NOT occur in the same ’eventprop’.
 	 */
-	private GuKKiCalProperty vEventDTEND = null;
-	private GuKKiCalProperty vEventDURATION = null;
+	private GuKKiCalProperty DTEND = null;
+	private GuKKiCalProperty DURATION = null;
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 */
-	private ArrayList<GuKKiCalProperty> vEventATTACH = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventATTENDEE = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventCATEGORIES = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventCOMMENT = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventCONTACT = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventEXDATE = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventRSTATUS = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventRELATED = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventRESOURCES = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vEventRDATE = new ArrayList<GuKKiCalProperty>();
-	private String vEventXNAMEPROP = "";
-	private String vEventIANAPROP = "";
+	private ArrayList<GuKKiCalProperty> ATTACHSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> ATTENDEESammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> CATEGORIESSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> COMMENTSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> CONFERENCESammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> CONTACTSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> EXDATESammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> IMAGESammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> RSTATUSSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> RELATEDSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> RELATED_TOSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> RESOURCESSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> RDATESammlung = new ArrayList<GuKKiCalProperty>();
+	/*
+	 * X-Name Properties
+	 */
+	private ArrayList<GuKKiCalProperty> X_MICROSOFT_CDO_OWNERAPPTID = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> X_MOZ_GENERATION = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> X_MOZ_LASTACK = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> X_MOZ_RECEIVED_DTSTAMP = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> X_MOZ_RECEIVED_SEQUENCE = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> X_MOZ_SEND_INVITATIONS_UNDISCLOSED = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> X_MOZ_SEND_INVITATIONS = new ArrayList<GuKKiCalProperty>();
 
-	private String vEventRestinformationen = "";
-
-//	/*
-//	 * allgemeine Variablen
-//	 */
-//	String nz = "\n";
-//	String zeile = "";
-//	String folgezeile = "";
-//	boolean datenVorhanden;
+	private String Restinformationen = "";
+	/*
+	 * Sammlungen der VEVENT-Komponenten
+	 */
+	private ArrayList<GuKKiCalvAlarm> vAlarmSammlung = new ArrayList<GuKKiCalvAlarm>();
 
 	ArrayList<String> vAlarmDatenArray = new ArrayList<String>();
 	boolean vAlarmDatenSammeln = false;
 	private GuKKiCalvAlarm vAlarmEvent = null;
-
+	
+	/*
+	 * allgemeine Variablen
+	 */
 	/**
 	 * Konstruktor zum Aufbereiten des VEVENT aus einem Eingabestring
 	 * 
@@ -198,27 +216,25 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	 * @throws Exception
 	 */
 
-	public GuKKiCalvEvent(GuKKiCal kalendersammlung, String vCalendarKennung, String vEventDaten) throws Exception {
-//		System.out.println("GuKKiCalvEvent-Konstruktor begonnen: " + vCalendarKennung);
-		this.kalendersammlung = kalendersammlung;
-		this.vCalendarKennung = vCalendarKennung;
-
+	public GuKKiCalvEvent(String vEventDaten) throws Exception {
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+	
 		verarbeitenDatenstrom(vEventDaten);
 
-		vEventKennung = this.toString();
-
 		if (vAlarmDatenArray.size() != 0) {
-			vAlarmNeu();
+			vAlarmSammlungAufbauen();
 		}
-//		for (GuKKiCalvAlarm alarm : vAlarm) {
-//			System.out.println(alarm);
-//		}
 
-//		System.out.println("GuKKiCalvEvent-Konstruktor beendet: UID=" + this);
+		this.kennung = GuKKiCalcKennung.EVENT;
+		this.status = GuKKiCalcStatus.GELESEN;
+		this.schluessel = this.toString();
+
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
 	}
 
 	@Override
 	protected void verarbeitenZeile(String zeile) throws Exception {
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
 
 		if (!zeile.equals("BEGIN:VEVENT") & !zeile.equals("END:VEVENT")) {
 			if (zeile.equals("BEGIN:VALARM")) {
@@ -230,72 +246,112 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 			} else if (vAlarmDatenSammeln) {
 				vAlarmDatenArray.add(zeile);
 			} else {
-				if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
-					vEventDTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
-				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("UID")) {
-					vEventUID = new GuKKiCalProperty(zeile, "UID");
-				} else if (zeile.length() >= 7 && (zeile.substring(0, 7).equals("DTSTART"))) {
-					vEventDTSTART = new GuKKiCalProperty(zeile, "DTSTART");
-				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("CLASS")) {
-					vEventCLASS = new GuKKiCalProperty(zeile, "CLASS");
-				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CREATED")) {
-					vEventCREATED = new GuKKiCalProperty(zeile, "CREATED");
-				} else if (zeile.length() >= 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
-					vEventDESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
-				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("GEO")) {
-					vEventGEO = new GuKKiCalProperty(zeile, "GEO");
-				} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
-					vEventLASTMODIFIED = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
-				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("LOCATION")) {
-					vEventLOCATION = new GuKKiCalProperty(zeile, "LOCATION");
-				} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
-					vEventORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
-				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("PRIORITY")) {
-					vEventPRIORITY = new GuKKiCalProperty(zeile, "PRIORITY");
-				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("SEQUENCE")) {
-					vEventSEQUENCE = new GuKKiCalProperty(zeile, "SEQUENCE");
-				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("SUMMARY")) {
-					vEventSUMMARY = new GuKKiCalProperty(zeile, "SUMMARY");
-				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("TRANSP")) {
-					vEventTRANSP = new GuKKiCalProperty(zeile, "TRANSP");
-				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("URL")) {
-					vEventURL = new GuKKiCalProperty(zeile, "URL");
-				} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("RECURRENCE-ID")) {
-					vEventRECURID = new GuKKiCalProperty(zeile, "RECURRENCE-ID");
-				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RRULE")) {
-					vEventRRULE = new GuKKiCalProperty(zeile, "RRULE");
-				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("DTEND")) {
-					vEventDTEND = new GuKKiCalProperty(zeile, "DTEND");
-				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DURATION")) {
-					vEventDURATION = new GuKKiCalProperty(zeile, "DURATION");
-				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
-					vEventATTACH.add(new GuKKiCalProperty(zeile, "ATTACH"));
+				if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
+					ATTACHSammlung.add(new GuKKiCalProperty(zeile, "ATTACH"));
 				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
-					vEventATTENDEE.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
+					ATTENDEESammlung.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
 				} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("CATEGORIES")) {
-					vEventCATEGORIES.add(new GuKKiCalProperty(zeile, "CATEGORIES"));
+					CATEGORIESSammlung.add(new GuKKiCalProperty(zeile, "CATEGORIES"));
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("CLASS")) {
+					CLASS = new GuKKiCalProperty(zeile, "CLASS");
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("COLOR")) {
+					COLOR = new GuKKiCalProperty(zeile, "COLOR");
 				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("COMMENT")) {
-					vEventCOMMENT.add(new GuKKiCalProperty(zeile, "COMMENT"));
+					COMMENTSammlung.add(new GuKKiCalProperty(zeile, "COMMENT"));
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CONERENCE")) {
+					CONFERENCESammlung.add(new GuKKiCalProperty(zeile, "CONERENCE"));
 				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CONTACT")) {
-					vEventCONTACT.add(new GuKKiCalProperty(zeile, "CONTACT"));
+					CONTACTSammlung.add(new GuKKiCalProperty(zeile, "CONTACT"));
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CREATED")) {
+					CREATED = new GuKKiCalProperty(zeile, "CREATED");
+				} else if (zeile.length() >= 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
+					DESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("DTEND")) {
+					DTEND = new GuKKiCalProperty(zeile, "DTEND");
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
+					DTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
+				} else if (zeile.length() >= 7 && (zeile.substring(0, 7).equals("DTSTART"))) {
+					DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DURATION")) {
+					DURATION = new GuKKiCalProperty(zeile, "DURATION");
 				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("EXDATE")) {
-					vEventEXDATE.add(new GuKKiCalProperty(zeile, "EXDATE"));
-				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RSTATUS")) {
-					vEventRSTATUS.add(new GuKKiCalProperty(zeile, "RSTATUS"));
-				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RELATED")) {
-					vEventRELATED.add(new GuKKiCalProperty(zeile, "RELATED"));
-				} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("RESOURCES")) {
-					vEventRESOURCES.add(new GuKKiCalProperty(zeile, "RESOURCES"));
+					EXDATESammlung.add(new GuKKiCalProperty(zeile, "EXDATE"));
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("IMAGE")) {
+					IMAGESammlung.add(new GuKKiCalProperty(zeile, "IMAGE"));
+				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("GEO")) {
+					GEO = new GuKKiCalProperty(zeile, "GEO");
+				} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
+					LAST_MOD = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("LOCATION")) {
+					LOCATION = new GuKKiCalProperty(zeile, "LOCATION");
+				} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
+					ORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("PRIORITY")) {
+					PRIORITY = new GuKKiCalProperty(zeile, "PRIORITY");
 				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RDATE")) {
-					vEventRDATE.add(new GuKKiCalProperty(zeile, "RDATE"));
+					RDATESammlung.add(new GuKKiCalProperty(zeile, "RDATE"));
+				} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("RECURRENCE-ID")) {
+					RECURID = new GuKKiCalProperty(zeile, "RECURRENCE-ID");
+				} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("RELATED-TO")) {
+					RELATED_TOSammlung.add(new GuKKiCalProperty(zeile, "RELATED-TO"));
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RELATED")) {
+					RELATEDSammlung.add(new GuKKiCalProperty(zeile, "RELATED"));
+				} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("RESOURCES")) {
+					RESOURCESSammlung.add(new GuKKiCalProperty(zeile, "RESOURCES"));
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RRULE")) {
+					RRULE = new GuKKiCalProperty(zeile, "RRULE");
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RSTATUS")) {
+					RSTATUSSammlung.add(new GuKKiCalProperty(zeile, "RSTATUS"));
+				} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("SEQUENCE")) {
+					SEQUENCE = new GuKKiCalProperty(zeile, "SEQUENCE");
+				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("STATUS")) {
+					STATUS = new GuKKiCalProperty(zeile, "STATUS");
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("SUMMARY")) {
+					SUMMARY = new GuKKiCalProperty(zeile, "SUMMARY");
+				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("TRANSP")) {
+					TRANSP = new GuKKiCalProperty(zeile, "TRANSP");
+				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("UID")) {
+					UID = new GuKKiCalProperty(zeile, "UID");
+				} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("URL")) {
+					URL = new GuKKiCalProperty(zeile, "URL");
+					/*
+					 * X-Name Properties
+					 */
+				} else if (zeile.length() >= ("X-MICROSOFT-CDO-OWNERAPPTID").length() && zeile
+						.substring(0, ("X-MICROSOFT-CDO-OWNERAPPTID").length()).equals("X-MICROSOFT-CDO-OWNERAPPTID")) {
+					X_MICROSOFT_CDO_OWNERAPPTID.add(new GuKKiCalProperty(zeile, "X-MICROSOFT-CDO-OWNERAPPTID"));
+				} else if (zeile.length() >= ("X-MOZ-GENERATION").length()
+						&& zeile.substring(0, ("X-MOZ-GENERATION").length()).equals("X-MOZ-GENERATION")) {
+					X_MOZ_GENERATION.add(new GuKKiCalProperty(zeile, "X-MOZ-GENERATION"));
+				} else if (zeile.length() >= ("X-MOZ-LASTACK").length()
+						&& zeile.substring(0, ("X-MOZ-LASTACK").length()).equals("X-MOZ-LASTACK")) {
+					X_MOZ_LASTACK.add(new GuKKiCalProperty(zeile, "X-MOZ-LASTACK"));
+				} else if (zeile.length() >= ("X-MOZ-RECEIVED-DTSTAMP").length()
+						&& zeile.substring(0, ("X-MOZ-RECEIVED-DTSTAMP").length()).equals("X-MOZ-RECEIVED-DTSTAMP")) {
+					X_MOZ_RECEIVED_DTSTAMP.add(new GuKKiCalProperty(zeile, "X-MOZ-RECEIVED-DTSTAMP"));
+				} else if (zeile.length() >= ("X-MOZ-RECEIVED-SEQUENCE").length()
+						&& zeile.substring(0, ("X-MOZ-RECEIVED-SEQUENCE").length()).equals("X-MOZ-RECEIVED-SEQUENCE")) {
+					X_MOZ_RECEIVED_SEQUENCE.add(new GuKKiCalProperty(zeile, "X-MOZ-RECEIVED-SEQUENCE"));
+				} else if (zeile.length() >= ("X-MOZ-SEND-INVITATIONS-UNDISCLOSED").length()
+						&& zeile.substring(0, ("X-MOZ-SEND-INVITATIONS-UNDISCLOSED").length()).equals("X-MOZ-SEND-INVITATIONS-UNDISCLOSED")) {
+					X_MOZ_SEND_INVITATIONS_UNDISCLOSED.add(new GuKKiCalProperty(zeile, "X-MOZ-SEND-INVITATIONS-UNDISCLOSED"));
+				} else if (zeile.length() >= ("X-MOZ-SEND-INVITATIONS").length()
+						&& zeile.substring(0, ("X-MOZ-SEND-INVITATIONS").length()).equals("X-MOZ-SEND-INVITATIONS")) {
+					X_MOZ_SEND_INVITATIONS.add(new GuKKiCalProperty(zeile, "X-MOZ-SEND-INVITATIONS"));
 				} else {
-					vEventRestinformationen += zeile + nz;
+					Restinformationen += zeile + nz;
 				}
 			}
 		}
-	}
+		if (!Restinformationen.equals("")) {
+			logger.log(Level.INFO, this.toString() + " Restinformationen:\n" + "-->" + Restinformationen + "<--\n");
+		}
 
-	private void vAlarmNeu() throws Exception {
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+	} // Ende verarbeitenZeile
+
+	private void vAlarmSammlungAufbauen() throws Exception {
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
 
 		String vAlarmDaten = "";
 
@@ -304,27 +360,27 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				vAlarmDaten = zeile + nz;
 			} else if (zeile.equals("END:VALARM")) {
 				vAlarmDaten += zeile + nz;
-				vAlarm.add(new GuKKiCalvAlarm(kalendersammlung, vCalendarKennung, vEventKennung, vAlarmDaten));
+				vAlarmSammlung.add(new GuKKiCalvAlarm(vAlarmDaten));
 			} else {
 				vAlarmDaten += zeile + nz;
 			}
 		}
-	}
+
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+	} // Ende vAlarmSammlungAufbauen
 
 	/**
 	 * Gibt statt der Adresse die UID des vEvent zurück
 	 */
 	public String toString() {
-		return this.vCalendarKennung + ",E," + vEventUID.getPropertyWert() + ","
-				+ (vEventSEQUENCE == null ? "" : vEventSEQUENCE.getPropertyWert()) + ","
-				+ (vEventRECURID == null ? "" : vEventRECURID.getPropertyWert()) + "";
-	}
+		return "E," + UID.getWert() + "," + (SEQUENCE == null ? "" : SEQUENCE.getWert()) + ","
+				+ (RECURID == null ? "" : RECURID.getWert()) + "";
+	} // Ende toString()
 
 	/**
 	 * Gibt sämtliche Daten des vEvent aus
 	 */
 	public String toString(String ausgabeLevel) {
-		return "Event-Identifikation=" + this.toString() + "<-->"
-				+ (vEventSUMMARY == null ? "" : vEventSUMMARY.getPropertyWert());
-	}
-}
+		return "Event-Identifikation=" + this.toString() + "<-->" + (SUMMARY == null ? "" : SUMMARY.getWert());
+	} // Ende toString(String)
+} // Ende GuKKiCalvEvent-Klasse

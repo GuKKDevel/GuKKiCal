@@ -191,20 +191,22 @@ import java.util.ArrayList;
  *    
  */
 
-public class GuKKiCalvAlarm extends GuKKiCalvComponent {
+public class GuKKiCalvAlarm extends GuKKiCalComponent {
 	/*
-	 * Rückverweis auf das enthaltende VCALENDAR-Element
+	 * ’action’ and ’trigger’ are both REQUIRED, but MUST NOT occur more than
+	 * once.
 	 */
-	private String vCalendarKennung = "";
-	/*
-	 * Rückverweis auf die enthaltende VEVENT bzw. VTODO CALENDAR-Componente
-	 */
-	private String vComponentKennung = "";
-
 	private GuKKiCalProperty vAlarmACTION = null;
 	private GuKKiCalProperty vAlarmTRIGGER = null;
+	/*
+	 * ’duration’ and ’repeat’ are both OPTIONAL, and MUST NOT occur more than
+	 * once each but if one occurs, so MUST the other.
+	 */
 	private GuKKiCalProperty vAlarmDURATION = null;
 	private GuKKiCalProperty vAlarmREPEAT = null;
+	/*
+	 * The following is OPTIONAL, but MUST NOT occur more than once.
+	 */
 	private GuKKiCalProperty vAlarmDESCRIPTION = null;
 	private GuKKiCalProperty vAlarmSUMMARY = null;
 	private ArrayList<GuKKiCalProperty> vAlarmATTACH = new ArrayList<GuKKiCalProperty>();
@@ -220,16 +222,10 @@ public class GuKKiCalvAlarm extends GuKKiCalvComponent {
 	String folgezeile = "";
 	boolean datenVorhanden;
 
-	public GuKKiCalvAlarm(GuKKiCal kalendersammlung, String vCalendarKennung, String vComponentKennung,
-			String vAlarmDaten) throws Exception {
+	public GuKKiCalvAlarm(String vAlarmDaten) throws Exception {
 
-//		System.out.println("GuKKiCalvAlarm begonnen für:" + vComponentKennung);
-
-		this.vCalendarKennung = vCalendarKennung;
-		this.vComponentKennung = vComponentKennung;
 		verarbeitenDatenstrom(vAlarmDaten);
 
-//		System.out.println("GuKKiCalvAlarm beendet für:" + vComponentKennung);
 	}
 
 	@Override
@@ -263,7 +259,7 @@ public class GuKKiCalvAlarm extends GuKKiCalvComponent {
 	 * Gibt die UID des vAlarm aus
 	 */
 	public String toString() {
-		return "Alarm=" + (vAlarmACTION == null ? "" : vAlarmACTION.getPropertyWert()) + ","
-				+ (vAlarmTRIGGER == null ? "" : vAlarmTRIGGER.getPropertyWert());
+		return "Alarm=" + (vAlarmACTION == null ? "" : vAlarmACTION.getWert()) + ","
+				+ (vAlarmTRIGGER == null ? "" : vAlarmTRIGGER.getWert());
 	}
 }

@@ -1,39 +1,64 @@
 package main;
 
-import java.util.UUID;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.*;
 
 public class Ausprobieren {
-	
-//	GuKKiCal vCalendarSammlung = new GuKKiCal();
-	
-	public Ausprobieren() {
-		// TODO Automatisch generierter Konstruktorstub
-	}
-	public static void main(String[] args) throws Exception {
-		System.out.println("GuKKiCalParser.main <static> begonnen");
-		GuKKiCal kalendersammlung = new GuKKiCal();
+
+	public Ausprobieren() throws Exception {
+		Logger logger = Logger.getLogger("GuKKiCal");
+		logger.setLevel(Level.FINE);
+//		Handler handler = new FileHandler("/home/programmieren/TestFiles/iCalender/temp.log");
+		Handler handler = new ConsoleHandler();
+		handler.setLevel(Level.FINE);
+		handler.setFormatter(new Formatter() {
+			@Override
+			public String format(LogRecord record) {
+				return record.getSourceClassName() + "." + record.getSourceMethodName() + ": " + record.getMessage()+"\n";
+			}
+
+		});
+		logger.addHandler(handler);
+		logger.setUseParentHandlers(false);
+		logger.finest("begonnen");
+
+		ArrayList<GuKKiCaliCalendar> iCalendarSammlung = new ArrayList<GuKKiCaliCalendar>();
 		try {
 			GuKKiCalParser parser = new GuKKiCalParser();
+			Date zeit = new Date();
+			System.out.println(zeit);
 			if (System.getProperty("os.name").equals("Linux")) {
-				parser.kalenderEinlesen(											// Standard-KHG TestKalender Google temp
-						"/home/programmieren/TestFiles/iCalender/temp.ics",
-						kalendersammlung);
+				parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Abfallkalender.ics");
+				zeit = new Date();
+				System.out.println(zeit);
+				parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Google.ics");
+				zeit = new Date();
+				System.out.println(zeit);
+				parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Standard-KHG.ics");
+				// Standard-KHG TestKalender Google temp Abfallkalender
+
 			} else {
-				parser.kalenderEinlesen(
-						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics",
-						kalendersammlung);
+				parser.kalenderEinlesen(iCalendarSammlung,
+						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics");
 			}
 //			parser.kalenderEinlesen(
 //					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", vCalendarSammlung);
-
+			zeit = new Date();
+			System.out.println(zeit);
 		} finally {
 
 		}
-		System.out.println("GuKKiCalParser.main <static> beendet");
+		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
+		System.out.println(iCaliCalendar.toString("CTEZ"));	
+		System.out.println("\n\n"+new Date().toString()+"\n\n");
+		}
+		logger.finest("beendet");
+		// TODO Automatisch generierter Konstruktorstub
+	}
+
+	public static void main(String[] args) throws Exception {
+		Ausprobieren test = new Ausprobieren();
 	}
 //	public static void main(String[] args) throws Exception {
 //		// TODO Automatisch generierter Methodenstub
@@ -41,15 +66,15 @@ public class Ausprobieren {
 ////		property = new GuKKiCalProperty("CREATED:20151123T103732Z", "CREATED");
 ////		property = new GuKKiCalProperty("X-LIC-ERROR;X-LIC-ERRORTYPE=VALUE-PARSE-ERROR:No value for DESCRIPTION property. Removing entire property:", "X-LIC-ERROR");
 //		property = new GuKKiCalProperty("SUMMARY;CN=\"TEST:Angiologie;Ulrich\"", "SUMMARY");}
-	
+
 //	static GuKKiCalProperty eintragen(String propertyZeile) throws Exception {
-////		System.out.println("GuKKiCalvComponent.checkDTSTAMP begonnen");
+////		System.out.println("GuKKiCalComponent.checkDTSTAMP begonnen");
 ////		System.out.println("Zeile="+zeichenkette);
 //		
 //		
 ////		System.out.println(property);
 //		// System.out.println("Temp=" + zTemp);
-////		System.out.println("GuKKiCalvComponent.checkDTSTAMP beendet");
+////		System.out.println("GuKKiCalComponent.checkDTSTAMP beendet");
 //		return property;
 //	}
 

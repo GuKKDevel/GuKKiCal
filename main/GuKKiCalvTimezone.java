@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 /**
  * 
  * Die Klasse GuKKiCalvTimezone enthält alle Daten für eine VTIMEZONE-Komponente im iCal Format
@@ -236,23 +238,243 @@ package main;
  *
  *				)
  *
- * 
  * @formatter:on
+ * 
  */
 
-public class GuKKiCalvTimezone extends GuKKiCalvComponent {
+public class GuKKiCalvTimezone extends GuKKiCalComponent {
+	/*
+	 * The following is REQUIRED, but MUST NOT occur more than once.
+	 */
+	private GuKKiCalProperty TZID = null;
+	/*
+	 * The following are OPTIONAL, but MUST NOT occur more than once.
+	 */
+	private GuKKiCalProperty LASTMODIFIED = null;
+	private GuKKiCalProperty TZURL = null;
+	/*
+	 * One of ’standardc’ or ’daylightc’ MUST occur and each MAY occur more than
+	 * once.
+	 */
+	private ArrayList<GuKKiCalcDaylight> cDaylightSammlung = new ArrayList<GuKKiCalcDaylight>();
+	private ArrayList<GuKKiCalcStandard> cStandardSammlung = new ArrayList<GuKKiCalcStandard>();
+	/*
+	 * Sammlung für x-prop und iana-prop auf Ebene VTIMEZONE
+	 */
+	private String vTimezoneRestinformationen = "";
+	/*
+	 * Zwischenspeicher für den Datenstrom für cDaylight und cStandard nebst
+	 * Verarbeitungsschalter
+	 */
+	ArrayList<String> cDaylightDatenArray = new ArrayList<String>();
+	ArrayList<String> cStandardDatenArray = new ArrayList<String>();
+	boolean cDaylightDatenSammeln = false;
+	boolean cStandardDatenSammeln = false;
 
-	public GuKKiCalvTimezone() throws Exception {
-		// TODO Automatisch generierter Konstruktorstub
-	}
+	/**
+	 * Erstellen einer VTIMEZONE-Komponente aus dem Teil eines
+	 * Kalenderdatenstroms
+	 * 
+	 * @param vTimezoneDaten
+	 * 
+	 * @throws Exception
+	 */
+	public GuKKiCalvTimezone(String vTimezoneDaten) throws Exception {
 
-	class DAYLIGHT {
-		private DAYLIGHT() {
+		verarbeitenDatenstrom(vTimezoneDaten);
+
+		if (cDaylightDatenArray.size() != 0) {
+			cDaylightneu();
+		}
+		if (cStandardDatenArray.size() != 0) {
+			cStandardneu();
 		}
 	}
 
-	class STANDARD {
-		private STANDARD() {
+	@Override
+	protected void verarbeitenZeile(String zeile) throws Exception {
+		if (!zeile.equals("BEGIN:VTIMEZONE") & !zeile.equals("END:VTIMEZONE")) {
+			if (zeile.equals("BEGIN:DAYLIGHT")) {
+				cDaylightDatenSammeln = true;
+				cDaylightDatenArray.add(zeile);
+			} else if (zeile.equals("END:DAYLIGHT")) {
+				cDaylightDatenArray.add(zeile);
+				cDaylightDatenSammeln = false;
+			} else if (cDaylightDatenSammeln) {
+				cDaylightDatenArray.add(zeile);
+			} else if (zeile.equals("BEGIN:STANDARD")) {
+				cStandardDatenSammeln = true;
+				cStandardDatenArray.add(zeile);
+			} else if (zeile.equals("END:STANDARD")) {
+				cStandardDatenArray.add(zeile);
+				cStandardDatenSammeln = false;
+			} else if (cStandardDatenSammeln) {
+				cStandardDatenArray.add(zeile);
+			} else {
+				if (zeile.length() >= 4 && zeile.substring(0, 4).equals("TZID")) {
+					TZID = new GuKKiCalProperty(zeile, "TZID");
+				} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
+					LASTMODIFIED = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("TZURL")) {
+					TZURL = new GuKKiCalProperty(zeile, "TZURL");
+				} else {
+					vTimezoneRestinformationen += zeile + nz;
+				}
+			}
+		}
+	}
+
+	private void cDaylightneu() throws Exception {
+
+		String cDaylightDaten = "";
+
+		for (String zeile : cDaylightDatenArray) {
+			if (zeile.equals("BEGIN:DAYLIGHT")) {
+				cDaylightDaten = zeile + nz;
+			} else if (zeile.equals("END:DAYLIGHT")) {
+				cDaylightDaten += zeile + nz;
+				cDaylightSammlung.add(new GuKKiCalcDaylight(cDaylightDaten));
+			} else {
+				cDaylightDaten += zeile + nz;
+			}
+		}
+	}
+
+	private void cStandardneu() throws Exception {
+
+		String cStandardDaten = "";
+
+		for (String zeile : cStandardDatenArray) {
+			if (zeile.equals("BEGIN:STANDARD")) {
+				cStandardDaten = zeile + nz;
+			} else if (zeile.equals("END:STANDARD")) {
+				cStandardDaten += zeile + nz;
+				cStandardSammlung.add(new GuKKiCalcStandard(cStandardDaten));
+			} else {
+				cStandardDaten += zeile + nz;
+			}
+		}
+	}
+
+	/**
+	 * Gibt Identifikationsdaten der VTIMEZONE-Komponente aus
+	 */
+	public String toString() {
+		return (TZID == null ? "" : TZID.getWert());
+	}
+
+	/**
+	 * Gibt einige Daten der VTIMEZONE-Komponente aus
+	 */
+	public String toString(String ausgabeLevel) {
+		return "Timezone-Identifikation=" + this.toString();
+	}
+
+	class GuKKiCalcDaylight extends GuKKiCalComponent {
+		/*
+		 * The following are REQUIRED, but MUST NOT occur more than once.
+		 */
+		GuKKiCalProperty DTSTART = null;
+		GuKKiCalProperty TZOFFSETTO = null;
+		GuKKiCalProperty TZOFFSETFROM = null;
+		/*
+		 * The following is OPTIONAL, but SHOULD NOT occur more than once.
+		 */
+		GuKKiCalProperty RRULE = null;
+		/*
+		 * The following are OPTIONAL, and MAY occur more than once.
+		 */
+		private ArrayList<GuKKiCalProperty> COMMENT = new ArrayList<GuKKiCalProperty>();
+		private ArrayList<GuKKiCalProperty> RDATE = new ArrayList<GuKKiCalProperty>();
+		private ArrayList<GuKKiCalProperty> TZNAME = new ArrayList<GuKKiCalProperty>();
+		/*
+		 * Here are the x-prop and iana-prop are to be stored
+		 */
+		private String Restinformationen = "";
+
+		private GuKKiCalcDaylight(String cDaylightDaten) throws Exception {
+
+			verarbeitenDatenstrom(cDaylightDaten);
+
+		}
+
+		@Override
+		protected void verarbeitenZeile(String zeile) throws Exception {
+
+			if (!zeile.equals("BEGIN:DAYLIGHT") & !zeile.equals("END:DAYLIGHT")) {
+				if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTART")) {
+					DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
+				} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("TZOFFSETTO")) {
+					TZOFFSETTO = new GuKKiCalProperty(zeile, "TZOFFSETTO");
+				} else if (zeile.length() >= 12 && zeile.substring(0, 12).equals("TZOFFSETFROM")) {
+					TZOFFSETFROM = new GuKKiCalProperty(zeile, "TZOFFSETFROM");
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RRULE")) {
+					RRULE = new GuKKiCalProperty(zeile, "RRULE");
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("COMMENT")) {
+					COMMENT.add(new GuKKiCalProperty(zeile, "COMMENT"));
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RDATE")) {
+					RDATE.add(new GuKKiCalProperty(zeile, "RDATE"));
+				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("TZNAME")) {
+					TZNAME.add(new GuKKiCalProperty(zeile, "TZNAME"));
+				} else {
+					Restinformationen += zeile + nz;
+					System.out.println("Restinformationen-->" + Restinformationen);
+				}
+			}
+		}
+	}
+
+	class GuKKiCalcStandard extends GuKKiCalComponent {
+		/*
+		 * The following are REQUIRED, but MUST NOT occur more than once.
+		 */
+		GuKKiCalProperty DTSTART = null;
+		GuKKiCalProperty TZOFFSETTO = null;
+		GuKKiCalProperty TZOFFSETFROM = null;
+		/*
+		 * The following is OPTIONAL, but SHOULD NOT occur more than once.
+		 */
+		GuKKiCalProperty RRULE = null;
+		/*
+		 * The following are OPTIONAL, and MAY occur more than once.
+		 */
+		private ArrayList<GuKKiCalProperty> COMMENT = new ArrayList<GuKKiCalProperty>();
+		private ArrayList<GuKKiCalProperty> RDATE = new ArrayList<GuKKiCalProperty>();
+		private ArrayList<GuKKiCalProperty> TZNAME = new ArrayList<GuKKiCalProperty>();
+		/*
+		 * Here are the x-prop and iana-prop are to be stored
+		 */
+		private String Restinformationen = "";
+
+		private GuKKiCalcStandard(String cStandardDaten) throws Exception {
+
+			verarbeitenDatenstrom(cStandardDaten);
+
+		}
+
+		@Override
+		protected void verarbeitenZeile(String zeile) throws Exception {
+
+			if (!zeile.equals("BEGIN:STANDARD") & !zeile.equals("END:STANDARD")) {
+				if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTART")) {
+					DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
+				} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("TZOFFSETTO")) {
+					TZOFFSETTO = new GuKKiCalProperty(zeile, "TZOFFSETTO");
+				} else if (zeile.length() >= 12 && zeile.substring(0, 12).equals("TZOFFSETFROM")) {
+					TZOFFSETFROM = new GuKKiCalProperty(zeile, "TZOFFSETFROM");
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RRULE")) {
+					RRULE = new GuKKiCalProperty(zeile, "RRULE");
+				} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("COMMENT")) {
+					COMMENT.add(new GuKKiCalProperty(zeile, "COMMENT"));
+				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RDATE")) {
+					RDATE.add(new GuKKiCalProperty(zeile, "RDATE"));
+				} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("TZNAME")) {
+					TZNAME.add(new GuKKiCalProperty(zeile, "TZNAME"));
+				} else {
+					Restinformationen += zeile + nz;
+					System.out.println("Restinformationen-->" + Restinformationen);
+				}
+			}
 		}
 	}
 }

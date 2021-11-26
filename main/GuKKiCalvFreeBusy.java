@@ -104,13 +104,7 @@ import java.util.ArrayList;
 	 * @formatter:on
 	 * 
 	 */
-public class GuKKiCalvFreeBusy extends GuKKiCalvComponent {
-	private GuKKiCal kalendersammlung;
-	/*
-	 * Rückverweis auf das enthaltende VCALENDAR-Element
-	 */
-	private GuKKiCalvCalendar kalender = null;
-	private String vCalendarKennung = "";
+public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
 	/*
 	 * Daten für das VFREEBUSY-Element (freebusyc)
 	 */
@@ -145,10 +139,7 @@ public class GuKKiCalvFreeBusy extends GuKKiCalvComponent {
 	
 	
 	
-	public GuKKiCalvFreeBusy(GuKKiCal kalendersammlung, String vCalendarKennung, String vFreeBusyDaten) throws Exception {
-		System.out.println("GuKKiCalvFreeBusy-Konstruktor begonnen: " + vCalendarKennung);
-		this.kalendersammlung = kalendersammlung;
-		this.vCalendarKennung = vCalendarKennung;
+	public GuKKiCalvFreeBusy(String vFreeBusyDaten) throws Exception {
 
 		verarbeitenDatenstrom(vFreeBusyDaten);
 
