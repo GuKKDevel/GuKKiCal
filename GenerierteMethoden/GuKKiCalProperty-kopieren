@@ -1,0 +1,47 @@
+ 
+    /**
+     * Kopieren der ganzen Property
+     *
+     * @return GuKKiCalProperty
+     */
+    protected GuKKiCalProperty kopieren() {
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "begonnen");
+        }
+ 
+        GuKKiCalProperty temp = new GuKKiCalProperty();
+ 
+        temp.literal = this.literal;
+        temp.wert = this.wert;
+ 
+        temp.ALTREP = this.ALTREP == null ? null : this.ALTREP;
+        temp.CN = this.CN == null ? null : this.CN;
+        temp.CUTYPE = this.CUTYPE == null ? null : this.CUTYPE;
+        temp.DELFROM = this.DELFROM == null ? null : this.DELFROM;
+        temp.DELTO = this.DELTO == null ? null : this.DELTO;
+        temp.DIR = this.DIR == null ? null : this.DIR;
+        temp.ENCODING = this.ENCODING == null ? null : this.ENCODING;
+        temp.FBTYPE = this.FBTYPE == null ? null : this.FBTYPE;
+        temp.FMTTYPE = this.FMTTYPE == null ? null : this.FMTTYPE;
+        temp.LANGUAGE = this.LANGUAGE == null ? null : this.LANGUAGE;
+        temp.MEMBER = this.MEMBER == null ? null : this.MEMBER;
+        temp.PARTSTAT = this.PARTSTAT == null ? null : this.PARTSTAT;
+        temp.RANGE = this.RANGE == null ? null : this.RANGE;
+        temp.RELATED = this.RELATED == null ? null : this.RELATED;
+        temp.RELTYPE = this.RELTYPE == null ? null : this.RELTYPE;
+        temp.ROLE = this.ROLE == null ? null : this.ROLE;
+        temp.RSVP = this.RSVP == null ? null : this.RSVP;
+        temp.SENTBY = this.SENTBY == null ? null : this.SENTBY;
+        temp.TZID = this.TZID == null ? null : this.TZID;
+        temp.VALUETYPE = this.VALUETYPE == null ? null : this.VALUETYPE;
+        temp.X_UID = this.X_UID == null ? null : this.X_UID;
+ 
+        temp.Restinformationen = this.Restinformationen;
+ 
+        temp.status = GuKKiCalcStatus.KOPIERT;
+ 
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "beendet");
+        }
+        return temp;
+    }

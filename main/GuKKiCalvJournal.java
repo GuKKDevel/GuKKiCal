@@ -22,7 +22,7 @@ package main;
 */
 public class GuKKiCalvJournal {
 
-	public GuKKiCalvJournal() {
+	public GuKKiCalvJournal(String x) {
 		// TODO Automatisch generierter Konstruktorstub
 	}
 

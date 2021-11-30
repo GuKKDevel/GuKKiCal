@@ -15,43 +15,43 @@ public class Ausprobieren {
 		handler.setFormatter(new Formatter() {
 			@Override
 			public String format(LogRecord record) {
-				return record.getSourceClassName() + "." + record.getSourceMethodName() + ": " + record.getMessage()+"\n";
+				return record.getSourceClassName() + "." + record.getSourceMethodName() + ": " + record.getMessage()
+						+ "\n";
 			}
 
 		});
 		logger.addHandler(handler);
 		logger.setUseParentHandlers(false);
 		logger.finest("begonnen");
-
+		
 		ArrayList<GuKKiCaliCalendar> iCalendarSammlung = new ArrayList<GuKKiCaliCalendar>();
-		try {
-			GuKKiCalParser parser = new GuKKiCalParser();
-			Date zeit = new Date();
-			System.out.println(zeit);
-			if (System.getProperty("os.name").equals("Linux")) {
-				parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Abfallkalender.ics");
-				zeit = new Date();
-				System.out.println(zeit);
-				parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Google.ics");
-				zeit = new Date();
-				System.out.println(zeit);
-				parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Standard-KHG.ics");
-				// Standard-KHG TestKalender Google temp Abfallkalender
 
+		try {
+		
+			GuKKiCalParser parser = new GuKKiCalParser();
+			System.out.println(new Date());
+			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/TestKalender.ics");
+//			System.out.println(new Date());
+//			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Google.ics");
+//			System.out.println(new Date());
+//			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Standard-KHG.ics");
+			System.out.println(new Date());
+
+			// Standard-KHG TestKalender Google temp Abfallkalender
+
+			if (System.getProperty("os.name").equals("Linux")) {
 			} else {
 				parser.kalenderEinlesen(iCalendarSammlung,
 						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics");
 			}
 //			parser.kalenderEinlesen(
 //					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", vCalendarSammlung);
-			zeit = new Date();
-			System.out.println(zeit);
 		} finally {
 
 		}
 		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
-		System.out.println(iCaliCalendar.toString("CTEZ"));	
-		System.out.println("\n\n"+new Date().toString()+"\n\n");
+			System.out.println(iCaliCalendar.toString("CZ"));
+			System.out.println("\n\n" + new Date().toString() + "\n\n");
 		}
 		logger.finest("beendet");
 		// TODO Automatisch generierter Konstruktorstub

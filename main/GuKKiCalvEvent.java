@@ -125,8 +125,9 @@ import java.util.ArrayList;
  * 
  */
 public class GuKKiCalvEvent extends GuKKiCalComponent {
+
 	Logger logger = Logger.getLogger("GuKKiCal");
-	Level logLevel = Level.FINER;
+	Level logLevel = Level.FINEST;
 
 	/*
 	 * The following are REQUIRED, but MUST NOT occur more than once.
@@ -203,7 +204,7 @@ public class GuKKiCalvEvent extends GuKKiCalComponent {
 	ArrayList<String> vAlarmDatenArray = new ArrayList<String>();
 	boolean vAlarmDatenSammeln = false;
 	private GuKKiCalvAlarm vAlarmEvent = null;
-	
+
 	/*
 	 * allgemeine Variablen
 	 */
@@ -217,8 +218,10 @@ public class GuKKiCalvEvent extends GuKKiCalComponent {
 	 */
 
 	public GuKKiCalvEvent(String vEventDaten) throws Exception {
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-	
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+
 		verarbeitenDatenstrom(vEventDaten);
 
 		if (vAlarmDatenArray.size() != 0) {
@@ -229,12 +232,19 @@ public class GuKKiCalvEvent extends GuKKiCalComponent {
 		this.status = GuKKiCalcStatus.GELESEN;
 		this.schluessel = this.toString();
 
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+		if (!Restinformationen.equals("")) {
+			logger.log(Level.INFO, this.toString() + " Restinformationen:\n" + "-->" + Restinformationen + "<--\n");
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	}
 
 	@Override
 	protected void verarbeitenZeile(String zeile) throws Exception {
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 
 		if (!zeile.equals("BEGIN:VEVENT") & !zeile.equals("END:VEVENT")) {
 			if (zeile.equals("BEGIN:VALARM")) {
@@ -333,8 +343,10 @@ public class GuKKiCalvEvent extends GuKKiCalComponent {
 						&& zeile.substring(0, ("X-MOZ-RECEIVED-SEQUENCE").length()).equals("X-MOZ-RECEIVED-SEQUENCE")) {
 					X_MOZ_RECEIVED_SEQUENCE.add(new GuKKiCalProperty(zeile, "X-MOZ-RECEIVED-SEQUENCE"));
 				} else if (zeile.length() >= ("X-MOZ-SEND-INVITATIONS-UNDISCLOSED").length()
-						&& zeile.substring(0, ("X-MOZ-SEND-INVITATIONS-UNDISCLOSED").length()).equals("X-MOZ-SEND-INVITATIONS-UNDISCLOSED")) {
-					X_MOZ_SEND_INVITATIONS_UNDISCLOSED.add(new GuKKiCalProperty(zeile, "X-MOZ-SEND-INVITATIONS-UNDISCLOSED"));
+						&& zeile.substring(0, ("X-MOZ-SEND-INVITATIONS-UNDISCLOSED").length())
+								.equals("X-MOZ-SEND-INVITATIONS-UNDISCLOSED")) {
+					X_MOZ_SEND_INVITATIONS_UNDISCLOSED
+							.add(new GuKKiCalProperty(zeile, "X-MOZ-SEND-INVITATIONS-UNDISCLOSED"));
 				} else if (zeile.length() >= ("X-MOZ-SEND-INVITATIONS").length()
 						&& zeile.substring(0, ("X-MOZ-SEND-INVITATIONS").length()).equals("X-MOZ-SEND-INVITATIONS")) {
 					X_MOZ_SEND_INVITATIONS.add(new GuKKiCalProperty(zeile, "X-MOZ-SEND-INVITATIONS"));
@@ -343,15 +355,16 @@ public class GuKKiCalvEvent extends GuKKiCalComponent {
 				}
 			}
 		}
-		if (!Restinformationen.equals("")) {
-			logger.log(Level.INFO, this.toString() + " Restinformationen:\n" + "-->" + Restinformationen + "<--\n");
-		}
 
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	} // Ende verarbeitenZeile
 
 	private void vAlarmSammlungAufbauen() throws Exception {
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 
 		String vAlarmDaten = "";
 
@@ -366,7 +379,9 @@ public class GuKKiCalvEvent extends GuKKiCalComponent {
 			}
 		}
 
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	} // Ende vAlarmSammlungAufbauen
 
 	/**

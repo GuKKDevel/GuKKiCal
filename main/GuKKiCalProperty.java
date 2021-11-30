@@ -84,6 +84,9 @@ class GuKKiCalProperty {
 	/*
 	 * Notwendige Werte
 	 */
+	private GuKKiCalcKennung kennung = GuKKiCalcKennung.PROPERTY;
+	private GuKKiCalcStatus status = GuKKiCalcStatus.UNDEFINIERT;
+
 	private String literal = "";
 	private String wert = "";
 
@@ -854,17 +857,31 @@ class GuKKiCalProperty {
 	private String Restinformationen = "";
 
 	/**
+	 * leerer Konstruktor
+	 */
+	protected GuKKiCalProperty() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+	}
+
+	/**
 	 * Konstruktor
 	 * 
 	 */
-	int anzahl = 0;
 
 	protected GuKKiCalProperty(String literal) {
 
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
+
 		this.literal = literal;
+
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
@@ -874,21 +891,30 @@ class GuKKiCalProperty {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
+
 		this.literal = literal;
-		if (logger.isLoggable(Level.FINER)) {
-			logger.finer("Literal:" + this.literal);
-			logger.finer("  Daten:" + propertyDaten);
-		}
+
 		if (propertyDaten.substring(literal.length(), literal.length() + 1).equals(":")) {
 			this.wert = propertyDaten.substring(literal.length() + 1);
 		} else {
 			parameterAnalysieren(propertyDaten.substring(literal.length()));
 		}
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+
+		if (!Restinformationen.equals("")) {
+			logger.log(Level.INFO, this.literal + " Restinformationen\n" + "-->" + Restinformationen + "<--");
+		}
+
+		status = GuKKiCalcStatus.GELESEN;
+
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	} // Ende Konstruktor (String, String)
 
 	void parameterAnalysieren(String propertyDaten) {
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 
 		boolean istBackslash = false;
 		boolean istLiteral = false;
@@ -961,11 +987,15 @@ class GuKKiCalProperty {
 			this.wert = parameter;
 		}
 
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	}
 
 	void parameterBestimmen(String parameter, String trenner) {
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 		// System.out.println("GuKKiCalProperty parameterBestimmen begonnen");
 //		System.out.println("Parameter=" + parameter + " <--> " + trenner);
 		if (parameter.length() > 7 && parameter.substring(0, 7).equals("ALTREP=")) {
@@ -1017,10 +1047,100 @@ class GuKKiCalProperty {
 			this.Restinformationen += parameter + trenner;
 		}
 
-		if (!Restinformationen.equals("")) {
-			logger.log(Level.INFO, this.literal + " Restinformationen\n" + "-->" + Restinformationen + "<--");
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
 		}
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+	}
+
+	/**
+	 * Kopieren der ganzen Property
+	 * 
+	 * @return GuKKiCalProperty
+	 */
+	protected GuKKiCalProperty kopieren() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		GuKKiCalProperty temp = new GuKKiCalProperty();
+
+		temp.literal = this.literal;
+		temp.wert = this.wert;
+
+		temp.ALTREP = ALTREP == null ? null : this.ALTREP;
+		temp.CN = CN == null ? null : this.CN;
+		temp.CUTYPE = CUTYPE == null ? null : this.CUTYPE;
+		temp.DELFROM = DELFROM == null ? null : this.DELFROM;
+		temp.DELTO = DELTO == null ? null : this.DELTO;
+		temp.DIR = DIR == null ? null : this.DIR;
+		temp.DIR = DIR == null ? null : this.DIR;
+		temp.ENCODING = ENCODING == null ? null : this.ENCODING;
+		temp.FBTYPE = FBTYPE == null ? null : this.FBTYPE;
+		temp.FMTTYPE = FMTTYPE == null ? null : this.FMTTYPE;
+		temp.LANGUAGE = LANGUAGE == null ? null : this.LANGUAGE;
+		temp.MEMBER = MEMBER == null ? null : this.MEMBER;
+		temp.PARTSTAT = PARTSTAT == null ? null : this.PARTSTAT;
+		temp.RANGE = RANGE == null ? null : this.RANGE;
+		temp.RELATED = RELATED == null ? null : this.RELATED;
+		temp.RELTYPE = RELTYPE == null ? null : this.RELTYPE;
+		temp.ROLE = ROLE == null ? null : this.ROLE;
+		temp.RSVP = RSVP == null ? null : this.RSVP;
+		temp.SENTBY = SENTBY == null ? null : this.SENTBY;
+		temp.TZID = TZID == null ? null : this.TZID;
+		temp.VALUETYPE = VALUETYPE == null ? null : this.VALUETYPE;
+
+		temp.status = GuKKiCalcStatus.KOPIERT;
+
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return temp;
+	}
+
+	public boolean vergleichen(Object dasAndere) {
+		if (!dasAndere.getClass().equals(this.getClass()))
+			return false;
+		GuKKiCalProperty temp = (GuKKiCalProperty) dasAndere;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && !temp.ALTREP.equals(this.ALTREP))))
+			return false;
+
+		return true;
 	}
 
 	String getWert() {
@@ -1047,9 +1167,12 @@ class GuKKiCalProperty {
 		this.Restinformationen = Restinformationen;
 	}
 
+	@Override
+
 	public String toString() {
 		String nz = "\n";
 		String ausgabe = "Literal=" + literal + nz;
+
 		if (ALTREP != null)
 			ausgabe += "altrepparm=" + ALTREP + nz;
 		if (CN != null)

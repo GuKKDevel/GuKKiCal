@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 /**
  * 
@@ -250,7 +251,7 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 	/*
 	 * The following are OPTIONAL, but MUST NOT occur more than once.
 	 */
-	private GuKKiCalProperty LASTMODIFIED = null;
+	private GuKKiCalProperty LAST_MOD = null;
 	private GuKKiCalProperty TZURL = null;
 	/*
 	 * One of ’standardc’ or ’daylightc’ MUST occur and each MAY occur more than
@@ -261,7 +262,7 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 	/*
 	 * Sammlung für x-prop und iana-prop auf Ebene VTIMEZONE
 	 */
-	private String vTimezoneRestinformationen = "";
+	private String Restinformationen = "";
 	/*
 	 * Zwischenspeicher für den Datenstrom für cDaylight und cStandard nebst
 	 * Verarbeitungsschalter
@@ -272,6 +273,17 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 	boolean cStandardDatenSammeln = false;
 
 	/**
+	 * Erstellen einer leeren VTimezone-Komponente
+	 */
+	protected GuKKiCalvTimezone() {
+		/*	@formatter:off */
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+		status = GuKKiCalcStatus.UNDEFINIERT;
+		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+		/*	@formatter:on */
+	}
+
+	/**
 	 * Erstellen einer VTIMEZONE-Komponente aus dem Teil eines
 	 * Kalenderdatenstroms
 	 * 
@@ -280,6 +292,11 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 	 * @throws Exception
 	 */
 	public GuKKiCalvTimezone(String vTimezoneDaten) throws Exception {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		kennung = GuKKiCalcKennung.TIMEZONE;
+		status = GuKKiCalcStatus.UNDEFINIERT;
 
 		verarbeitenDatenstrom(vTimezoneDaten);
 
@@ -289,10 +306,21 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 		if (cStandardDatenArray.size() != 0) {
 			cStandardneu();
 		}
+		status = GuKKiCalcStatus.GELESEN;
+
+		if (!Restinformationen.equals("")) {
+			logger.log(Level.INFO, this.toString() + " Restinformationen:\n" + "-->" + Restinformationen + "<--\n");
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	}
 
 	@Override
 	protected void verarbeitenZeile(String zeile) throws Exception {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 		if (!zeile.equals("BEGIN:VTIMEZONE") & !zeile.equals("END:VTIMEZONE")) {
 			if (zeile.equals("BEGIN:DAYLIGHT")) {
 				cDaylightDatenSammeln = true;
@@ -314,17 +342,23 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 				if (zeile.length() >= 4 && zeile.substring(0, 4).equals("TZID")) {
 					TZID = new GuKKiCalProperty(zeile, "TZID");
 				} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
-					LASTMODIFIED = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
+					LAST_MOD = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
 				} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("TZURL")) {
 					TZURL = new GuKKiCalProperty(zeile, "TZURL");
 				} else {
-					vTimezoneRestinformationen += zeile + nz;
+					Restinformationen += zeile + nz;
 				}
 			}
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
 		}
 	}
 
 	private void cDaylightneu() throws Exception {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 
 		String cDaylightDaten = "";
 
@@ -338,9 +372,15 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 				cDaylightDaten += zeile + nz;
 			}
 		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	}
 
 	private void cStandardneu() throws Exception {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 
 		String cStandardDaten = "";
 
@@ -354,6 +394,36 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 				cStandardDaten += zeile + nz;
 			}
 		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+	}
+
+	public GuKKiCalvTimezone kopieren() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		GuKKiCalvTimezone temp = new GuKKiCalvTimezone();
+
+		temp.kennung = this.kennung;
+
+		temp.TZID = TZID == null ? null : TZID.kopieren();
+		temp.LAST_MOD = LAST_MOD == null ? null : LAST_MOD.kopieren();
+		temp.TZURL = TZURL == null ? null : TZURL.kopieren();
+		for (GuKKiCalcDaylight cDaylight : cDaylightSammlung) {
+			temp.cDaylightSammlung.add(cDaylight.kopieren());
+			
+		}
+		for (GuKKiCalcStandard cStandard : cStandardSammlung) {
+			temp.cStandardSammlung.add(cStandard.kopieren());
+		}
+		temp.Restinformationen = this.Restinformationen;
+		temp.status = GuKKiCalcStatus.KOPIERT;
+		
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return temp;
 	}
 
 	/**
@@ -392,14 +462,32 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 		 */
 		private String Restinformationen = "";
 
-		private GuKKiCalcDaylight(String cDaylightDaten) throws Exception {
+		private GuKKiCalcDaylight() {
+			kennung = GuKKiCalcKennung.DAYLIGHT;
+		}
 
+		private GuKKiCalcDaylight(String cDaylightDaten) throws Exception {
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "begonnen");
+			}
+			kennung = GuKKiCalcKennung.DAYLIGHT;
+			
 			verarbeitenDatenstrom(cDaylightDaten);
 
+			status = GuKKiCalcStatus.GELESEN;
+			if (!Restinformationen.equals("")) {
+				logger.log(Level.INFO, this.toString() + " Restinformationen:\n" + "-->" + Restinformationen + "<--\n");
+			}
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "beendet");
+			}
 		}
 
 		@Override
 		protected void verarbeitenZeile(String zeile) throws Exception {
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "begonnen");
+			}
 
 			if (!zeile.equals("BEGIN:DAYLIGHT") & !zeile.equals("END:DAYLIGHT")) {
 				if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTART")) {
@@ -418,9 +506,47 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 					TZNAME.add(new GuKKiCalProperty(zeile, "TZNAME"));
 				} else {
 					Restinformationen += zeile + nz;
-					System.out.println("Restinformationen-->" + Restinformationen);
 				}
 			}
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "beendet");
+			}
+		}
+
+		protected GuKKiCalcDaylight kopieren() {
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "begonnen");
+			}
+
+			GuKKiCalcDaylight temp = new GuKKiCalcDaylight();
+			temp.DTSTART = this.DTSTART.kopieren();
+			temp.TZOFFSETTO = this.TZOFFSETTO.kopieren();
+			temp.TZOFFSETFROM = this.TZOFFSETFROM.kopieren();
+			temp.RRULE = this.RRULE.kopieren();
+			for (GuKKiCalProperty property : this.COMMENT) {
+				temp.COMMENT.add(property.kopieren());
+			}
+			for (GuKKiCalProperty property : this.RDATE) {
+				temp.RDATE.add(property.kopieren());
+			}
+			for (GuKKiCalProperty property : this.TZNAME) {
+				temp.TZNAME.add(property.kopieren());
+			}
+			temp.Restinformationen = this.Restinformationen;
+			
+			temp.status = GuKKiCalcStatus.KOPIERT;
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "beendet");
+			}
+			return temp;
+		}
+		@Override
+		public boolean equals (Object dasAndere) {
+			
+			if (!dasAndere.getClass().equals(this.getClass())) 
+			return false;
+			
+			return true;
 		}
 	}
 
@@ -446,14 +572,35 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 		 */
 		private String Restinformationen = "";
 
+		private GuKKiCalcStandard() {
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "begonnen");
+			}
+			kennung = GuKKiCalcKennung.STANDARD;
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "beendet");
+			}
+		}
 		private GuKKiCalcStandard(String cStandardDaten) throws Exception {
-
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "begonnen");
+			}
+			kennung = GuKKiCalcKennung.STANDARD;
 			verarbeitenDatenstrom(cStandardDaten);
 
+			if (!Restinformationen.equals("")) {
+				logger.log(Level.INFO, this.toString() + " Restinformationen:\n" + "-->" + Restinformationen + "<--\n");
+			}
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "beendet");
+			}
 		}
 
 		@Override
 		protected void verarbeitenZeile(String zeile) throws Exception {
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "begonnen");
+			}
 
 			if (!zeile.equals("BEGIN:STANDARD") & !zeile.equals("END:STANDARD")) {
 				if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTART")) {
@@ -472,9 +619,38 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 					TZNAME.add(new GuKKiCalProperty(zeile, "TZNAME"));
 				} else {
 					Restinformationen += zeile + nz;
-					System.out.println("Restinformationen-->" + Restinformationen);
 				}
 			}
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "beendet");
+			}
+		}
+		protected GuKKiCalcStandard kopieren() {
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "begonnen");
+			}
+
+			GuKKiCalcStandard temp = new GuKKiCalcStandard();
+			temp.DTSTART = this.DTSTART.kopieren();
+			temp.TZOFFSETTO = this.TZOFFSETTO.kopieren();
+			temp.TZOFFSETFROM = this.TZOFFSETFROM.kopieren();
+			temp.RRULE = this.RRULE.kopieren();
+			for (GuKKiCalProperty property : this.COMMENT) {
+				temp.COMMENT.add(property.kopieren());
+			}
+			for (GuKKiCalProperty property : this.RDATE) {
+				temp.RDATE.add(property.kopieren());
+			}
+			for (GuKKiCalProperty property : this.TZNAME) {
+				temp.TZNAME.add(property.kopieren());
+			}
+			temp.Restinformationen = this.Restinformationen;
+			
+			temp.status = GuKKiCalcStatus.KOPIERT;
+			if (logger.isLoggable(logLevel)) {
+				logger.log(logLevel, "beendet");
+			}
+			return temp;
 		}
 	}
 }
