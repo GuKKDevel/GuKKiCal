@@ -9,6 +9,7 @@ public class Hauptklasse {
 		// TODO Automatisch generierter Konstruktorstub
 	}
 
+
 	public static void main(String[] args) {
 		Hauptklasse hk = new Hauptklasse();
 		hk.neuezeile("au1");
