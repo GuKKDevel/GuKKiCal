@@ -3,6 +3,8 @@ package main;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Die Klasse GuKKiCalvAlarm enthält alle Daten für eine VALARM-Komponente im iCal Format
@@ -192,27 +194,34 @@ import java.util.ArrayList;
  */
 
 public class GuKKiCalvAlarm extends GuKKiCalComponent {
+
+	Logger logger = Logger.getLogger("GuKKiCal");
+	Level logLevel = Level.FINEST;
+
 	/*
 	 * ’action’ and ’trigger’ are both REQUIRED, but MUST NOT occur more than
 	 * once.
 	 */
-	private GuKKiCalProperty vAlarmACTION = null;
-	private GuKKiCalProperty vAlarmTRIGGER = null;
+	private GuKKiCalProperty ACTION = null;
+	private GuKKiCalProperty TRIGGER = null;
 	/*
 	 * ’duration’ and ’repeat’ are both OPTIONAL, and MUST NOT occur more than
 	 * once each but if one occurs, so MUST the other.
 	 */
-	private GuKKiCalProperty vAlarmDURATION = null;
-	private GuKKiCalProperty vAlarmREPEAT = null;
+	private GuKKiCalProperty DURATION = null;
+	private GuKKiCalProperty REPEAT = null;
 	/*
 	 * The following is OPTIONAL, but MUST NOT occur more than once.
 	 */
-	private GuKKiCalProperty vAlarmDESCRIPTION = null;
-	private GuKKiCalProperty vAlarmSUMMARY = null;
-	private ArrayList<GuKKiCalProperty> vAlarmATTACH = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> vAlarmATTENDEE = new ArrayList<GuKKiCalProperty>();
-
-	private String vAlarmRestinformationen = "";
+	private GuKKiCalProperty DESCRIPTION = null;
+	private GuKKiCalProperty SUMMARY = null;
+	private ArrayList<GuKKiCalProperty> ATTACHSammlung = new ArrayList<GuKKiCalProperty>();
+	private ArrayList<GuKKiCalProperty> ATTENDEESammlung = new ArrayList<GuKKiCalProperty>();
+	/*
+	 * Here are the x-prop and iana-prop are to be stored
+	 */
+	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
+	private ArrayList<String> Restinformationen = new ArrayList<String>();
 
 	/*
 	 * allgemeine Variablen
@@ -221,45 +230,262 @@ public class GuKKiCalvAlarm extends GuKKiCalComponent {
 	String zeile = "";
 	String folgezeile = "";
 	boolean datenVorhanden;
-
-	public GuKKiCalvAlarm(String vAlarmDaten) throws Exception {
-
-		verarbeitenDatenstrom(vAlarmDaten);
-
-	}
-
-	@Override
-	protected void verarbeitenZeile(String zeile) throws Exception {
-//		System.out.println("GuKKiCalvAlarm verarbeitenZeile begonnen");
-//		System.out.println("Zeile=" + zeile);
-		if (!zeile.equals("BEGIN:VALARM") & !zeile.equals("END:VALARM")) {
-			if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ACTION")) {
-				vAlarmACTION = new GuKKiCalProperty(zeile, "ACTION");
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("TRIGGER")) {
-				vAlarmTRIGGER = new GuKKiCalProperty(zeile, "TRIGGER");
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DURATION")) {
-				vAlarmDURATION = new GuKKiCalProperty(zeile, "DURATION");
-			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("REPEAT")) {
-				vAlarmREPEAT = new GuKKiCalProperty(zeile, "REPEAT");
-			} else if (zeile.length() >= 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
-				vAlarmDESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
-			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
-				vAlarmATTACH.add(new GuKKiCalProperty(zeile, "ATTACH"));
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
-				vAlarmATTENDEE.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
-			} else {
-				vAlarmRestinformationen += zeile + nz;
-//					System.out.println("Restinformationen=" + vEventRestinformationen);
-			}
+/**
+ * leerer Konstruktor
+ */
+	public GuKKiCalvAlarm () {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
 		}
-//		System.out.println("GuKKiCalvAlarm verarbeitenZeile beendet");
-	}
 
+	}
+/**
+ * 
+ * @param vAlarmDaten
+ * @throws Exception
+ */
+	public GuKKiCalvAlarm(String vAlarmDaten) throws Exception {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+
+		einlesenAusDatenstrom(vAlarmDaten);
+		
+// @formatter:off    	 
+// Generieren der restlichen Verarbeitungsschritte im Konstruktor für den Datenstrom
+ 
+        status = GuKKiCalcStatus.GELESEN;
+ 
+        if (Restinformationen.size() > 0) {
+            for (String Restinformation : Restinformationen) {
+                logger.log(Level.INFO, "Restinformation:" + "-->" + Restinformation + "<--");
+            }
+        }
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "beendet");
+        }
+    }
+ 
+// Generieren der Methoden für den Aufbau der Komponentensammlungen
+// Anfang der generierten Methoden für GuKKiCalvAlarm 0.1 Wed Dec 08 23:39:38 CET 2021
+ 
+    /**
+     * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten) Zeilen
+     * untersucht und die jeweilige Eigenschaft wird abgespeichert
+     */
+    @Override
+    protected void verarbeitenZeile(String zeile) throws Exception {
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "begonnen");
+        }
+        if (!zeile.equals("BEGIN:VALARM") & !zeile.equals("END:VALARM")) {
+ 
+// Eigenschaft: ACTION GuKKiCalProperty auftreten 0:1
+            if (zeile.length() > 6 && zeile.substring(0, 6).equals("ACTION")) {
+                ACTION = new GuKKiCalProperty(zeile, "ACTION");
+ 
+// Eigenschaft: ATTACH GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 6 && zeile.substring(0, 6).equals("ATTACH")) {
+                ATTACHSammlung.add(new GuKKiCalProperty(zeile, "ATTACH"));
+ 
+// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
+                ATTENDEESammlung.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
+ 
+// Eigenschaft: DESCRIPTION GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
+                DESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
+ 
+// Eigenschaft: DURATION GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 8 && zeile.substring(0, 8).equals("DURATION")) {
+                DURATION = new GuKKiCalProperty(zeile, "DURATION");
+ 
+// Eigenschaft: REPEAT GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 6 && zeile.substring(0, 6).equals("REPEAT")) {
+                REPEAT = new GuKKiCalProperty(zeile, "REPEAT");
+ 
+// Eigenschaft: SUMMARY GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("SUMMARY")) {
+                SUMMARY = new GuKKiCalProperty(zeile, "SUMMARY");
+ 
+// Eigenschaft: TRIGGER GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("TRIGGER")) {
+                TRIGGER = new GuKKiCalProperty(zeile, "TRIGGER");
+ 
+// Eigenschaft: X_PROP String auftreten 0:n
+            } else  if (zeile.length() > 2 && zeile.substring(0, 2).equals("X-")) {
+                X_PROPSammlung.add(zeile);
+ 
+// Abschluss und Fallbackparameter
+ 
+            } else {
+                Restinformationen.add(zeile);
+            }
+        }
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "beendet");
+        }
+    } // Ende verarbeitenZeile
+ 
+    /**
+     * Diese Methode kopiert die iCalendar-Komponente
+     * GuKKiCalvAlarm und gibt diese Kopie zurück
+     */
+    protected GuKKiCalvAlarm kopieren() {
+        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+ 
+        GuKKiCalvAlarm temp = new GuKKiCalvAlarm();
+ 
+        temp.kennung = this.kennung;
+ 
+// Eigenschaft: ACTION GuKKiCalProperty auftreten 0:1
+        temp.ACTION = this.ACTION == null ? null : this.ACTION.kopieren();
+ 
+// Eigenschaft: ATTACH GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pATTACH : ATTACHSammlung) {
+            temp.ATTACHSammlung.add(pATTACH.kopieren());
+        }
+ 
+// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pATTENDEE : ATTENDEESammlung) {
+            temp.ATTENDEESammlung.add(pATTENDEE.kopieren());
+        }
+ 
+// Eigenschaft: DESCRIPTION GuKKiCalProperty auftreten 0:1
+        temp.DESCRIPTION = this.DESCRIPTION == null ? null : this.DESCRIPTION.kopieren();
+ 
+// Eigenschaft: DURATION GuKKiCalProperty auftreten 0:1
+        temp.DURATION = this.DURATION == null ? null : this.DURATION.kopieren();
+ 
+// Eigenschaft: REPEAT GuKKiCalProperty auftreten 0:1
+        temp.REPEAT = this.REPEAT == null ? null : this.REPEAT.kopieren();
+ 
+// Eigenschaft: SUMMARY GuKKiCalProperty auftreten 0:1
+        temp.SUMMARY = this.SUMMARY == null ? null : this.SUMMARY.kopieren();
+ 
+// Eigenschaft: TRIGGER GuKKiCalProperty auftreten 0:1
+        temp.TRIGGER = this.TRIGGER == null ? null : this.TRIGGER.kopieren();
+ 
+// Eigenschaft: X_PROP String auftreten 0:n
+        for (String pX_PROP : X_PROPSammlung) {
+            temp.X_PROPSammlung.add(pX_PROP);
+        }
+ 
+// Abschluss und Fallbackparameter
+        for (String Restinformation : this.Restinformationen) {
+            temp.Restinformationen.add(Restinformation);
+        }
+ 
+        temp.status = GuKKiCalcStatus.KOPIERT;
+ 
+        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+ 
+        return temp;
+    } // Ende kopieren
+ 
+    /**
+     * Vergleichen aller Attribute der Komponente GuKKiCalvAlarm
+     *
+     * @return boolean
+     */
+    protected boolean istGleich(Object dasAndere) {
+        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+ 
+        if (!dasAndere.getClass().equals(this.getClass())) {
+            return false;
+        }
+ 
+        GuKKiCalvAlarm temp = (GuKKiCalvAlarm) dasAndere;
+ 
+// Eigenschaft: ACTION GuKKiCalProperty auftreten 0:1
+        if (!((temp.ACTION == null && this.ACTION == null)
+                || (temp.ACTION != null && this.ACTION != null && temp.ACTION.istGleich(this.ACTION)))) {
+            return false;
+        }
+ 
+// Eigenschaft: ATTACH GuKKiCalProperty auftreten 0:n
+        if (temp.ATTACHSammlung.size() != this.ATTACHSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < ATTACHSammlung.size(); i++) {
+            if (!temp.ATTACHSammlung.get(i).istGleich(this.ATTACHSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
+        if (temp.ATTENDEESammlung.size() != this.ATTENDEESammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < ATTENDEESammlung.size(); i++) {
+            if (!temp.ATTENDEESammlung.get(i).istGleich(this.ATTENDEESammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: DESCRIPTION GuKKiCalProperty auftreten 0:1
+        if (!((temp.DESCRIPTION == null && this.DESCRIPTION == null)
+                || (temp.DESCRIPTION != null && this.DESCRIPTION != null && temp.DESCRIPTION.istGleich(this.DESCRIPTION)))) {
+            return false;
+        }
+ 
+// Eigenschaft: DURATION GuKKiCalProperty auftreten 0:1
+        if (!((temp.DURATION == null && this.DURATION == null)
+                || (temp.DURATION != null && this.DURATION != null && temp.DURATION.istGleich(this.DURATION)))) {
+            return false;
+        }
+ 
+// Eigenschaft: REPEAT GuKKiCalProperty auftreten 0:1
+        if (!((temp.REPEAT == null && this.REPEAT == null)
+                || (temp.REPEAT != null && this.REPEAT != null && temp.REPEAT.istGleich(this.REPEAT)))) {
+            return false;
+        }
+ 
+// Eigenschaft: SUMMARY GuKKiCalProperty auftreten 0:1
+        if (!((temp.SUMMARY == null && this.SUMMARY == null)
+                || (temp.SUMMARY != null && this.SUMMARY != null && temp.SUMMARY.istGleich(this.SUMMARY)))) {
+            return false;
+        }
+ 
+// Eigenschaft: TRIGGER GuKKiCalProperty auftreten 0:1
+        if (!((temp.TRIGGER == null && this.TRIGGER == null)
+                || (temp.TRIGGER != null && this.TRIGGER != null && temp.TRIGGER.istGleich(this.TRIGGER)))) {
+            return false;
+        }
+ 
+// Eigenschaft: X_PROP String auftreten 0:n
+        if (temp.X_PROPSammlung.size() != this.X_PROPSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < X_PROPSammlung.size(); i++) {
+            if (!temp.X_PROPSammlung.get(i).equals(this.X_PROPSammlung.get(i))) {
+               return false;
+            }
+        }
+ 
+// Abschluss und Fallbackparameter
+        if (temp.Restinformationen.size() != this.Restinformationen.size()) {
+            return false;
+        }
+        for (int i = 0; i < Restinformationen.size(); i++) {
+            if (!temp.Restinformationen.get(i).equals(this.Restinformationen.get(i))) {
+                return false; 
+            }
+        }
+ 
+        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+ 
+        return true;
+    } // Ende istGleich
+ 
+// Ende der generierten Methoden für GuKKiCalvAlarm
+// @formatter:on    	 	
+	    
 	/**
 	 * Gibt die UID des vAlarm aus
 	 */
 	public String toString() {
-		return "Alarm=" + (vAlarmACTION == null ? "" : vAlarmACTION.getWert()) + ","
-				+ (vAlarmTRIGGER == null ? "" : vAlarmTRIGGER.getWert());
+		return "Alarm=" + (ACTION == null ? "" : ACTION.getWert()) + ","
+				+ (TRIGGER == null ? "" : TRIGGER.getWert());
 	}
 }

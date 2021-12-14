@@ -1,13 +1,58 @@
 package main;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.*;
 
 public class Ausprobieren {
+	Logger logger = Logger.getLogger("GuKKiCal");
 
 	public Ausprobieren() throws Exception {
-		Logger logger = Logger.getLogger("GuKKiCal");
+		loggerhandling();
+		ArrayList<GuKKiCaliCalendar> iCalendarSammlung = new ArrayList<GuKKiCaliCalendar>();
+		try {
+		
+			GuKKiCalParser parser = new GuKKiCalParser();
+			System.out.println(new Date());
+			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/TestKalender.ics");
+			System.out.println(new Date());
+			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Google.ics");
+			System.out.println(new Date());
+			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Standard-KHG.ics");
+			System.out.println(new Date());
+
+			// Standard-KHG TestKalender Google temp Abfallkalender
+
+//			if (System.getProperty("os.name").equals("Linux")) {
+//				parser.kalenderEinlesen(iCalendarSammlung,
+//						"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics");
+//			} else {
+//				parser.kalenderEinlesen(iCalendarSammlung,
+//						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics");
+//			}
+		} finally {
+
+		}
+//		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
+//			System.out.println(iCaliCalendar.toString("CETJZF"));
+//			System.out.println("\n\n" + new Date().toString() + "\n\n");
+//		}
+		logger.finest("beendet");
+		// TODO Automatisch generierter Konstruktorstub
+	}
+//	public Ausprobieren() throws Exception {
+//		System.out.println(DateFormat.getDateInstance().format(new Date()));
+//	}
+
+	public static void main(String[] args) throws Exception {
+		/* Klasse DateFormat für Datumsformatierung */
+		/* Klasse Calendar für Datumshandling */
+
+		Ausprobieren test = new Ausprobieren();
+	}
+
+	private void loggerhandling() {
 		logger.setLevel(Level.FINE);
 //		Handler handler = new FileHandler("/home/programmieren/TestFiles/iCalender/temp.log");
 		Handler handler = new ConsoleHandler();
@@ -23,42 +68,6 @@ public class Ausprobieren {
 		logger.addHandler(handler);
 		logger.setUseParentHandlers(false);
 		logger.finest("begonnen");
-		
-		ArrayList<GuKKiCaliCalendar> iCalendarSammlung = new ArrayList<GuKKiCaliCalendar>();
-
-		try {
-		
-			GuKKiCalParser parser = new GuKKiCalParser();
-			System.out.println(new Date());
-			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/TestKalender.ics");
-//			System.out.println(new Date());
-//			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Google.ics");
-//			System.out.println(new Date());
-//			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Standard-KHG.ics");
-			System.out.println(new Date());
-
-			// Standard-KHG TestKalender Google temp Abfallkalender
-
-			if (System.getProperty("os.name").equals("Linux")) {
-			} else {
-				parser.kalenderEinlesen(iCalendarSammlung,
-						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics");
-			}
-//			parser.kalenderEinlesen(
-//					"/home/programmieren/Git-Repositories/TestRepository/IgnoreForGit/iCalender/TestKalender0.ics", vCalendarSammlung);
-		} finally {
-
-		}
-		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
-			System.out.println(iCaliCalendar.toString("CZ"));
-			System.out.println("\n\n" + new Date().toString() + "\n\n");
-		}
-		logger.finest("beendet");
-		// TODO Automatisch generierter Konstruktorstub
-	}
-
-	public static void main(String[] args) throws Exception {
-		Ausprobieren test = new Ausprobieren();
 	}
 //	public static void main(String[] args) throws Exception {
 //		// TODO Automatisch generierter Methodenstub

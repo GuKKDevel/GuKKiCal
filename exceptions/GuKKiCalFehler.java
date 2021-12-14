@@ -1,8 +1,7 @@
 package exceptions;
 /**
 *
-* @author gukkdevel <br>
-*         <br>
+* @author gukkdevel 
 *
 * Diese Exceptions verhindern einen korrekten Ablauf und führen zu einem Abbruch
 */

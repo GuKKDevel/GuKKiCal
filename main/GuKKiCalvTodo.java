@@ -98,6 +98,7 @@ import java.util.logging.Logger;
  *
  */
 public class GuKKiCalvTodo extends GuKKiCalComponent {
+	
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
 
@@ -128,7 +129,7 @@ public class GuKKiCalvTodo extends GuKKiCalComponent {
 	private GuKKiCalProperty PERCENT = null;
 	private GuKKiCalProperty PRIORITY = null;
 	private GuKKiCalProperty RECURID = null;
-	private GuKKiCalProperty SEQUENCE = null;
+	private GuKKiCalProperty SEQ = null;
 	private GuKKiCalProperty STATUS = null;
 	private GuKKiCalProperty SUMMARY = null;
 	private GuKKiCalProperty URL = null;
@@ -169,8 +170,11 @@ public class GuKKiCalvTodo extends GuKKiCalComponent {
 	private ArrayList<GuKKiCalProperty> X_MOZ_RECEIVED_SEQUENCE = new ArrayList<GuKKiCalProperty>();
 	private ArrayList<GuKKiCalProperty> X_MOZ_SEND_INVITATIONS_UNDISCLOSED = new ArrayList<GuKKiCalProperty>();
 	private ArrayList<GuKKiCalProperty> X_MOZ_SEND_INVITATIONS = new ArrayList<GuKKiCalProperty>();
-
-	private String Restinformationen = "";
+	/*
+	 * Here are the x-prop and iana-prop are to be stored
+	 */
+	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
+	private ArrayList<String> Restinformationen = new ArrayList<String>();
 	/*
 	 * Sammlungen der VTODO-Komponenten
 	 */
@@ -202,151 +206,698 @@ public class GuKKiCalvTodo extends GuKKiCalComponent {
 	public GuKKiCalvTodo(String vTodoDaten) throws Exception {
 		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
 	
-		verarbeitenDatenstrom(vTodoDaten);
+		einlesenAusDatenstrom(vTodoDaten);
 
 		vTodoKennung = this.toString();
 
-		if (vAlarmDatenArray.size() != 0) {
-			vAlarmSammlungAufbauen();
-		}
-		if (!Restinformationen.equals("")) {
-			logger.log(Level.INFO, this.toString() + " Restinformationen:\n" + "-->" + Restinformationen + "<--\n");
-		}
-
-		vTodoStatus = GuKKiCalcStatus.GELESEN;
-
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
-	} // Ende GuKKiCalvTodo(String vTodoDaten)
-
-	@Override
-	protected void verarbeitenZeile(String zeile) {
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-		if (!zeile.equals("BEGIN:VTODO") & !zeile.equals("END:VTODO")) {
-			if (zeile.length() >= 6 && zeile.substring(0, 6).equals("ATTACH")) {
-				ATTACHSammlung.add(new GuKKiCalProperty(zeile, "ATTACH"));
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
-				ATTENDEESammlung.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
-			} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("CATEGORIES")) {
-				CATEGORIESSammlung.add(new GuKKiCalProperty(zeile, "CATEGORIES"));
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("CLASS")) {
-				CLASS = new GuKKiCalProperty(zeile, "CLASS");
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("COLOR")) {
-				COLOR = new GuKKiCalProperty(zeile, "COLOR");
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("COMMENT")) {
-				COMMENTSammlung.add(new GuKKiCalProperty(zeile, "COMMENT"));
-			} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("COMPLETED")) {
-				COMPLETED = new GuKKiCalProperty(zeile, "COMPLETED");
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CONERENCE")) {
-				CONFERENCESammlung.add(new GuKKiCalProperty(zeile, "CONERENCE"));
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CONTACT")) {
-				CONTACTSammlung.add(new GuKKiCalProperty(zeile, "CONTACT"));
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("CREATED")) {
-				CREATED = new GuKKiCalProperty(zeile, "CREATED");
-			} else if (zeile.length() >= 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
-				DESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
-				DTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
-			} else if (zeile.length() >= 7 && (zeile.substring(0, 7).equals("DTSTART"))) {
-				DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
-			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("DUE")) {
-				DUE = new GuKKiCalProperty(zeile, "DUE");
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("DURATION")) {
-				DURATION = new GuKKiCalProperty(zeile, "DURATION");
-			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("EXDATE")) {
-				EXDATESammlung.add(new GuKKiCalProperty(zeile, "EXDATE"));
-			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("GEO")) {
-				GEO = new GuKKiCalProperty(zeile, "GEO");
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("IMAGE")) {
-				IMAGESammlung.add(new GuKKiCalProperty(zeile, "IMAGE"));
-			} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
-				LAST_MOD = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("LOCATION")) {
-				LOCATION = new GuKKiCalProperty(zeile, "LOCATION");
-			} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
-				ORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
-			} else if (zeile.length() >= 16 && zeile.substring(0, 16).equals("PERCENT-COMPLETE")) {
-				PERCENT = new GuKKiCalProperty(zeile, "PERCENT-COMPLETE");
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("PRIORITY")) {
-				PRIORITY = new GuKKiCalProperty(zeile, "PRIORITY");
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RDATE")) {
-				RDATESammlung.add(new GuKKiCalProperty(zeile, "RDATE"));
-			} else if (zeile.length() >= 13 && zeile.substring(0, 13).equals("RECURRENCE-ID")) {
-				RECURID = new GuKKiCalProperty(zeile, "RECURRENCE-ID");
-			} else if (zeile.length() >= 10 && zeile.substring(0, 10).equals("RELATED-TO")) {
-				RELATED_TOSammlung.add(new GuKKiCalProperty(zeile, "RELATED-TO"));
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RELATED")) {
-				RELATEDSammlung.add(new GuKKiCalProperty(zeile, "RELATED"));
-			} else if (zeile.length() >= 9 && zeile.substring(0, 9).equals("RESOURCES")) {
-				RESOURCESSammlung.add(new GuKKiCalProperty(zeile, "RESOURCES"));
-			} else if (zeile.length() >= 5 && zeile.substring(0, 5).equals("RRULE")) {
-				RRULE = new GuKKiCalProperty(zeile, "RRULE");
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("RSTATUS")) {
-				RSTATUSSammlung.add(new GuKKiCalProperty(zeile, "RSTATUS"));
-			} else if (zeile.length() >= 8 && zeile.substring(0, 8).equals("SEQUENCE")) {
-				SEQUENCE = new GuKKiCalProperty(zeile, "SEQUENCE");
-			} else if (zeile.length() >= 6 && zeile.substring(0, 6).equals("STATUS")) {
-				STATUS = new GuKKiCalProperty(zeile, "STATUS");
-			} else if (zeile.length() >= 7 && zeile.substring(0, 7).equals("SUMMARY")) {
-				SUMMARY = new GuKKiCalProperty(zeile, "SUMMARY");
-			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("UID")) {
-				UID = new GuKKiCalProperty(zeile, "UID");
-			} else if (zeile.length() >= 3 && zeile.substring(0, 3).equals("URL")) {
-				URL = new GuKKiCalProperty(zeile, "URL");
-				/*
-				 * X-Name Properties
-				 */
-			} else if (zeile.length() >= ("X-MICROSOFT-CDO-OWNERAPPTID").length() && zeile
-					.substring(0, ("X-MICROSOFT-CDO-OWNERAPPTID").length()).equals("X-MICROSOFT-CDO-OWNERAPPTID")) {
-				X_MICROSOFT_CDO_OWNERAPPTID.add(new GuKKiCalProperty(zeile, "X-MICROSOFT-CDO-OWNERAPPTID"));
-			} else if (zeile.length() >= ("X-MOZ-GENERATION").length()
-					&& zeile.substring(0, ("X-MOZ-GENERATION").length()).equals("X-MOZ-GENERATION")) {
-				X_MOZ_GENERATION.add(new GuKKiCalProperty(zeile, "X-MOZ-GENERATION"));
-			} else if (zeile.length() >= ("X-MOZ-LASTACK").length()
-					&& zeile.substring(0, ("X-MOZ-LASTACK").length()).equals("X-MOZ-LASTACK")) {
-				X_MOZ_LASTACK.add(new GuKKiCalProperty(zeile, "X-MOZ-LASTACK"));
-			} else if (zeile.length() >= ("X-MOZ-RECEIVED-DTSTAMP").length()
-					&& zeile.substring(0, ("X-MOZ-RECEIVED-DTSTAMP").length()).equals("X-MOZ-RECEIVED-DTSTAMP")) {
-				X_MOZ_RECEIVED_DTSTAMP.add(new GuKKiCalProperty(zeile, "X-MOZ-RECEIVED-DTSTAMP"));
-			} else if (zeile.length() >= ("X-MOZ-RECEIVED-SEQUENCE").length()
-					&& zeile.substring(0, ("X-MOZ-RECEIVED-SEQUENCE").length()).equals("X-MOZ-RECEIVED-SEQUENCE")) {
-				X_MOZ_RECEIVED_SEQUENCE.add(new GuKKiCalProperty(zeile, "X-MOZ-RECEIVED-SEQUENCE"));
-			} else if (zeile.length() >= ("X-MOZ-SEND-INVITATIONS-UNDISCLOSED").length()
-					&& zeile.substring(0, ("X-MOZ-SEND-INVITATIONS-UNDISCLOSED").length()).equals("X-MOZ-SEND-INVITATIONS-UNDISCLOSED")) {
-				X_MOZ_SEND_INVITATIONS_UNDISCLOSED.add(new GuKKiCalProperty(zeile, "X-MOZ-SEND-INVITATIONS-UNDISCLOSED"));
-			} else if (zeile.length() >= ("X-MOZ-SEND-INVITATIONS").length()
-					&& zeile.substring(0, ("X-MOZ-SEND-INVITATIONS").length()).equals("X-MOZ-SEND-INVITATIONS")) {
-				X_MOZ_SEND_INVITATIONS.add(new GuKKiCalProperty(zeile, "X-MOZ-SEND-INVITATIONS"));
-			} else {
-				Restinformationen += zeile + nz;
-			}
-		}
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
-	} //Ende verarbeitenZeile(String zeile)
-
-	private void vAlarmSammlungAufbauen() throws Exception {
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-
-		String vAlarmDaten = "";
-
-		for (String zeile : vAlarmDatenArray) {
-			if (zeile.equals("BEGIN:VALARM")) {
-				vAlarmDaten = zeile + nz;
-			} else if (zeile.equals("END:VALARM")) {
-				vAlarmDaten += zeile + nz;
-				vAlarmSammlung.add(new GuKKiCalvAlarm(vAlarmDaten));
-			} else {
-				vAlarmDaten += zeile + nz;
-			}
-		}
-
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
-	} // Ende vAlarmSammlungAufbauen()
+// @formatter:off    	 
+// Generieren der restlichen Verarbeitungsschritte im Konstruktor für den Datenstrom
+ 
+// Subkomponente: vAlarm GuKKiCalvAlarm VALARM
+        if (vAlarmDatenArray.size() != 0) {
+            vAlarmSammlungAnlegen();
+        }
+ 
+        status = GuKKiCalcStatus.GELESEN;
+ 
+        if (Restinformationen.size() > 0) {
+            for (String Restinformation : Restinformationen) {
+                logger.log(Level.INFO, "Restinformation:" + "-->" + Restinformation + "<--");
+            }
+        }
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "beendet");
+        }
+    }
+ 
+// Generieren der Methoden für den Aufbau der Komponentensammlungen
+ 
+// Subkomponente: vAlarm GuKKiCalvAlarm VALARM
+    private void vAlarmSammlungAnlegen() throws Exception {
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "begonnen");
+        }
+ 
+        String vAlarmDaten = "";
+ 
+        for (String zeile : vAlarmDatenArray) {
+            if (zeile.equals("BEGIN:VALARM")) {
+                vAlarmDaten = zeile + nz;
+            } else if (zeile.equals("END:VALARM")) {
+                vAlarmDaten += zeile + nz;
+                vAlarmSammlung.add(new GuKKiCalvAlarm(vAlarmDaten));
+                vAlarmDaten = "";
+            } else {
+                vAlarmDaten += zeile + nz;
+            }
+        }
+ 
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "beendet");
+        }
+    }
+// Anfang der generierten Methoden für GuKKiCalvTodo 0.1 Wed Dec 08 23:39:38 CET 2021
+ 
+    /**
+     * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten) Zeilen
+     * untersucht und die jeweilige Eigenschaft wird abgespeichert
+     */
+    @Override
+    protected void verarbeitenZeile(String zeile) throws Exception {
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "begonnen");
+        }
+        if (!zeile.equals("BEGIN:VTODO") & !zeile.equals("END:VTODO")) {
+ 
+// Subkomponente: vAlarm GuKKiCalvAlarm VALARM)
+            if (zeile.equals("BEGIN:VALARM")) {
+                vAlarmDatenSammeln = true;
+                vAlarmDatenArray.add(zeile);
+            } else if (zeile.equals("END:VALARM")) {
+                vAlarmDatenSammeln = false;
+                vAlarmDatenArray.add(zeile);
+            } else if (vAlarmDatenSammeln) {
+                vAlarmDatenArray.add(zeile);
+ 
+// Eigenschaft: ATTACH GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 6 && zeile.substring(0, 6).equals("ATTACH")) {
+                ATTACHSammlung.add(new GuKKiCalProperty(zeile, "ATTACH"));
+ 
+// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
+                ATTENDEESammlung.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
+ 
+// Eigenschaft: CATEGORIES GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 10 && zeile.substring(0, 10).equals("CATEGORIES")) {
+                CATEGORIESSammlung.add(new GuKKiCalProperty(zeile, "CATEGORIES"));
+ 
+// Eigenschaft: CLASS GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("CLASS")) {
+                CLASS = new GuKKiCalProperty(zeile, "CLASS");
+ 
+// Eigenschaft: COLOR GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("COLOR")) {
+                COLOR = new GuKKiCalProperty(zeile, "COLOR");
+ 
+// Eigenschaft: COMMENT GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 7 && zeile.substring(0, 7).equals("COMMENT")) {
+                COMMENTSammlung.add(new GuKKiCalProperty(zeile, "COMMENT"));
+ 
+// Eigenschaft: COMPLETED GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 9 && zeile.substring(0, 9).equals("COMPLETED")) {
+                COMPLETED = new GuKKiCalProperty(zeile, "COMPLETED");
+ 
+// Eigenschaft: CONFERENCE GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 10 && zeile.substring(0, 10).equals("CONFERENCE")) {
+                CONFERENCESammlung.add(new GuKKiCalProperty(zeile, "CONFERENCE"));
+ 
+// Eigenschaft: CONTACT GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 7 && zeile.substring(0, 7).equals("CONTACT")) {
+                CONTACTSammlung.add(new GuKKiCalProperty(zeile, "CONTACT"));
+ 
+// Eigenschaft: CREATED GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("CREATED")) {
+                CREATED = new GuKKiCalProperty(zeile, "CREATED");
+ 
+// Eigenschaft: DESCRIPTION GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
+                DESCRIPTION = new GuKKiCalProperty(zeile, "DESCRIPTION");
+ 
+// Eigenschaft: DTSTAMP GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
+                DTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
+ 
+// Eigenschaft: DTSTART GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTART")) {
+                DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
+ 
+// Eigenschaft: DUE GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("DUE")) {
+                DUE = new GuKKiCalProperty(zeile, "DUE");
+ 
+// Eigenschaft: DURATION GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 8 && zeile.substring(0, 8).equals("DURATION")) {
+                DURATION = new GuKKiCalProperty(zeile, "DURATION");
+ 
+// Eigenschaft: EXDATE GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 6 && zeile.substring(0, 6).equals("EXDATE")) {
+                EXDATESammlung.add(new GuKKiCalProperty(zeile, "EXDATE"));
+ 
+// Eigenschaft: GEO GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("GEO")) {
+                GEO = new GuKKiCalProperty(zeile, "GEO");
+ 
+// Eigenschaft: IMAGE GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 5 && zeile.substring(0, 5).equals("IMAGE")) {
+                IMAGESammlung.add(new GuKKiCalProperty(zeile, "IMAGE"));
+ 
+// Eigenschaft: LAST_MOD GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
+                LAST_MOD = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
+ 
+// Eigenschaft: LOCATION GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 8 && zeile.substring(0, 8).equals("LOCATION")) {
+                LOCATION = new GuKKiCalProperty(zeile, "LOCATION");
+ 
+// Eigenschaft: ORGANIZER GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
+                ORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
+ 
+// Eigenschaft: PERCENT GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 16 && zeile.substring(0, 16).equals("PERCENT-COMPLETE")) {
+                PERCENT = new GuKKiCalProperty(zeile, "PERCENT-COMPLETE");
+ 
+// Eigenschaft: PRIORITY GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 8 && zeile.substring(0, 8).equals("PRIORITY")) {
+                PRIORITY = new GuKKiCalProperty(zeile, "PRIORITY");
+ 
+// Eigenschaft: RDATE GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 5 && zeile.substring(0, 5).equals("RDATE")) {
+                RDATESammlung.add(new GuKKiCalProperty(zeile, "RDATE"));
+ 
+// Eigenschaft: RECURID GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 13 && zeile.substring(0, 13).equals("RECURRENCE-ID")) {
+                RECURID = new GuKKiCalProperty(zeile, "RECURRENCE-ID");
+ 
+// Eigenschaft: RELATED GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 10 && zeile.substring(0, 10).equals("RELATED-TO")) {
+                RELATEDSammlung.add(new GuKKiCalProperty(zeile, "RELATED-TO"));
+ 
+// Eigenschaft: RSTATUS GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 14 && zeile.substring(0, 14).equals("REQUEST-STATUS")) {
+                RSTATUSSammlung.add(new GuKKiCalProperty(zeile, "REQUEST-STATUS"));
+ 
+// Eigenschaft: RESOURCES GuKKiCalProperty auftreten 0:n
+            } else  if (zeile.length() > 9 && zeile.substring(0, 9).equals("RESOURCES")) {
+                RESOURCESSammlung.add(new GuKKiCalProperty(zeile, "RESOURCES"));
+ 
+// Eigenschaft: RRULE GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("RRULE")) {
+                RRULE = new GuKKiCalProperty(zeile, "RRULE");
+ 
+// Eigenschaft: SEQ GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 8 && zeile.substring(0, 8).equals("SEQUENCE")) {
+                SEQ = new GuKKiCalProperty(zeile, "SEQUENCE");
+ 
+// Eigenschaft: STATUS GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 6 && zeile.substring(0, 6).equals("STATUS")) {
+                STATUS = new GuKKiCalProperty(zeile, "STATUS");
+ 
+// Eigenschaft: SUMMARY GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("SUMMARY")) {
+                SUMMARY = new GuKKiCalProperty(zeile, "SUMMARY");
+ 
+// Eigenschaft: UID GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("UID")) {
+                UID = new GuKKiCalProperty(zeile, "UID");
+ 
+// Eigenschaft: URL GuKKiCalProperty auftreten 0:1
+            } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("URL")) {
+                URL = new GuKKiCalProperty(zeile, "URL");
+ 
+// Eigenschaft: X_PROP String auftreten 0:n
+            } else  if (zeile.length() > 2 && zeile.substring(0, 2).equals("X-")) {
+                X_PROPSammlung.add(zeile);
+ 
+// Abschluss und Fallbackparameter
+ 
+            } else {
+                Restinformationen.add(zeile);
+            }
+        }
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "beendet");
+        }
+    } // Ende verarbeitenZeile
+ 
+    /**
+     * Diese Methode kopiert die iCalendar-Komponente
+     * GuKKiCalvTodo und gibt diese Kopie zurück
+     */
+    protected GuKKiCalvTodo kopieren() {
+        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+ 
+        GuKKiCalvTodo temp = new GuKKiCalvTodo();
+ 
+        temp.kennung = this.kennung;
+ 
+// Eigenschaft: ATTACH GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pATTACH : ATTACHSammlung) {
+            temp.ATTACHSammlung.add(pATTACH.kopieren());
+        }
+ 
+// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pATTENDEE : ATTENDEESammlung) {
+            temp.ATTENDEESammlung.add(pATTENDEE.kopieren());
+        }
+ 
+// Eigenschaft: CATEGORIES GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pCATEGORIES : CATEGORIESSammlung) {
+            temp.CATEGORIESSammlung.add(pCATEGORIES.kopieren());
+        }
+ 
+// Eigenschaft: CLASS GuKKiCalProperty auftreten 0:1
+        temp.CLASS = this.CLASS == null ? null : this.CLASS.kopieren();
+ 
+// Eigenschaft: COLOR GuKKiCalProperty auftreten 0:1
+        temp.COLOR = this.COLOR == null ? null : this.COLOR.kopieren();
+ 
+// Eigenschaft: COMMENT GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pCOMMENT : COMMENTSammlung) {
+            temp.COMMENTSammlung.add(pCOMMENT.kopieren());
+        }
+ 
+// Eigenschaft: COMPLETED GuKKiCalProperty auftreten 0:1
+        temp.COMPLETED = this.COMPLETED == null ? null : this.COMPLETED.kopieren();
+ 
+// Eigenschaft: CONFERENCE GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pCONFERENCE : CONFERENCESammlung) {
+            temp.CONFERENCESammlung.add(pCONFERENCE.kopieren());
+        }
+ 
+// Eigenschaft: CONTACT GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pCONTACT : CONTACTSammlung) {
+            temp.CONTACTSammlung.add(pCONTACT.kopieren());
+        }
+ 
+// Eigenschaft: CREATED GuKKiCalProperty auftreten 0:1
+        temp.CREATED = this.CREATED == null ? null : this.CREATED.kopieren();
+ 
+// Eigenschaft: DESCRIPTION GuKKiCalProperty auftreten 0:1
+        temp.DESCRIPTION = this.DESCRIPTION == null ? null : this.DESCRIPTION.kopieren();
+ 
+// Eigenschaft: DTSTAMP GuKKiCalProperty auftreten 0:1
+        temp.DTSTAMP = this.DTSTAMP == null ? null : this.DTSTAMP.kopieren();
+ 
+// Eigenschaft: DTSTART GuKKiCalProperty auftreten 0:1
+        temp.DTSTART = this.DTSTART == null ? null : this.DTSTART.kopieren();
+ 
+// Eigenschaft: DUE GuKKiCalProperty auftreten 0:1
+        temp.DUE = this.DUE == null ? null : this.DUE.kopieren();
+ 
+// Eigenschaft: DURATION GuKKiCalProperty auftreten 0:1
+        temp.DURATION = this.DURATION == null ? null : this.DURATION.kopieren();
+ 
+// Eigenschaft: EXDATE GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pEXDATE : EXDATESammlung) {
+            temp.EXDATESammlung.add(pEXDATE.kopieren());
+        }
+ 
+// Eigenschaft: GEO GuKKiCalProperty auftreten 0:1
+        temp.GEO = this.GEO == null ? null : this.GEO.kopieren();
+ 
+// Eigenschaft: IMAGE GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pIMAGE : IMAGESammlung) {
+            temp.IMAGESammlung.add(pIMAGE.kopieren());
+        }
+ 
+// Eigenschaft: LAST_MOD GuKKiCalProperty auftreten 0:1
+        temp.LAST_MOD = this.LAST_MOD == null ? null : this.LAST_MOD.kopieren();
+ 
+// Eigenschaft: LOCATION GuKKiCalProperty auftreten 0:1
+        temp.LOCATION = this.LOCATION == null ? null : this.LOCATION.kopieren();
+ 
+// Eigenschaft: ORGANIZER GuKKiCalProperty auftreten 0:1
+        temp.ORGANIZER = this.ORGANIZER == null ? null : this.ORGANIZER.kopieren();
+ 
+// Eigenschaft: PERCENT GuKKiCalProperty auftreten 0:1
+        temp.PERCENT = this.PERCENT == null ? null : this.PERCENT.kopieren();
+ 
+// Eigenschaft: PRIORITY GuKKiCalProperty auftreten 0:1
+        temp.PRIORITY = this.PRIORITY == null ? null : this.PRIORITY.kopieren();
+ 
+// Eigenschaft: RDATE GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pRDATE : RDATESammlung) {
+            temp.RDATESammlung.add(pRDATE.kopieren());
+        }
+ 
+// Eigenschaft: RECURID GuKKiCalProperty auftreten 0:1
+        temp.RECURID = this.RECURID == null ? null : this.RECURID.kopieren();
+ 
+// Eigenschaft: RELATED GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pRELATED : RELATEDSammlung) {
+            temp.RELATEDSammlung.add(pRELATED.kopieren());
+        }
+ 
+// Eigenschaft: RSTATUS GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pRSTATUS : RSTATUSSammlung) {
+            temp.RSTATUSSammlung.add(pRSTATUS.kopieren());
+        }
+ 
+// Eigenschaft: RESOURCES GuKKiCalProperty auftreten 0:n
+        for (GuKKiCalProperty pRESOURCES : RESOURCESSammlung) {
+            temp.RESOURCESSammlung.add(pRESOURCES.kopieren());
+        }
+ 
+// Eigenschaft: RRULE GuKKiCalProperty auftreten 0:1
+        temp.RRULE = this.RRULE == null ? null : this.RRULE.kopieren();
+ 
+// Eigenschaft: SEQ GuKKiCalProperty auftreten 0:1
+        temp.SEQ = this.SEQ == null ? null : this.SEQ.kopieren();
+ 
+// Eigenschaft: STATUS GuKKiCalProperty auftreten 0:1
+        temp.STATUS = this.STATUS == null ? null : this.STATUS.kopieren();
+ 
+// Eigenschaft: SUMMARY GuKKiCalProperty auftreten 0:1
+        temp.SUMMARY = this.SUMMARY == null ? null : this.SUMMARY.kopieren();
+ 
+// Eigenschaft: UID GuKKiCalProperty auftreten 0:1
+        temp.UID = this.UID == null ? null : this.UID.kopieren();
+ 
+// Eigenschaft: URL GuKKiCalProperty auftreten 0:1
+        temp.URL = this.URL == null ? null : this.URL.kopieren();
+ 
+// Eigenschaft: X_PROP String auftreten 0:n
+        for (String pX_PROP : X_PROPSammlung) {
+            temp.X_PROPSammlung.add(pX_PROP);
+        }
+ 
+// Subkomponente: vAlarm GuKKiCalvAlarm auftreten 0:n
+        for (GuKKiCalvAlarm vAlarm : this.vAlarmSammlung) {
+            temp.vAlarmSammlung.add(vAlarm.kopieren());
+        }
+ 
+// Abschluss und Fallbackparameter
+        for (String Restinformation : this.Restinformationen) {
+            temp.Restinformationen.add(Restinformation);
+        }
+ 
+        temp.status = GuKKiCalcStatus.KOPIERT;
+ 
+        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+ 
+        return temp;
+    } // Ende kopieren
+ 
+    /**
+     * Vergleichen aller Attribute der Komponente GuKKiCalvTodo
+     *
+     * @return boolean
+     */
+    protected boolean istGleich(Object dasAndere) {
+        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
+ 
+        if (!dasAndere.getClass().equals(this.getClass())) {
+            return false;
+        }
+ 
+        GuKKiCalvTodo temp = (GuKKiCalvTodo) dasAndere;
+ 
+// Eigenschaft: ATTACH GuKKiCalProperty auftreten 0:n
+        if (temp.ATTACHSammlung.size() != this.ATTACHSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < ATTACHSammlung.size(); i++) {
+            if (!temp.ATTACHSammlung.get(i).istGleich(this.ATTACHSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
+        if (temp.ATTENDEESammlung.size() != this.ATTENDEESammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < ATTENDEESammlung.size(); i++) {
+            if (!temp.ATTENDEESammlung.get(i).istGleich(this.ATTENDEESammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: CATEGORIES GuKKiCalProperty auftreten 0:n
+        if (temp.CATEGORIESSammlung.size() != this.CATEGORIESSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < CATEGORIESSammlung.size(); i++) {
+            if (!temp.CATEGORIESSammlung.get(i).istGleich(this.CATEGORIESSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: CLASS GuKKiCalProperty auftreten 0:1
+        if (!((temp.CLASS == null && this.CLASS == null)
+                || (temp.CLASS != null && this.CLASS != null && temp.CLASS.istGleich(this.CLASS)))) {
+            return false;
+        }
+ 
+// Eigenschaft: COLOR GuKKiCalProperty auftreten 0:1
+        if (!((temp.COLOR == null && this.COLOR == null)
+                || (temp.COLOR != null && this.COLOR != null && temp.COLOR.istGleich(this.COLOR)))) {
+            return false;
+        }
+ 
+// Eigenschaft: COMMENT GuKKiCalProperty auftreten 0:n
+        if (temp.COMMENTSammlung.size() != this.COMMENTSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < COMMENTSammlung.size(); i++) {
+            if (!temp.COMMENTSammlung.get(i).istGleich(this.COMMENTSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: COMPLETED GuKKiCalProperty auftreten 0:1
+        if (!((temp.COMPLETED == null && this.COMPLETED == null)
+                || (temp.COMPLETED != null && this.COMPLETED != null && temp.COMPLETED.istGleich(this.COMPLETED)))) {
+            return false;
+        }
+ 
+// Eigenschaft: CONFERENCE GuKKiCalProperty auftreten 0:n
+        if (temp.CONFERENCESammlung.size() != this.CONFERENCESammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < CONFERENCESammlung.size(); i++) {
+            if (!temp.CONFERENCESammlung.get(i).istGleich(this.CONFERENCESammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: CONTACT GuKKiCalProperty auftreten 0:n
+        if (temp.CONTACTSammlung.size() != this.CONTACTSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < CONTACTSammlung.size(); i++) {
+            if (!temp.CONTACTSammlung.get(i).istGleich(this.CONTACTSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: CREATED GuKKiCalProperty auftreten 0:1
+        if (!((temp.CREATED == null && this.CREATED == null)
+                || (temp.CREATED != null && this.CREATED != null && temp.CREATED.istGleich(this.CREATED)))) {
+            return false;
+        }
+ 
+// Eigenschaft: DESCRIPTION GuKKiCalProperty auftreten 0:1
+        if (!((temp.DESCRIPTION == null && this.DESCRIPTION == null)
+                || (temp.DESCRIPTION != null && this.DESCRIPTION != null && temp.DESCRIPTION.istGleich(this.DESCRIPTION)))) {
+            return false;
+        }
+ 
+// Eigenschaft: DTSTAMP GuKKiCalProperty auftreten 0:1
+        if (!((temp.DTSTAMP == null && this.DTSTAMP == null)
+                || (temp.DTSTAMP != null && this.DTSTAMP != null && temp.DTSTAMP.istGleich(this.DTSTAMP)))) {
+            return false;
+        }
+ 
+// Eigenschaft: DTSTART GuKKiCalProperty auftreten 0:1
+        if (!((temp.DTSTART == null && this.DTSTART == null)
+                || (temp.DTSTART != null && this.DTSTART != null && temp.DTSTART.istGleich(this.DTSTART)))) {
+            return false;
+        }
+ 
+// Eigenschaft: DUE GuKKiCalProperty auftreten 0:1
+        if (!((temp.DUE == null && this.DUE == null)
+                || (temp.DUE != null && this.DUE != null && temp.DUE.istGleich(this.DUE)))) {
+            return false;
+        }
+ 
+// Eigenschaft: DURATION GuKKiCalProperty auftreten 0:1
+        if (!((temp.DURATION == null && this.DURATION == null)
+                || (temp.DURATION != null && this.DURATION != null && temp.DURATION.istGleich(this.DURATION)))) {
+            return false;
+        }
+ 
+// Eigenschaft: EXDATE GuKKiCalProperty auftreten 0:n
+        if (temp.EXDATESammlung.size() != this.EXDATESammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < EXDATESammlung.size(); i++) {
+            if (!temp.EXDATESammlung.get(i).istGleich(this.EXDATESammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: GEO GuKKiCalProperty auftreten 0:1
+        if (!((temp.GEO == null && this.GEO == null)
+                || (temp.GEO != null && this.GEO != null && temp.GEO.istGleich(this.GEO)))) {
+            return false;
+        }
+ 
+// Eigenschaft: IMAGE GuKKiCalProperty auftreten 0:n
+        if (temp.IMAGESammlung.size() != this.IMAGESammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < IMAGESammlung.size(); i++) {
+            if (!temp.IMAGESammlung.get(i).istGleich(this.IMAGESammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: LAST_MOD GuKKiCalProperty auftreten 0:1
+        if (!((temp.LAST_MOD == null && this.LAST_MOD == null)
+                || (temp.LAST_MOD != null && this.LAST_MOD != null && temp.LAST_MOD.istGleich(this.LAST_MOD)))) {
+            return false;
+        }
+ 
+// Eigenschaft: LOCATION GuKKiCalProperty auftreten 0:1
+        if (!((temp.LOCATION == null && this.LOCATION == null)
+                || (temp.LOCATION != null && this.LOCATION != null && temp.LOCATION.istGleich(this.LOCATION)))) {
+            return false;
+        }
+ 
+// Eigenschaft: ORGANIZER GuKKiCalProperty auftreten 0:1
+        if (!((temp.ORGANIZER == null && this.ORGANIZER == null)
+                || (temp.ORGANIZER != null && this.ORGANIZER != null && temp.ORGANIZER.istGleich(this.ORGANIZER)))) {
+            return false;
+        }
+ 
+// Eigenschaft: PERCENT GuKKiCalProperty auftreten 0:1
+        if (!((temp.PERCENT == null && this.PERCENT == null)
+                || (temp.PERCENT != null && this.PERCENT != null && temp.PERCENT.istGleich(this.PERCENT)))) {
+            return false;
+        }
+ 
+// Eigenschaft: PRIORITY GuKKiCalProperty auftreten 0:1
+        if (!((temp.PRIORITY == null && this.PRIORITY == null)
+                || (temp.PRIORITY != null && this.PRIORITY != null && temp.PRIORITY.istGleich(this.PRIORITY)))) {
+            return false;
+        }
+ 
+// Eigenschaft: RDATE GuKKiCalProperty auftreten 0:n
+        if (temp.RDATESammlung.size() != this.RDATESammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < RDATESammlung.size(); i++) {
+            if (!temp.RDATESammlung.get(i).istGleich(this.RDATESammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: RECURID GuKKiCalProperty auftreten 0:1
+        if (!((temp.RECURID == null && this.RECURID == null)
+                || (temp.RECURID != null && this.RECURID != null && temp.RECURID.istGleich(this.RECURID)))) {
+            return false;
+        }
+ 
+// Eigenschaft: RELATED GuKKiCalProperty auftreten 0:n
+        if (temp.RELATEDSammlung.size() != this.RELATEDSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < RELATEDSammlung.size(); i++) {
+            if (!temp.RELATEDSammlung.get(i).istGleich(this.RELATEDSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: RSTATUS GuKKiCalProperty auftreten 0:n
+        if (temp.RSTATUSSammlung.size() != this.RSTATUSSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < RSTATUSSammlung.size(); i++) {
+            if (!temp.RSTATUSSammlung.get(i).istGleich(this.RSTATUSSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: RESOURCES GuKKiCalProperty auftreten 0:n
+        if (temp.RESOURCESSammlung.size() != this.RESOURCESSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < RESOURCESSammlung.size(); i++) {
+            if (!temp.RESOURCESSammlung.get(i).istGleich(this.RESOURCESSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Eigenschaft: RRULE GuKKiCalProperty auftreten 0:1
+        if (!((temp.RRULE == null && this.RRULE == null)
+                || (temp.RRULE != null && this.RRULE != null && temp.RRULE.istGleich(this.RRULE)))) {
+            return false;
+        }
+ 
+// Eigenschaft: SEQ GuKKiCalProperty auftreten 0:1
+        if (!((temp.SEQ == null && this.SEQ == null)
+                || (temp.SEQ != null && this.SEQ != null && temp.SEQ.istGleich(this.SEQ)))) {
+            return false;
+        }
+ 
+// Eigenschaft: STATUS GuKKiCalProperty auftreten 0:1
+        if (!((temp.STATUS == null && this.STATUS == null)
+                || (temp.STATUS != null && this.STATUS != null && temp.STATUS.istGleich(this.STATUS)))) {
+            return false;
+        }
+ 
+// Eigenschaft: SUMMARY GuKKiCalProperty auftreten 0:1
+        if (!((temp.SUMMARY == null && this.SUMMARY == null)
+                || (temp.SUMMARY != null && this.SUMMARY != null && temp.SUMMARY.istGleich(this.SUMMARY)))) {
+            return false;
+        }
+ 
+// Eigenschaft: UID GuKKiCalProperty auftreten 0:1
+        if (!((temp.UID == null && this.UID == null)
+                || (temp.UID != null && this.UID != null && temp.UID.istGleich(this.UID)))) {
+            return false;
+        }
+ 
+// Eigenschaft: URL GuKKiCalProperty auftreten 0:1
+        if (!((temp.URL == null && this.URL == null)
+                || (temp.URL != null && this.URL != null && temp.URL.istGleich(this.URL)))) {
+            return false;
+        }
+ 
+// Eigenschaft: X_PROP String auftreten 0:n
+        if (temp.X_PROPSammlung.size() != this.X_PROPSammlung.size()) {
+            return false;
+        }
+        for (int i = 0;i < X_PROPSammlung.size(); i++) {
+            if (!temp.X_PROPSammlung.get(i).equals(this.X_PROPSammlung.get(i))) {
+               return false;
+            }
+        }
+ 
+// Subkomponente: vAlarm GuKKiCalvAlarm auftreten 0:n
+        if (temp.vAlarmSammlung.size() != this.vAlarmSammlung.size()) {
+            return false;
+        }
+        for (int i = 0; i < vAlarmSammlung.size(); i++) {
+            if (!temp.vAlarmSammlung.get(i).istGleich(this.vAlarmSammlung.get(i))) {
+                return false;
+            }
+        }
+ 
+// Abschluss und Fallbackparameter
+        if (temp.Restinformationen.size() != this.Restinformationen.size()) {
+            return false;
+        }
+        for (int i = 0; i < Restinformationen.size(); i++) {
+            if (!temp.Restinformationen.get(i).equals(this.Restinformationen.get(i))) {
+                return false; 
+            }
+        }
+ 
+        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
+ 
+        return true;
+    } // Ende istGleich
+ 
+// Ende der generierten Methoden für GuKKiCalvTodo
+// @formatter:on    	  	 
 
 	/**
 	 * Gibt statt der Adresse die UID des vTodo zurück
 	 */
 	public String toString() {
-		return "T," + (UID == null ? "" : UID.getWert()) + "," + (SEQUENCE == null ? "" : SEQUENCE.getWert()) + ","
+		return "T," + (UID == null ? "" : UID.getWert()) + "," + (SEQ == null ? "" : SEQ.getWert()) + ","
 				+ (RECURID == null ? "" : RECURID.getWert());
 	}
 
