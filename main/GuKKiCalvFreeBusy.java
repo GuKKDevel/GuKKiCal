@@ -146,190 +146,109 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
 	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
 	private ArrayList<String> Restinformationen = new ArrayList<String>();
 	
-	private GuKKiCalvFreeBusy() {
+	protected GuKKiCalvFreeBusy() {
 		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
 		kennung = GuKKiCalcKennung.FREEBUSY;
 		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
 	}
-	public GuKKiCalvFreeBusy(String vFreeBusyDaten) throws Exception {
-		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-
-		kennung = GuKKiCalcKennung.FREEBUSY;
-
-		einlesenAusDatenstrom(vFreeBusyDaten);
-
-// @formatter:off    	 
-// Generieren der restlichen Verarbeitungsschritte im Konstruktor für den Datenstrom
- 
-        status = GuKKiCalcStatus.GELESEN;
- 
-        if (Restinformationen.size() > 0) {
-            for (String Restinformation : Restinformationen) {
-                logger.log(Level.INFO, "Restinformation:" + "-->" + Restinformation + "<--");
-            }
-        }
-        if (logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "beendet");
-        }
-    }
- 
-// Generieren der Methoden für den Aufbau der Komponentensammlungen
-// Anfang der generierten Methoden für GuKKiCalvFreeBusy 0.1 Wed Dec 08 23:39:38 CET 2021
- 
+	
     /**
      * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten) Zeilen
      * untersucht und die jeweilige Eigenschaft wird abgespeichert
+     * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      */
-    @Override
-    protected void verarbeitenZeile(String zeile) throws Exception {
+    protected void neueZeile(String zeile) throws Exception {
         if (logger.isLoggable(logLevel)) {
             logger.log(logLevel, "begonnen");
         }
-        if (!zeile.equals("BEGIN:VFREEBUSY") & !zeile.equals("END:VFREEBUSY")) {
+        if (zeile.length() > 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
+            ATTENDEESammlung.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
+        } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("COMMENT")) {
+            COMMENTSammlung.add(new GuKKiCalProperty(zeile, "COMMENT"));
+        } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("CONTACT")) {
+            CONTACT = new GuKKiCalProperty(zeile, "CONTACT");
+        } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("DTEND")) {
+            DTEND = new GuKKiCalProperty(zeile, "DTEND");
+        } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
+            DTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
+        } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTART")) {
+            DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
+        } else if (zeile.length() > 8 && zeile.substring(0, 8).equals("FREEBUSY")) {
+            FREEBUSYSammlung.add(new GuKKiCalProperty(zeile, "FREEBUSY"));
+        } else if (zeile.length() > 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
+            ORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
+        } else if (zeile.length() > 14 && zeile.substring(0, 14).equals("REQUEST-STATUS")) {
+            RSTATUSSammlung.add(new GuKKiCalProperty(zeile, "REQUEST-STATUS"));
+        } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("UID")) {
+            UID = new GuKKiCalProperty(zeile, "UID");
+        } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("URL")) {
+            URL = new GuKKiCalProperty(zeile, "URL");
  
-// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
-             if (zeile.length() > 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
-                ATTENDEESammlung.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
+/* Abschluss und Fallbackparameter */
  
-// Eigenschaft: COMMENT GuKKiCalProperty auftreten 0:n
-            } else  if (zeile.length() > 7 && zeile.substring(0, 7).equals("COMMENT")) {
-                COMMENTSammlung.add(new GuKKiCalProperty(zeile, "COMMENT"));
- 
-// Eigenschaft: CONTACT GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("CONTACT")) {
-                CONTACT = new GuKKiCalProperty(zeile, "CONTACT");
- 
-// Eigenschaft: DTEND GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("DTEND")) {
-                DTEND = new GuKKiCalProperty(zeile, "DTEND");
- 
-// Eigenschaft: DTSTAMP GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
-                DTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
- 
-// Eigenschaft: DTSTART GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTART")) {
-                DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
- 
-// Eigenschaft: FREEBUSY GuKKiCalProperty auftreten 0:n
-            } else  if (zeile.length() > 8 && zeile.substring(0, 8).equals("FREEBUSY")) {
-                FREEBUSYSammlung.add(new GuKKiCalProperty(zeile, "FREEBUSY"));
- 
-// Eigenschaft: ORGANIZER GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
-                ORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
- 
-// Eigenschaft: RSTATUS GuKKiCalProperty auftreten 0:n
-            } else  if (zeile.length() > 14 && zeile.substring(0, 14).equals("REQUEST-STATUS")) {
-                RSTATUSSammlung.add(new GuKKiCalProperty(zeile, "REQUEST-STATUS"));
- 
-// Eigenschaft: UID GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("UID")) {
-                UID = new GuKKiCalProperty(zeile, "UID");
- 
-// Eigenschaft: URL GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("URL")) {
-                URL = new GuKKiCalProperty(zeile, "URL");
- 
-// Eigenschaft: X_PROP String auftreten 0:n
-            } else  if (zeile.length() > 2 && zeile.substring(0, 2).equals("X-")) {
-                X_PROPSammlung.add(zeile);
- 
-// Abschluss und Fallbackparameter
- 
-            } else {
-                Restinformationen.add(zeile);
-            }
+        } else if (zeile.length() > 2 && zeile.substring(0,2).equals("X-")) {
+            X_PROPSammlung.add(zeile);
+        } else {
+            Restinformationen.add(zeile);
         }
         if (logger.isLoggable(logLevel)) {
             logger.log(logLevel, "beendet");
         }
-    } // Ende verarbeitenZeile
+    } // Ende neueZeile V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
  
     /**
      * Diese Methode kopiert die iCalendar-Komponente
      * GuKKiCalvFreeBusy und gibt diese Kopie zurück
+     * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      */
     protected GuKKiCalvFreeBusy kopieren() {
         if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
- 
         GuKKiCalvFreeBusy temp = new GuKKiCalvFreeBusy();
- 
         temp.kennung = this.kennung;
- 
-// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
-        for (GuKKiCalProperty pATTENDEE : ATTENDEESammlung) {
-            temp.ATTENDEESammlung.add(pATTENDEE.kopieren());
+        for (GuKKiCalProperty ATTENDEE : ATTENDEESammlung) {
+            temp.ATTENDEESammlung.add(ATTENDEE.kopieren());
         }
- 
-// Eigenschaft: COMMENT GuKKiCalProperty auftreten 0:n
-        for (GuKKiCalProperty pCOMMENT : COMMENTSammlung) {
-            temp.COMMENTSammlung.add(pCOMMENT.kopieren());
+        for (GuKKiCalProperty COMMENT : COMMENTSammlung) {
+            temp.COMMENTSammlung.add(COMMENT.kopieren());
         }
- 
-// Eigenschaft: CONTACT GuKKiCalProperty auftreten 0:1
         temp.CONTACT = this.CONTACT == null ? null : this.CONTACT.kopieren();
- 
-// Eigenschaft: DTEND GuKKiCalProperty auftreten 0:1
         temp.DTEND = this.DTEND == null ? null : this.DTEND.kopieren();
- 
-// Eigenschaft: DTSTAMP GuKKiCalProperty auftreten 0:1
         temp.DTSTAMP = this.DTSTAMP == null ? null : this.DTSTAMP.kopieren();
- 
-// Eigenschaft: DTSTART GuKKiCalProperty auftreten 0:1
         temp.DTSTART = this.DTSTART == null ? null : this.DTSTART.kopieren();
- 
-// Eigenschaft: FREEBUSY GuKKiCalProperty auftreten 0:n
-        for (GuKKiCalProperty pFREEBUSY : FREEBUSYSammlung) {
-            temp.FREEBUSYSammlung.add(pFREEBUSY.kopieren());
+        for (GuKKiCalProperty FREEBUSY : FREEBUSYSammlung) {
+            temp.FREEBUSYSammlung.add(FREEBUSY.kopieren());
         }
- 
-// Eigenschaft: ORGANIZER GuKKiCalProperty auftreten 0:1
         temp.ORGANIZER = this.ORGANIZER == null ? null : this.ORGANIZER.kopieren();
- 
-// Eigenschaft: RSTATUS GuKKiCalProperty auftreten 0:n
-        for (GuKKiCalProperty pRSTATUS : RSTATUSSammlung) {
-            temp.RSTATUSSammlung.add(pRSTATUS.kopieren());
+        for (GuKKiCalProperty RSTATUS : RSTATUSSammlung) {
+            temp.RSTATUSSammlung.add(RSTATUS.kopieren());
         }
- 
-// Eigenschaft: UID GuKKiCalProperty auftreten 0:1
         temp.UID = this.UID == null ? null : this.UID.kopieren();
- 
-// Eigenschaft: URL GuKKiCalProperty auftreten 0:1
         temp.URL = this.URL == null ? null : this.URL.kopieren();
  
-// Eigenschaft: X_PROP String auftreten 0:n
-        for (String pX_PROP : X_PROPSammlung) {
-            temp.X_PROPSammlung.add(pX_PROP);
-        }
+/* Abschluss und Fallbackparameter */
  
-// Abschluss und Fallbackparameter
+        for (String X_PROP : this.X_PROPSammlung) {
+            temp.X_PROPSammlung.add(X_PROP);
+        }
         for (String Restinformation : this.Restinformationen) {
             temp.Restinformationen.add(Restinformation);
         }
- 
         temp.status = GuKKiCalcStatus.KOPIERT;
- 
         if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
- 
         return temp;
-    } // Ende kopieren
- 
+    } // Ende kopieren V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
     /**
      * Vergleichen aller Attribute der Komponente GuKKiCalvFreeBusy
+     * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      *
      * @return boolean
      */
     protected boolean istGleich(Object dasAndere) {
         if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
- 
         if (!dasAndere.getClass().equals(this.getClass())) {
             return false;
         }
- 
         GuKKiCalvFreeBusy temp = (GuKKiCalvFreeBusy) dasAndere;
- 
-// Eigenschaft: ATTENDEE GuKKiCalProperty auftreten 0:n
         if (temp.ATTENDEESammlung.size() != this.ATTENDEESammlung.size()) {
             return false;
         }
@@ -338,8 +257,6 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
                 return false;
             }
         }
- 
-// Eigenschaft: COMMENT GuKKiCalProperty auftreten 0:n
         if (temp.COMMENTSammlung.size() != this.COMMENTSammlung.size()) {
             return false;
         }
@@ -348,32 +265,22 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
                 return false;
             }
         }
- 
-// Eigenschaft: CONTACT GuKKiCalProperty auftreten 0:1
         if (!((temp.CONTACT == null && this.CONTACT == null)
                 || (temp.CONTACT != null && this.CONTACT != null && temp.CONTACT.istGleich(this.CONTACT)))) {
             return false;
         }
- 
-// Eigenschaft: DTEND GuKKiCalProperty auftreten 0:1
         if (!((temp.DTEND == null && this.DTEND == null)
                 || (temp.DTEND != null && this.DTEND != null && temp.DTEND.istGleich(this.DTEND)))) {
             return false;
         }
- 
-// Eigenschaft: DTSTAMP GuKKiCalProperty auftreten 0:1
         if (!((temp.DTSTAMP == null && this.DTSTAMP == null)
                 || (temp.DTSTAMP != null && this.DTSTAMP != null && temp.DTSTAMP.istGleich(this.DTSTAMP)))) {
             return false;
         }
- 
-// Eigenschaft: DTSTART GuKKiCalProperty auftreten 0:1
         if (!((temp.DTSTART == null && this.DTSTART == null)
                 || (temp.DTSTART != null && this.DTSTART != null && temp.DTSTART.istGleich(this.DTSTART)))) {
             return false;
         }
- 
-// Eigenschaft: FREEBUSY GuKKiCalProperty auftreten 0:n
         if (temp.FREEBUSYSammlung.size() != this.FREEBUSYSammlung.size()) {
             return false;
         }
@@ -382,14 +289,10 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
                 return false;
             }
         }
- 
-// Eigenschaft: ORGANIZER GuKKiCalProperty auftreten 0:1
         if (!((temp.ORGANIZER == null && this.ORGANIZER == null)
                 || (temp.ORGANIZER != null && this.ORGANIZER != null && temp.ORGANIZER.istGleich(this.ORGANIZER)))) {
             return false;
         }
- 
-// Eigenschaft: RSTATUS GuKKiCalProperty auftreten 0:n
         if (temp.RSTATUSSammlung.size() != this.RSTATUSSammlung.size()) {
             return false;
         }
@@ -398,30 +301,25 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
                 return false;
             }
         }
- 
-// Eigenschaft: UID GuKKiCalProperty auftreten 0:1
         if (!((temp.UID == null && this.UID == null)
                 || (temp.UID != null && this.UID != null && temp.UID.istGleich(this.UID)))) {
             return false;
         }
- 
-// Eigenschaft: URL GuKKiCalProperty auftreten 0:1
         if (!((temp.URL == null && this.URL == null)
                 || (temp.URL != null && this.URL != null && temp.URL.istGleich(this.URL)))) {
             return false;
         }
  
-// Eigenschaft: X_PROP String auftreten 0:n
+/* Abschluss und Fallbackparameter */
+ 
         if (temp.X_PROPSammlung.size() != this.X_PROPSammlung.size()) {
             return false;
         }
-        for (int i = 0;i < X_PROPSammlung.size(); i++) {
+        for (int i = 0; i < X_PROPSammlung.size(); i++) {
             if (!temp.X_PROPSammlung.get(i).equals(this.X_PROPSammlung.get(i))) {
-               return false;
+                return false; 
             }
         }
- 
-// Abschluss und Fallbackparameter
         if (temp.Restinformationen.size() != this.Restinformationen.size()) {
             return false;
         }
@@ -430,12 +328,52 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
                 return false; 
             }
         }
- 
         if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
- 
         return true;
-    } // Ende istGleich
+    } // Ende istGleich V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
  
-// Ende der generierten Methoden für GuKKiCalvFreeBusy
-// @formatter:on    	 	 
+    /**
+     * Mit dieser Methode werden die einzelnen Eigenschaften als gültige Parameterkette ausgegeben
+     * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+     */
+    protected String ausgeben() throws Exception {
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "begonnen");
+        }
+        String componentDatenstrom = ausgebenInDatenstrom("BEGIN:VFREEBUSY");
+        for (GuKKiCalProperty ATTENDEE : ATTENDEESammlung) {
+            componentDatenstrom += ausgebenInDatenstrom(ATTENDEE.ausgeben());
+        }
+        for (GuKKiCalProperty COMMENT : COMMENTSammlung) {
+            componentDatenstrom += ausgebenInDatenstrom(COMMENT.ausgeben());
+        }
+        componentDatenstrom +=  this.CONTACT == null ? "" : ausgebenInDatenstrom(this.CONTACT.ausgeben());
+        componentDatenstrom +=  this.DTEND == null ? "" : ausgebenInDatenstrom(this.DTEND.ausgeben());
+        componentDatenstrom +=  this.DTSTAMP == null ? "" : ausgebenInDatenstrom(this.DTSTAMP.ausgeben());
+        componentDatenstrom +=  this.DTSTART == null ? "" : ausgebenInDatenstrom(this.DTSTART.ausgeben());
+        for (GuKKiCalProperty FREEBUSY : FREEBUSYSammlung) {
+            componentDatenstrom += ausgebenInDatenstrom(FREEBUSY.ausgeben());
+        }
+        componentDatenstrom +=  this.ORGANIZER == null ? "" : ausgebenInDatenstrom(this.ORGANIZER.ausgeben());
+        for (GuKKiCalProperty RSTATUS : RSTATUSSammlung) {
+            componentDatenstrom += ausgebenInDatenstrom(RSTATUS.ausgeben());
+        }
+        componentDatenstrom +=  this.UID == null ? "" : ausgebenInDatenstrom(this.UID.ausgeben());
+        componentDatenstrom +=  this.URL == null ? "" : ausgebenInDatenstrom(this.URL.ausgeben());
+ 
+/* Abschluss und Fallbackparameter */
+ 
+        for (String X_PROP : this.X_PROPSammlung) {
+            componentDatenstrom += ausgebenInDatenstrom(X_PROP);
+        }
+        for (String Restinformation : this.Restinformationen) {
+            componentDatenstrom += ausgebenInDatenstrom(Restinformation);
+        }
+        componentDatenstrom += ausgebenInDatenstrom("END:VFREEBUSY");
+        if (logger.isLoggable(logLevel)) {
+            logger.log(logLevel, "beendet");
+        }
+        return componentDatenstrom;
+    } // Ende ausgeben V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+    protected void abschliessen(){status = GuKKiCalcStatus.GELESEN;}	 	 
 }

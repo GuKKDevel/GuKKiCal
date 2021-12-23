@@ -17,6 +17,24 @@ public class GuKKiCalComponent {
 	GuKKiCalcStatus status = GuKKiCalcStatus.UNDEFINIERT;
 	String schluessel = "";
 
+	boolean bearbeiteSubKomponente = false;
+	boolean vEventBearbeiten = false;
+	GuKKiCalvEvent vEventNeu;
+	boolean vTodoBearbeiten = false;
+	GuKKiCalvTodo vTodoNeu;
+	boolean vJournalBearbeiten = false;
+	GuKKiCalvJournal vJournalNeu;
+	boolean vAlarmBearbeiten = false;
+	GuKKiCalvAlarm vAlarmNeu;
+	boolean vTimezoneBearbeiten = false;
+	GuKKiCalvTimezone vTimezoneNeu;
+	boolean cDaylightBearbeiten = false;
+	GuKKiCalcDaylight cDaylightNeu;
+	boolean cStandardBearbeiten = false;
+	GuKKiCalcStandard cStandardNeu;
+	boolean vFreeBusyBearbeiten = false;
+	GuKKiCalvFreeBusy vFreeBusyNeu;
+
 	/*
 	 * Standard-Variablen (Konstanten)
 	 */
@@ -96,16 +114,15 @@ public class GuKKiCalComponent {
 		int anf = 0;
 
 		if (vComponentDaten.length() < laenge) {
-			ausgabeString= vComponentDaten+"\n";
+			ausgabeString = vComponentDaten + "\n";
+		} else {
+			ausgabeString = vComponentDaten.substring(0, laenge - 1) + "\n ";
+			anf = laenge - 1;
 		}
-		else {
-			ausgabeString = vComponentDaten.substring(0,laenge-1)+"\n ";
-			anf = laenge-1;
+		for (; anf < vComponentDaten.length() - laenge; anf += laenge - 1) {
+			ausgabeString += vComponentDaten.substring(anf, anf + laenge - 1) + "\n ";
 		}
-		for (; anf < vComponentDaten.length()-laenge;anf+=laenge-1) {
-			ausgabeString += vComponentDaten.substring(anf,anf+laenge-1)+"\n ";
-		}
-		ausgabeString += vComponentDaten.substring(anf)+"\n";
+		ausgabeString += vComponentDaten.substring(anf) + "\n";
 
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet\n");

@@ -34,10 +34,10 @@ public class Ausprobieren {
 		} finally {
 
 		}
-//		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
-//			System.out.println(iCaliCalendar.toString("CETJZF"));
-//			System.out.println("\n\n" + new Date().toString() + "\n\n");
-//		}
+		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
+			System.out.println(iCaliCalendar.toString("CETJZF"));
+			System.out.println("\n\n" + new Date().toString() + "\n\n");
+		}
 		logger.finest("beendet");
 		// TODO Automatisch generierter Konstruktorstub
 	}

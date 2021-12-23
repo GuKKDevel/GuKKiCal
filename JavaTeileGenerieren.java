@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -467,7 +469,8 @@ public class JavaTeileGenerieren {
 	/* @formatter:on */
 
 	String verzeichnis = "../../Git-Repositories/GuKKiCal/IgnoreForGit/";
-	String version = "0.2 (RFC 5545, RFC 7968) " + DateFormat.getInstance().format(new Date());
+	String version = "V 0.0.3 " + " (RFC 5545, RFC 7968) "
+			+ new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
 
 	/**
 	 * Konstruktor
@@ -490,8 +493,10 @@ public class JavaTeileGenerieren {
 		System.out.println("Generieren der Codebestandteile für Klasse GuKKiCalProperty " + version);
 
 		try (PrintWriter pWriter = new PrintWriter(
-				new FileWriter(verzeichnis + "GuKKiCalProperty-parameterBestimmen"));) {
+				new FileWriter(new File(verzeichnis + "GuKKiCalProperty-generiert")));) {
+			
 			System.out.println("Generieren der Methode parameterBestimmen für GuKKiCalProperty");
+			
 			pWriter.println("    /**");
 			pWriter.println("     * übertragen der Parameter in das korrekte Feld");
 			pWriter.println("     * Version " + version);
@@ -501,7 +506,6 @@ public class JavaTeileGenerieren {
 
 			String elseif = "";
 			for (String[] strings : parameter) {
-				System.out.println(strings[0].toString() + "-" + strings[1].toString() + "-" + strings[2].toString());
 				pWriter.println("        " + elseif + "if (parameter.length() > " + (strings[2].length() + 1)
 						+ " && parameter.substring(0, " + (strings[2].length() + 1) + ").equals(\"" + strings[2]
 						+ "=\")) {");
@@ -524,12 +528,13 @@ public class JavaTeileGenerieren {
 			pWriter.println("        }");
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("    } // Ende der generierten Methode parameterBestimmen für GuKKiCalProperty " + version);
-
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} finally {
-		}
-		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-kopieren"));) {
+			pWriter.println(" ");
+//		} catch (IOException ioe) {
+//			ioe.printStackTrace();
+//		} finally {
+//		}
+//		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-kopieren"));) {
+			
 			System.out.println("Generieren der Methode kopieren für GuKKiCalProperty");
 
 			pWriter.println("    /**");
@@ -567,15 +572,15 @@ public class JavaTeileGenerieren {
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("        return temp;");
 			pWriter.println("    } // Ende der generierten Methode kopieren für GuKKiCalProperty " + version);
-
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} finally {
-		}
+			pWriter.println(" ");
+//		} catch (IOException ioe) {
+//			ioe.printStackTrace();
+//		} finally {
+//		}
+//		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-istGleich"));) {
 
 		System.out.println("Generieren der Methode istGleich für GuKKiCalProperty");
 
-		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-istGleich"));) {
 			pWriter.println("    /**");
 			pWriter.println("     * Vergleichen aller Parameter des Attributs");
 			pWriter.println("     * Version " + version);
@@ -633,21 +638,22 @@ public class JavaTeileGenerieren {
 			pWriter.println("        return true;");
 			pWriter.println("    } // Ende der generierten Methode istGleich für GuKKiCalProperty " + version);
 
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} finally {
+//		} catch (IOException ioe) {
+//			ioe.printStackTrace();
+//		} finally {
+//
+//		}
+//		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-ausgeben"));) {
+		
+			System.out.println("Generieren der Methode ausgeben für GuKKiCalProperty");
 
-		}
-		System.out.println("Generieren der Methode ausgeben für GuKKiCalProperty");
-
-		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-ausgeben"));) {
 			pWriter.println("    /**");
 			pWriter.println("     * Datenstromausgabe aller Parameter des Attributs");
 			pWriter.println("     * Version " + version);
 			pWriter.println("     *");
 			pWriter.println("     * @return String");
 			pWriter.println("     */");
-			pWriter.println("    protected String ausgeben(GuKKiCalProperty temp) {");
+			pWriter.println("    protected String ausgeben() {");
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"begonnen\");}");
 			pWriter.println("        String schreibText = \"\";");
 			pWriter.println("        String sammelText = \"\";");
@@ -656,11 +662,11 @@ public class JavaTeileGenerieren {
 
 			for (String[] strings : parameter) {
 				if (strings[0].equals("1")) {
-					pWriter.println("        schreibText += temp." + strings[1] + " == null ? \"\" : \";" + strings[2]
-							+ "=\" + temp." + strings[1] + ";");
+					pWriter.println("        schreibText += this." + strings[1] + " == null ? \"\" : \";" + strings[2]
+							+ "=\" + this." + strings[1] + ";");
 				} else if (strings[0].equals("2")) {
 					pWriter.println("        sammelText = \"\";");
-					pWriter.println("        for (String param : temp." + strings[1] + "Sammlung) {");
+					pWriter.println("        for (String param : this." + strings[1] + "Sammlung) {");
 					pWriter.println("            sammelText += param;");
 					pWriter.println("        }");
 					pWriter.println("        if (sammelText.length() > 0 ) {");
@@ -679,7 +685,7 @@ public class JavaTeileGenerieren {
 			pWriter.println("        /* Abschluss und Fallbackparameter */");
 			pWriter.println(" ");
 			pWriter.println("        sammelText = \"\";");
-			pWriter.println("        for (String X_PARM : temp.X_PARMSammlung) {");
+			pWriter.println("        for (String X_PARM : this.X_PARMSammlung) {");
 			pWriter.println("            sammelText += X_PARM;");
 			pWriter.println("        }");
 			pWriter.println("        if (sammelText.length() > 0 ) {");
@@ -691,7 +697,7 @@ public class JavaTeileGenerieren {
 			pWriter.println("            }");
 			pWriter.println("        }");
 			pWriter.println("        sammelText = \"\";");
-			pWriter.println("        for (String Restinformation : temp.Restinformationen) {");
+			pWriter.println("        for (String Restinformation : this.Restinformationen) {");
 			pWriter.println("            sammelText += Restinformation;");
 			pWriter.println("        }");
 			pWriter.println("        if (sammelText.length() > 0 ) {");
@@ -706,7 +712,7 @@ public class JavaTeileGenerieren {
 			pWriter.println("            schreibText += \";\"+endeText;");
 			pWriter.println("        }");
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
-			pWriter.println("        return temp.literal + schreibText + \":\" + temp.wert;");
+			pWriter.println("        return this.literal + schreibText + \":\" + this.wert;");
 			pWriter.println("    } // Ende der generierten Methode ausgeben für GuKKiCalProperty " + version);
 
 		} catch (IOException ioe) {
@@ -745,207 +751,112 @@ public class JavaTeileGenerieren {
 				einzug = "        ";
 			}
 
-			if (subcomponent[i].length > 0) {
-				System.out.println("Generieren der Codeteile zur Behandlung der Subkomponenten");
-			}
-			try (PrintWriter pWriter = new PrintWriter(
-					new FileWriter(verzeichnis + component[i][1] + "-Subkomponenten"));) {
-				pWriter.println("     /* Version " + version + "*/");
-				for (int j = 0; j < subcomponent[i].length; j++) {
-					pWriter.println(einzug + "    if (" + subcomponent[i][j][0] + "DatenArray.size() != 0) {");
-					pWriter.println(einzug + "        " + subcomponent[i][j][0] + "SammlungAnlegen();");
-					pWriter.println(einzug + "    }");
-				}
-				if (subcomponent[i].length > 0) {
-					pWriter.println(" ");
-					pWriter.println(
-							"------------------------------------------------------------------------------------------------------------------------");
-					pWriter.println(" ");
-					System.out.println("Generieren der Methoden für den Aufbau der Komponentensammlungen");
-				}
-				for (int j = 0; j < subcomponent[i].length; j++) {
-					pWriter.println(" ");
-					pWriter.println("    /**");
-					pWriter.println("     * Erstellen der Sammlung für Subkomponente: " + subcomponent[i][j][0]);
-					pWriter.println("     * Version " + version);
-					pWriter.println("     */");
-					pWriter.println(
-							einzug + "private void " + subcomponent[i][j][0] + "SammlungAnlegen() throws Exception {");
-					pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {");
-					pWriter.println(einzug + "        logger.log(logLevel, \"begonnen\");");
-					pWriter.println(einzug + "    }");
-					pWriter.println(einzug + "    String " + subcomponent[i][j][0] + "Daten = \"\";");
-					pWriter.println(einzug + "    for (String zeile : " + subcomponent[i][j][0] + "DatenArray) {");
-					pWriter.println(einzug + "        if (zeile.equals(\"BEGIN:" + subcomponent[i][j][2] + "\")) {");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "Daten = zeile + nz;");
-					pWriter.println(
-							einzug + "        } else if (zeile.equals(\"END:" + subcomponent[i][j][2] + "\")) {");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "Daten += zeile + nz;");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "Sammlung.add(new "
-							+ subcomponent[i][j][1] + "(" + subcomponent[i][j][0] + "Daten));");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "Daten = \"\";");
-					pWriter.println(einzug + "        } else {");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "Daten += zeile + nz;");
-					pWriter.println(einzug + "        }");
-					pWriter.println(einzug + "    }");
-					pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {");
-					pWriter.println(einzug + "        logger.log(logLevel, \"beendet\");");
-					pWriter.println(einzug + "    }");
-					pWriter.println(einzug + "} ");
-				}
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} finally {
-
-			}
-
-			System.out.println("Generieren der Methode verarbeitenZeile für " + component[i][1]);
-			try (PrintWriter pWriter = new PrintWriter(
-					new FileWriter(verzeichnis + component[i][1] + "-verarbeitenZeile"));) {
+			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-generiert"));) {
+			System.out.println("Generieren der Methode neueZeile für " + component[i][1]);
 				pWriter.println(einzug + "/**");
 				pWriter.println(
 						einzug + " * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten) Zeilen");
-				pWriter.println(einzug + " * Version " + version);
 				pWriter.println(einzug + " * untersucht und die jeweilige Eigenschaft wird abgespeichert");
+
+				pWriter.println(einzug + " * Version " + version);
 				pWriter.println(einzug + " */");
-				pWriter.println(einzug + "@Override");
-				pWriter.println(einzug + "protected void verarbeitenZeile(String zeile) throws Exception {");
+				pWriter.println(einzug + "protected void neueZeile(String zeile) throws Exception {");
 				pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {");
 				pWriter.println(einzug + "        logger.log(logLevel, \"begonnen\");");
 				pWriter.println(einzug + "    }");
-				pWriter.println(einzug + "    if (!zeile.equals(\"BEGIN:" + component[i][2]
-						+ "\") & !zeile.equals(\"END:" + component[i][2] + "\")) {");
-				for (int j = 0; j < subcomponent[i].length; j++) {
-					pWriter.println(einzug + "        " + elseLit + "if (zeile.equals(\"BEGIN:" + subcomponent[i][j][2]
-							+ "\")) {");
-					elseLit = "} else ";
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "DatenSammeln = true;");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "DatenArray.add(zeile);");
-					pWriter.println(
-							einzug + "        } else if (zeile.equals(\"END:" + subcomponent[i][j][2] + "\")) {");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "DatenSammeln = false;");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "DatenArray.add(zeile);");
-					pWriter.println(einzug + "        } else if (" + subcomponent[i][j][0] + "DatenSammeln) {");
-					pWriter.println(einzug + "            " + subcomponent[i][j][0] + "DatenArray.add(zeile);");
+
+				elseLit = "";
+
+				if (subcomponent[i].length > 0) {
+					pWriter.println(einzug + "    if (bearbeiteSubKomponente) {");
+					for (int j = 0; j < subcomponent[i].length; j++) {
+						pWriter.println(
+								einzug + "        " + elseLit + "if (" + subcomponent[i][j][0] + "Bearbeiten) {");
+						pWriter.println(
+								einzug + "            if (zeile.equals(\"END:" + subcomponent[i][j][2] + "\")) {");
+						pWriter.println(einzug + "                " + subcomponent[i][j][0] + "Neu.abschliessen();");
+						pWriter.println(einzug + "                " + subcomponent[i][j][0] + "Sammlung.add("
+								+ subcomponent[i][j][0] + "Neu);");
+						pWriter.println(einzug + "                " + subcomponent[i][j][0] + "Bearbeiten = false;");
+						pWriter.println(einzug + "                bearbeiteSubKomponente = false;");
+						pWriter.println(einzug + "            }");
+						pWriter.println(einzug + "            else {");
+						pWriter.println(einzug + "                " + subcomponent[i][j][0] + "Neu.neueZeile(zeile);");
+						pWriter.println(einzug + "            }");
+						pWriter.println(einzug + "        }");
+						elseLit = "else ";
+					}
+					pWriter.println(einzug + "    }");
+					pWriter.println(einzug + "    else {");
+					elseLit = "";
+					for (int j = 0; j < subcomponent[i].length; j++) {
+						pWriter.println(einzug + "        " + elseLit + "if (zeile.equals(\"BEGIN:"
+								+ subcomponent[i][j][2] + "\")) {");
+						elseLit = "} else ";
+						pWriter.println(einzug + "            " + subcomponent[i][j][0] + "Neu = new "
+								+ subcomponent[i][j][1] + "();");
+						pWriter.println(einzug + "            " + subcomponent[i][j][0] + "Bearbeiten = true;");
+						pWriter.println(einzug + "            bearbeiteSubKomponente = true;");
+					}
+					einzug = einzug + "    ";
 				}
 				for (int j = 0; j < property.length; j++) {
 					if (property[j][i].equals("1")) {
-						pWriter.println(einzug + "        " + elseLit + "if (zeile.length() > "
-								+ property[j][10].length() + " && zeile.substring(0, " + property[j][10].length()
-								+ ").equals(\"" + property[j][10] + "\")) {");
-						pWriter.println(einzug + "            " + property[j][9] + " = new GuKKiCalProperty(zeile, \""
+						pWriter.println(einzug + "    " + elseLit + "if (zeile.length() > " + property[j][10].length()
+								+ " && zeile.substring(0, " + property[j][10].length() + ").equals(\"" + property[j][10]
+								+ "\")) {");
+						pWriter.println(einzug + "        " + property[j][9] + " = new GuKKiCalProperty(zeile, \""
 								+ property[j][10] + "\");");
 						elseLit = "} else ";
 					} else if (property[j][i].equals("2")) {
-						pWriter.println(einzug + "        " + elseLit + " if (zeile.length() > "
-								+ property[j][10].length() + " && zeile.substring(0, " + property[j][10].length()
-								+ ").equals(\"" + property[j][10] + "\")) {");
-						pWriter.println(einzug + "            " + property[j][9]
+						pWriter.println(einzug + "    " + elseLit + "if (zeile.length() > " + property[j][10].length()
+								+ " && zeile.substring(0, " + property[j][10].length() + ").equals(\"" + property[j][10]
+								+ "\")) {");
+						pWriter.println(einzug + "        " + property[j][9]
 								+ "Sammlung.add(new GuKKiCalProperty(zeile, \"" + property[j][10] + "\"));");
 						elseLit = "} else ";
 					} else if (property[j][i].equals("8")) {
-						pWriter.println(einzug + "        " + elseLit + " if (zeile.length() > "
-								+ property[j][10].length() + " && zeile.substring(0, " + property[j][10].length()
-								+ ").equals(\"" + property[j][10] + "\")) {");
-						pWriter.println(einzug + "            " + property[j][9] + "Sammlung.add(zeile);");
+						pWriter.println(einzug + "    " + elseLit + " if (zeile.length() > " + property[j][10].length()
+								+ " && zeile.substring(0, " + property[j][10].length() + ").equals(\"" + property[j][10]
+								+ "\")) {");
+						pWriter.println(einzug + "        " + property[j][9] + "Sammlung.add(zeile);");
 						elseLit = "} else ";
 					} else if (property[j][i].equals("9")) {
-						pWriter.println(einzug + "        " + elseLit + " if (zeile.length() > "
-								+ property[j][10].length() + " && zeile.substring(0, " + property[j][10].length()
-								+ ").equals(\"" + property[j][10] + "\")) {");
-						pWriter.println(einzug + "            " + property[j][9] + " = zeile;");
+						pWriter.println(einzug + "    " + elseLit + " if (zeile.length() > " + property[j][10].length()
+								+ " && zeile.substring(0, " + property[j][10].length() + ").equals(\"" + property[j][10]
+								+ "\")) {");
+						pWriter.println(einzug + "        " + property[j][9] + " = zeile;");
 						elseLit = "} else ";
 					}
 				}
 				pWriter.println(" ");
 				pWriter.println("/* Abschluss und Fallbackparameter */");
 				pWriter.println(" ");
-				pWriter.println(einzug + "        " + elseLit
-						+ "if (zeile.length() > 2 && zeile.substring(0,2).equals(\"X-\") {");
-				pWriter.println(einzug + "            X_PROPSammlung.add(zeile);");
-				pWriter.println(einzug + "        }");
-				pWriter.println(einzug + "        } else {");
-				pWriter.println(einzug + "            Restinformationen.add(zeile);");
-				pWriter.println(einzug + "        }");
-				pWriter.println(einzug + "    }");
-				pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {");
-				pWriter.println(einzug + "        logger.log(logLevel, \"beendet\");");
-				pWriter.println(einzug + "    }");
-				pWriter.println(einzug + "} // Ende verarbeitenZeile " + version);
-				pWriter.println(" ");
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} finally {
-
-			}
-
-			System.out.println("Generieren der Methode ausgeben für " + component[i][1]);
-			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-ausgeben"));) {
-				elseLit = "";
-				pWriter.println(einzug + "/**");
-				pWriter.println(einzug
-						+ " * Mit dieser Methode werden die einzelnen Eigenschaften als gültige Parameterkette ausgegeben");
-				pWriter.println(einzug + " * Version " + version);
-				pWriter.println(einzug + " */");
-				pWriter.println(einzug + "protected String ausgeben() throws Exception {");
-				pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {");
-				pWriter.println(einzug + "        logger.log(logLevel, \"begonnen\");");
-				pWriter.println(einzug + "    }");
-				pWriter.println(einzug + "    String componentDatenstrom = ausgebenInDatenstrom(\"BEGIN:"
-						+ component[i][2] + "\");");
-				for (int j = 0; j < property.length; j++) {
-					if (property[j][i].equals("1")) {
-						pWriter.println(einzug + "    componentDatenstrom +=  this." + property[j][9]
-								+ " == null ? \"\" : ausgebenInDatenstrom(this."+ property[j][9]+".ausgeben());");
-					} else if (property[j][i].equals("2")) {
-						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
-								+ "Sammlung) {");
-						pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(this."+ property[j][9]+".ausgeben());");
-						pWriter.println(einzug + "    }");
-					} else if (property[j][i].equals("8")) {
-						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
-								+ "Sammlung) {");
-						pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(ausgeben(this."+ property[j][9]+"));");
-						pWriter.println(einzug + "    }");
-						pWriter.println(einzug + "    componentDatenstrom += ausgebenInDatenstrom(ausgeben("
-								+ property[j][9]+");");
-					} else if (property[j][i].equals("9")) {
-						pWriter.println(einzug + "    componentDatenstrom +=  this." + property[j][9]
-								+ " == null ? \"\" : ausgebenInDatenstrom(ausgeben(this."		+ property[j][9]+"));");
-					}
-				}
-				for (int j = 0; j < subcomponent[i].length; j++) {
-					pWriter.println(einzug + "    for (" + subcomponent[i][j][1] + " " + subcomponent[i][j][0]
-							+ " : this." + subcomponent[i][j][0] + "Sammlung) {");
-					pWriter.println(einzug + "        componentDatenstrom += "
-							+ subcomponent[i][j][0] + ".ausgeben());");
-					pWriter.println(einzug + "    }");
-				}
-				pWriter.println(" ");
-				pWriter.println("/* Abschluss und Fallbackparameter */");
-				pWriter.println(" ");
-				pWriter.println(einzug + "    for (String X_PROP : this.X_PROPSammlung) {");
-				pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(X_PROP);");
-				pWriter.println(einzug + "    }");
-				pWriter.println(einzug + "    for (String Restinformation : this.Restinformationen) {");
-				pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(Restinformation);");
-				pWriter.println(einzug + "    }");
 				pWriter.println(
-						einzug + "    componentDatenstrom += ausgebenInDatenstrom(\"END:" + component[i][2] + "\");");
-				pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {");
-				pWriter.println(einzug + "        logger.log(logLevel, \"beendet\");");
+						einzug + "    " + elseLit + "if (zeile.length() > 2 && zeile.substring(0,2).equals(\"X-\")) {");
+				pWriter.println(einzug + "        X_PROPSammlung.add(zeile);");
+//				pWriter.println(einzug + "    }");
+				pWriter.println(einzug + "    } else {");
+				pWriter.println(einzug + "        Restinformationen.add(zeile);");
 				pWriter.println(einzug + "    }");
-				pWriter.println(einzug + "    return componentDatenstrom;");
-				pWriter.println(einzug + "} // Ende ausgeben " + version);
+				if (subcomponent[i].length > 0) {
+					pWriter.println(einzug + "}");
+				}
+				pWriter.println("        if (logger.isLoggable(logLevel)) {");
+				pWriter.println("            logger.log(logLevel, \"beendet\");");
+				pWriter.println("        }");
+				pWriter.println("    } // Ende neueZeile " + version);
 				pWriter.println(" ");
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} finally {
+//			} catch (IOException ioe) {
+//				ioe.printStackTrace();
+//			} finally {
+//
+//			}
 
-			}
+
 
 			System.out.println("Generieren der Methode kopieren für " + component[i][1]);
-			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-kopieren"));) {
+//			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-kopieren"));) {
 				pWriter.println(einzug + "/**");
 				pWriter.println(einzug + " * Diese Methode kopiert die iCalendar-Komponente");
 				pWriter.println(einzug + " * " + component[i][1] + " und gibt diese Kopie zurück");
@@ -962,14 +873,14 @@ public class JavaTeileGenerieren {
 					} else if (property[j][i].equals("2")) {
 						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
 								+ "Sammlung) {");
-						pWriter.println(einzug + "        temp." + property[j][9] + "Sammlung.add(p" + property[j][9]
+						pWriter.println(einzug + "        temp." + property[j][9] + "Sammlung.add(" + property[j][9]
 								+ ".kopieren());");
 						pWriter.println(einzug + "    }");
 					} else if (property[j][i].equals("8")) {
 						pWriter.println(
-								einzug + "    for (String p" + property[j][9] + " : " + property[j][9] + "Sammlung) {");
+								einzug + "    for (String " + property[j][9] + " : " + property[j][9] + "Sammlung) {");
 						pWriter.println(
-								einzug + "        temp." + property[j][9] + "Sammlung.add(p" + property[j][9] + ");");
+								einzug + "        temp." + property[j][9] + "Sammlung.add(" + property[j][9] + ");");
 						pWriter.println(einzug + "    }");
 					} else if (property[j][i].equals("9")) {
 						pWriter.println(einzug + "    temp." + property[j][9] + " = this." + property[j][9]
@@ -997,14 +908,14 @@ public class JavaTeileGenerieren {
 				pWriter.println(einzug + "    return temp;");
 				pWriter.println(einzug + "} // Ende kopieren " + version);
 
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} finally {
-
-			}
+//			} catch (IOException ioe) {
+//				ioe.printStackTrace();
+//			} finally {
+//
+//			}
 
 			System.out.println("Generieren der Methode istGleich für " + component[i][1]);
-			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-istGleich"));) {
+//			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-istGleich"));) {
 
 				pWriter.println(einzug + "/**");
 				pWriter.println(einzug + " * Vergleichen aller Attribute der Komponente " + component[i][1]);
@@ -1100,6 +1011,73 @@ public class JavaTeileGenerieren {
 				pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 				pWriter.println(einzug + "    return true;");
 				pWriter.println(einzug + "} // Ende istGleich " + version);
+				pWriter.println(" ");
+//			} catch (IOException ioe) {
+//				ioe.printStackTrace();
+//			} finally {
+//
+//			}
+			
+			System.out.println("Generieren der Methode ausgeben für " + component[i][1]);
+//			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-ausgeben"));) {
+				elseLit = "";
+				pWriter.println(einzug + "/**");
+				pWriter.println(einzug
+						+ " * Mit dieser Methode werden die einzelnen Eigenschaften als gültige Parameterkette ausgegeben");
+				pWriter.println(einzug + " * Version " + version);
+				pWriter.println(einzug + " */");
+				pWriter.println(einzug + "protected String ausgeben() throws Exception {");
+				pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {");
+				pWriter.println(einzug + "        logger.log(logLevel, \"begonnen\");");
+				pWriter.println(einzug + "    }");
+				pWriter.println(einzug + "    String componentDatenstrom = ausgebenInDatenstrom(\"BEGIN:"
+						+ component[i][2] + "\");");
+				for (int j = 0; j < property.length; j++) {
+					if (property[j][i].equals("1")) {
+						pWriter.println(einzug + "    componentDatenstrom +=  this." + property[j][9]
+								+ " == null ? \"\" : ausgebenInDatenstrom(this." + property[j][9] + ".ausgeben());");
+					} else if (property[j][i].equals("2")) {
+						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
+								+ "Sammlung) {");
+						pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom("
+								+ property[j][9] + ".ausgeben());");
+						pWriter.println(einzug + "    }");
+					} else if (property[j][i].equals("8")) {
+						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
+								+ "Sammlung) {");
+						pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(ausgeben(this."
+								+ property[j][9] + "));");
+						pWriter.println(einzug + "    }");
+						pWriter.println(einzug + "    componentDatenstrom += ausgebenInDatenstrom(ausgeben("
+								+ property[j][9] + ");");
+					} else if (property[j][i].equals("9")) {
+						pWriter.println(einzug + "    componentDatenstrom +=  this." + property[j][9]
+								+ " == null ? \"\" : ausgebenInDatenstrom(ausgeben(this." + property[j][9] + "));");
+					}
+				}
+				for (int j = 0; j < subcomponent[i].length; j++) {
+					pWriter.println(einzug + "    for (" + subcomponent[i][j][1] + " " + subcomponent[i][j][0]
+							+ " : this." + subcomponent[i][j][0] + "Sammlung) {");
+					pWriter.println(
+							einzug + "        componentDatenstrom += " + subcomponent[i][j][0] + ".ausgeben();");
+					pWriter.println(einzug + "    }");
+				}
+				pWriter.println(" ");
+				pWriter.println("/* Abschluss und Fallbackparameter */");
+				pWriter.println(" ");
+				pWriter.println(einzug + "    for (String X_PROP : this.X_PROPSammlung) {");
+				pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(X_PROP);");
+				pWriter.println(einzug + "    }");
+				pWriter.println(einzug + "    for (String Restinformation : this.Restinformationen) {");
+				pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(Restinformation);");
+				pWriter.println(einzug + "    }");
+				pWriter.println(
+						einzug + "    componentDatenstrom += ausgebenInDatenstrom(\"END:" + component[i][2] + "\");");
+				pWriter.println(einzug + "    if (logger.isLoggable(logLevel)) {");
+				pWriter.println(einzug + "        logger.log(logLevel, \"beendet\");");
+				pWriter.println(einzug + "    }");
+				pWriter.println(einzug + "    return componentDatenstrom;");
+				pWriter.println(einzug + "} // Ende ausgeben " + version);
 				pWriter.println(" ");
 			} catch (IOException ioe) {
 				ioe.printStackTrace();

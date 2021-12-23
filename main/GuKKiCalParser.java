@@ -20,8 +20,8 @@ public class GuKKiCalParser {
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
 
-	// ArrayList<GuKKiCal> iCalendarSammlung = new ArrayList<GuKKiCal>();
-	GuKKiCaliCalendar aktuellerKalender = null;
+	ArrayList<GuKKiCaliCalendar> iCalendarSammlung = new ArrayList<GuKKiCaliCalendar>();
+	GuKKiCaliCalendar iCalendarNeu = null;
 	/*
 	 * Hilfsdaten zur Weiterverarbeitung der Kalenderinformationen
 	 */
@@ -64,36 +64,56 @@ public class GuKKiCalParser {
 		/*
 		 * Datenstrom zur Verarbeitung der Kalenderdaten
 		 */
-		BufferedReader iCalDatenstrom = null; /* Datenstrom */
-		String zeile; /* Datenzeile */
+		BufferedReader iCalendarDatenstrom = null;
+		String zeile = "";
+		String folgezeile = "";
+		boolean datenVorhanden = true;
 
 		try {
-			iCalDatenstrom = new BufferedReader(new InputStreamReader(new FileInputStream(inPath), "UTF-8"));
+			iCalendarDatenstrom = new BufferedReader(new InputStreamReader(new FileInputStream(inPath), "UTF-8"));
+			zeile = iCalendarDatenstrom.readLine();
+			if (zeile == null) {
+				datenVorhanden = false;
+			}
+			while (datenVorhanden) {
+				folgezeile = iCalendarDatenstrom.readLine();
 
-			while ((zeile = iCalDatenstrom.readLine()) != null) {
-				if (zeile.equals("BEGIN:VCALENDAR")) {
-					kalenderNummer = +1;
-					iCalendarDaten = zeile + nz;
-				} else if (zeile.equals("END:VCALENDAR")) {
-					iCalendarDaten += zeile + nz;
-					kalenderAufbauen(iCalendarSammlung, kalenderName + String.format("%03d", kalenderNummer),
-							kalenderPfad);
-					iCalendarDaten = "";
+				if (folgezeile == null) {
+					neueZeile(zeile,iCalendarSammlung);
+					datenVorhanden = false;
 				} else {
-					iCalendarDaten += zeile + nz;
+					if (folgezeile.length() > 0) {
+						if (folgezeile.substring(0, 1).equals(" ")) {
+							zeile = zeile.substring(0, zeile.length()) + folgezeile.substring(1);
+						} else {
+							neueZeile(zeile,iCalendarSammlung);
+							zeile = folgezeile;
+						}
+					}
 				}
-			} // Ende while
-		} finally
+			} /* end while-Schleife */
+		} finally {
 
-		{
-			if (iCalDatenstrom != null) {
-				iCalDatenstrom.close();
+			if (iCalendarDatenstrom != null) {
+				iCalendarDatenstrom.close();
 			}
 		}
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
 	} // Ende kalenderEinlesen
+
+	void neueZeile(String zeile, ArrayList<GuKKiCaliCalendar> iCalendarSammlung) throws Exception{
+		if (zeile.equals("BEGIN:VCALENDAR")) {
+			iCalendarNeu = new GuKKiCaliCalendar();
+		}
+		else if (zeile.equals("END:VCALENDAR")) {
+			iCalendarSammlung.add(iCalendarNeu);
+		}
+		else {
+			iCalendarNeu.neueZeile(zeile);
+		}
+	}
 
 	/**
 	 * Bestimmt aus der Pfadangabe für den Kalender den Kalendernamen aus dem
@@ -151,30 +171,30 @@ public class GuKKiCalParser {
 	 * @throws Exception
 	 */
 
-	private void kalenderAufbauen(ArrayList<GuKKiCaliCalendar> iCalendarSammlung, String inPath, String kalenderName)
-			throws Exception {
-		if (logger.isLoggable(logLevel)) {
-			logger.log(logLevel, "begonnen");
-		}
-
-		aktuellerKalender = new GuKKiCaliCalendar(iCalendarDaten, inPath, kalenderName);
-//		eventsAufbauen(aktuellerKalender, vEventDaten);
-//		vEventDaten = "";
-//		todosAufbauen(aktuellerKalender, vTodoDaten);
-//		vTodoDaten = "";
-//		journalsAufbauen(aktuellerKalender, vJournalDaten);
-//		vJournalDaten = "";
-//		timezonesAufbauen(aktuellerKalender, vTimezoneDaten);
-//		vTimezoneDaten = "";
-//		freebusysAufbauen(aktuellerKalender, vFreeBusyDaten);
-//		vFreeBusyDaten = "";
-		iCalendarSammlung.add(aktuellerKalender);
-		iCalendarDaten = "";
-
-		if (logger.isLoggable(logLevel)) {
-			logger.log(logLevel, "beendet");
-		}
-	} // kalenderAufbauen
+//	private void kalenderAufbauen(ArrayList<GuKKiCaliCalendar> iCalendarSammlung, String inPath, String kalenderName)
+//			throws Exception {
+//		if (logger.isLoggable(logLevel)) {
+//			logger.log(logLevel, "begonnen");
+//		}
+//
+//		iCalendarNeu = new GuKKiCaliCalendar(iCalendarDaten, inPath, kalenderName);
+////		eventsAufbauen(iCalendarNeu, vEventDaten);
+////		vEventDaten = "";
+////		todosAufbauen(iCalendarNeu, vTodoDaten);
+////		vTodoDaten = "";
+////		journalsAufbauen(iCalendarNeu, vJournalDaten);
+////		vJournalDaten = "";
+////		timezonesAufbauen(iCalendarNeu, vTimezoneDaten);
+////		vTimezoneDaten = "";
+////		freebusysAufbauen(iCalendarNeu, vFreeBusyDaten);
+////		vFreeBusyDaten = "";
+//		iCalendarSammlung.add(iCalendarNeu);
+//		iCalendarDaten = "";
+//
+//		if (logger.isLoggable(logLevel)) {
+//			logger.log(logLevel, "beendet");
+//		}
+//	} // kalenderAufbauen
 //
 //	/**
 //	 * Die Methode eventsAufbauen nimmt den Datenstrom für vEvents und legt für
@@ -182,7 +202,7 @@ public class GuKKiCalParser {
 //	 * Event an
 //	 * 
 //	 * @param kalendersammlung
-//	 * @param aktuellerKalender
+//	 * @param iCalendarNeu
 //	 * @param vEventDaten
 //	 * @throws Exception
 //	 */
@@ -225,7 +245,7 @@ public class GuKKiCalParser {
 //	 * Todo an
 //	 * 
 //	 * @param kalendersammlung
-//	 * @param aktuellerKalender
+//	 * @param iCalendarNeu
 //	 * @param vTodoDaten
 //	 * @throws Exception
 //	 */
@@ -267,11 +287,11 @@ public class GuKKiCalParser {
 //	 * für jedes im Datenstrom enthaltenen VJOURNAL im aktuellen Kalender ein
 //	 * neues Journal an
 //	 * 
-//	 * @param aktuellerKalender
+//	 * @param iCalendarNeu
 //	 * @param vJournalDaten
 //	 * @throws Exception
 //	 */
-//	private void journalsAufbauen(GuKKiCaliCalendar aktuellerKalender, String vJournalDaten) throws Exception {
+//	private void journalsAufbauen(GuKKiCaliCalendar iCalendarNeu, String vJournalDaten) throws Exception {
 //		if (logger.isLoggable(logLevel)) {
 //			logger.log(logLevel, "begonnen");
 //		}
@@ -286,7 +306,7 @@ public class GuKKiCalParser {
 //	 * legt für jedes im Datenstrom enthaltenen VTIMEZONE im aktuellen Kalender
 //	 * ein neues Timezone-Element an
 //	 * 
-//	 * @param aktuellerKalender
+//	 * @param iCalendarNeu
 //	 * @param vTimezoneDaten
 //	 * @throws Exception
 //	 */
@@ -328,11 +348,11 @@ public class GuKKiCalParser {
 //	 * für jedes im Datenstrom enthaltenen VFREEBUSY im aktuellen Kalender ein
 //	 * neues FreeBusy-Element an
 //	 * 
-//	 * @param aktuellerKalender
+//	 * @param iCalendarNeu
 //	 * @param vFreeBusyDaten
 //	 * @throws Exception
 //	 */
-//	private void freebusysAufbauen(GuKKiCaliCalendar aktuellerKalender, String vFreeBusyDaten) throws Exception {
+//	private void freebusysAufbauen(GuKKiCaliCalendar iCalendarNeu, String vFreeBusyDaten) throws Exception {
 //		if (logger.isLoggable(logLevel)) {
 //			logger.log(logLevel, "begonnen");
 //		}

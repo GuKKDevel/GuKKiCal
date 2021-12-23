@@ -297,276 +297,291 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 	 * 
 	 * @throws Exception
 	 */
-	public GuKKiCalvTimezone(String vTimezoneDaten) throws Exception {
+//	public GuKKiCalvTimezone(String vTimezoneDaten) throws Exception {
+//		if (logger.isLoggable(logLevel)) {
+//			logger.log(logLevel, "begonnen");
+//		}
+//		kennung = GuKKiCalcKennung.TIMEZONE;
+//
+//		einlesenAusDatenstrom(vTimezoneDaten);
+//
+//// @formatter:off    	 
+//// Generieren der restlichen Verarbeitungsschritte im Konstruktor für den Datenstrom
+// 
+//// Subkomponente: cDaylight GuKKiCalcDaylight DAYLIGHT
+//        if (cDaylightDatenArray.size() != 0) {
+//            cDaylightSammlungAnlegen();
+//        }
+// 
+//// Subkomponente: cStandard GuKKiCalcStandard STANDARD
+//        if (cStandardDatenArray.size() != 0) {
+//            cStandardSammlungAnlegen();
+//        }
+// 
+//        status = GuKKiCalcStatus.GELESEN;
+// 
+//        if (Restinformationen.size() > 0) {
+//            for (String Restinformation : Restinformationen) {
+//                logger.log(Level.INFO, "Restinformation:" + "-->" + Restinformation + "<--");
+//            }
+//        }
+//        if (logger.isLoggable(logLevel)) {
+//            logger.log(logLevel, "beendet");
+//        }
+//    }
+// 
+//// Generieren der Methoden für den Aufbau der Komponentensammlungen
+// 
+//// Subkomponente: cDaylight GuKKiCalcDaylight DAYLIGHT
+//    private void cDaylightSammlungAnlegen() throws Exception {
+//        if (logger.isLoggable(logLevel)) {
+//            logger.log(logLevel, "begonnen");
+//        }
+// 
+//        String cDaylightDaten = "";
+// 
+//        for (String zeile : cDaylightDatenArray) {
+//            if (zeile.equals("BEGIN:DAYLIGHT")) {
+//                cDaylightDaten = zeile + nz;
+//            } else if (zeile.equals("END:DAYLIGHT")) {
+//                cDaylightDaten += zeile + nz;
+//                cDaylightSammlung.add(new GuKKiCalcDaylight(cDaylightDaten));
+//                cDaylightDaten = "";
+//            } else {
+//                cDaylightDaten += zeile + nz;
+//            }
+//        }
+// 
+//        if (logger.isLoggable(logLevel)) {
+//            logger.log(logLevel, "beendet");
+//        }
+//    }
+// 
+//// Subkomponente: cStandard GuKKiCalcStandard STANDARD
+//    private void cStandardSammlungAnlegen() throws Exception {
+//        if (logger.isLoggable(logLevel)) {
+//            logger.log(logLevel, "begonnen");
+//        }
+// 
+//        String cStandardDaten = "";
+// 
+//        for (String zeile : cStandardDatenArray) {
+//            if (zeile.equals("BEGIN:STANDARD")) {
+//                cStandardDaten = zeile + nz;
+//            } else if (zeile.equals("END:STANDARD")) {
+//                cStandardDaten += zeile + nz;
+//                cStandardSammlung.add(new GuKKiCalcStandard(cStandardDaten));
+//                cStandardDaten = "";
+//            } else {
+//                cStandardDaten += zeile + nz;
+//            }
+//        }
+// 
+//        if (logger.isLoggable(logLevel)) {
+//            logger.log(logLevel, "beendet");
+//        }
+//    }
+// @formatter:on
+
+	/**
+	 * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten)
+	 * Zeilen untersucht und die jeweilige Eigenschaft wird abgespeichert
+	 * Version V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+	 */
+	protected void neueZeile(String zeile) throws Exception {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		kennung = GuKKiCalcKennung.TIMEZONE;
+		if (bearbeiteSubKomponente) {
+			if (cDaylightBearbeiten) {
+				if (zeile.equals("END:DAYLIGHT")) {
+					cDaylightNeu.abschliessen();
+					cDaylightSammlung.add(cDaylightNeu);
+					cDaylightBearbeiten = false;
+					bearbeiteSubKomponente = false;
+				} else {
+					cDaylightNeu.neueZeile(zeile);
+				}
+			} else if (cStandardBearbeiten) {
+				if (zeile.equals("END:STANDARD")) {
+					cStandardNeu.abschliessen();
+					cStandardSammlung.add(cStandardNeu);
+					cStandardBearbeiten = false;
+					bearbeiteSubKomponente = false;
+				} else {
+					cStandardNeu.neueZeile(zeile);
+				}
+			}
+		} else {
+			if (zeile.equals("BEGIN:DAYLIGHT")) {
+				cDaylightNeu = new GuKKiCalcDaylight();
+				cDaylightBearbeiten = true;
+				bearbeiteSubKomponente = true;
+			} else if (zeile.equals("BEGIN:STANDARD")) {
+				cStandardNeu = new GuKKiCalcStandard();
+				cStandardBearbeiten = true;
+				bearbeiteSubKomponente = true;
+			} else if (zeile.length() > 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
+				LAST_MOD = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
+			} else if (zeile.length() > 4 && zeile.substring(0, 4).equals("TZID")) {
+				TZID = new GuKKiCalProperty(zeile, "TZID");
+			} else if (zeile.length() > 5 && zeile.substring(0, 5).equals("TZURL")) {
+				TZURL = new GuKKiCalProperty(zeile, "TZURL");
 
-		einlesenAusDatenstrom(vTimezoneDaten);
+				/* Abschluss und Fallbackparameter */
 
-// @formatter:off    	 
-// Generieren der restlichen Verarbeitungsschritte im Konstruktor für den Datenstrom
- 
-// Subkomponente: cDaylight GuKKiCalcDaylight DAYLIGHT
-        if (cDaylightDatenArray.size() != 0) {
-            cDaylightSammlungAnlegen();
-        }
- 
-// Subkomponente: cStandard GuKKiCalcStandard STANDARD
-        if (cStandardDatenArray.size() != 0) {
-            cStandardSammlungAnlegen();
-        }
- 
-        status = GuKKiCalcStatus.GELESEN;
- 
-        if (Restinformationen.size() > 0) {
-            for (String Restinformation : Restinformationen) {
-                logger.log(Level.INFO, "Restinformation:" + "-->" + Restinformation + "<--");
-            }
-        }
-        if (logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "beendet");
-        }
-    }
- 
-// Generieren der Methoden für den Aufbau der Komponentensammlungen
- 
-// Subkomponente: cDaylight GuKKiCalcDaylight DAYLIGHT
-    private void cDaylightSammlungAnlegen() throws Exception {
-        if (logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "begonnen");
-        }
- 
-        String cDaylightDaten = "";
- 
-        for (String zeile : cDaylightDatenArray) {
-            if (zeile.equals("BEGIN:DAYLIGHT")) {
-                cDaylightDaten = zeile + nz;
-            } else if (zeile.equals("END:DAYLIGHT")) {
-                cDaylightDaten += zeile + nz;
-                cDaylightSammlung.add(new GuKKiCalcDaylight(cDaylightDaten));
-                cDaylightDaten = "";
-            } else {
-                cDaylightDaten += zeile + nz;
-            }
-        }
- 
-        if (logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "beendet");
-        }
-    }
- 
-// Subkomponente: cStandard GuKKiCalcStandard STANDARD
-    private void cStandardSammlungAnlegen() throws Exception {
-        if (logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "begonnen");
-        }
- 
-        String cStandardDaten = "";
- 
-        for (String zeile : cStandardDatenArray) {
-            if (zeile.equals("BEGIN:STANDARD")) {
-                cStandardDaten = zeile + nz;
-            } else if (zeile.equals("END:STANDARD")) {
-                cStandardDaten += zeile + nz;
-                cStandardSammlung.add(new GuKKiCalcStandard(cStandardDaten));
-                cStandardDaten = "";
-            } else {
-                cStandardDaten += zeile + nz;
-            }
-        }
- 
-        if (logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "beendet");
-        }
-    }
-// Anfang der generierten Methoden für GuKKiCalvTimezone 0.1 Wed Dec 08 23:39:38 CET 2021
- 
-    /**
-     * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten) Zeilen
-     * untersucht und die jeweilige Eigenschaft wird abgespeichert
-     */
-    @Override
-    protected void verarbeitenZeile(String zeile) throws Exception {
-        if (logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "begonnen");
-        }
-        if (!zeile.equals("BEGIN:VTIMEZONE") & !zeile.equals("END:VTIMEZONE")) {
- 
-// Subkomponente: cDaylight GuKKiCalcDaylight DAYLIGHT)
-            if (zeile.equals("BEGIN:DAYLIGHT")) {
-                cDaylightDatenSammeln = true;
-                cDaylightDatenArray.add(zeile);
-            } else if (zeile.equals("END:DAYLIGHT")) {
-                cDaylightDatenSammeln = false;
-                cDaylightDatenArray.add(zeile);
-            } else if (cDaylightDatenSammeln) {
-                cDaylightDatenArray.add(zeile);
- 
-// Subkomponente: cStandard GuKKiCalcStandard STANDARD)
-            } else if (zeile.equals("BEGIN:STANDARD")) {
-                cStandardDatenSammeln = true;
-                cStandardDatenArray.add(zeile);
-            } else if (zeile.equals("END:STANDARD")) {
-                cStandardDatenSammeln = false;
-                cStandardDatenArray.add(zeile);
-            } else if (cStandardDatenSammeln) {
-                cStandardDatenArray.add(zeile);
- 
-// Eigenschaft: LAST_MOD GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
-                LAST_MOD = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
- 
-// Eigenschaft: TZID GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 4 && zeile.substring(0, 4).equals("TZID")) {
-                TZID = new GuKKiCalProperty(zeile, "TZID");
- 
-// Eigenschaft: TZURL GuKKiCalProperty auftreten 0:1
-            } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("TZURL")) {
-                TZURL = new GuKKiCalProperty(zeile, "TZURL");
- 
-// Eigenschaft: X_PROP String auftreten 0:n
-            } else  if (zeile.length() > 2 && zeile.substring(0, 2).equals("X-")) {
-                X_PROPSammlung.add(zeile);
- 
-// Abschluss und Fallbackparameter
- 
-            } else {
-                Restinformationen.add(zeile);
-            }
-        }
-        if (logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "beendet");
-        }
-    } // Ende verarbeitenZeile
- 
-    /**
-     * Diese Methode kopiert die iCalendar-Komponente
-     * GuKKiCalvTimezone und gibt diese Kopie zurück
-     */
-    protected GuKKiCalvTimezone kopieren() {
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
- 
-        GuKKiCalvTimezone temp = new GuKKiCalvTimezone();
- 
-        temp.kennung = this.kennung;
- 
-// Eigenschaft: LAST_MOD GuKKiCalProperty auftreten 0:1
-        temp.LAST_MOD = this.LAST_MOD == null ? null : this.LAST_MOD.kopieren();
- 
-// Eigenschaft: TZID GuKKiCalProperty auftreten 0:1
-        temp.TZID = this.TZID == null ? null : this.TZID.kopieren();
- 
-// Eigenschaft: TZURL GuKKiCalProperty auftreten 0:1
-        temp.TZURL = this.TZURL == null ? null : this.TZURL.kopieren();
- 
-// Eigenschaft: X_PROP String auftreten 0:n
-        for (String pX_PROP : X_PROPSammlung) {
-            temp.X_PROPSammlung.add(pX_PROP);
-        }
- 
-// Subkomponente: cDaylight GuKKiCalcDaylight auftreten 0:n
-        for (GuKKiCalcDaylight cDaylight : this.cDaylightSammlung) {
-            temp.cDaylightSammlung.add(cDaylight.kopieren());
-        }
- 
-// Subkomponente: cStandard GuKKiCalcStandard auftreten 0:n
-        for (GuKKiCalcStandard cStandard : this.cStandardSammlung) {
-            temp.cStandardSammlung.add(cStandard.kopieren());
-        }
- 
-// Abschluss und Fallbackparameter
-        for (String Restinformation : this.Restinformationen) {
-            temp.Restinformationen.add(Restinformation);
-        }
- 
-        temp.status = GuKKiCalcStatus.KOPIERT;
- 
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
- 
-        return temp;
-    } // Ende kopieren
- 
-    /**
-     * Vergleichen aller Attribute der Komponente GuKKiCalvTimezone
-     *
-     * @return boolean
-     */
-    protected boolean istGleich(Object dasAndere) {
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
- 
-        if (!dasAndere.getClass().equals(this.getClass())) {
-            return false;
-        }
- 
-        GuKKiCalvTimezone temp = (GuKKiCalvTimezone) dasAndere;
- 
-// Eigenschaft: LAST_MOD GuKKiCalProperty auftreten 0:1
-        if (!((temp.LAST_MOD == null && this.LAST_MOD == null)
-                || (temp.LAST_MOD != null && this.LAST_MOD != null && temp.LAST_MOD.istGleich(this.LAST_MOD)))) {
-            return false;
-        }
- 
-// Eigenschaft: TZID GuKKiCalProperty auftreten 0:1
-        if (!((temp.TZID == null && this.TZID == null)
-                || (temp.TZID != null && this.TZID != null && temp.TZID.istGleich(this.TZID)))) {
-            return false;
-        }
- 
-// Eigenschaft: TZURL GuKKiCalProperty auftreten 0:1
-        if (!((temp.TZURL == null && this.TZURL == null)
-                || (temp.TZURL != null && this.TZURL != null && temp.TZURL.istGleich(this.TZURL)))) {
-            return false;
-        }
- 
-// Eigenschaft: X_PROP String auftreten 0:n
-        if (temp.X_PROPSammlung.size() != this.X_PROPSammlung.size()) {
-            return false;
-        }
-        for (int i = 0;i < X_PROPSammlung.size(); i++) {
-            if (!temp.X_PROPSammlung.get(i).equals(this.X_PROPSammlung.get(i))) {
-               return false;
-            }
-        }
- 
-// Subkomponente: cDaylight GuKKiCalcDaylight auftreten 0:n
-        if (temp.cDaylightSammlung.size() != this.cDaylightSammlung.size()) {
-            return false;
-        }
-        for (int i = 0; i < cDaylightSammlung.size(); i++) {
-            if (!temp.cDaylightSammlung.get(i).istGleich(this.cDaylightSammlung.get(i))) {
-                return false;
-            }
-        }
- 
-// Subkomponente: cStandard GuKKiCalcStandard auftreten 0:n
-        if (temp.cStandardSammlung.size() != this.cStandardSammlung.size()) {
-            return false;
-        }
-        for (int i = 0; i < cStandardSammlung.size(); i++) {
-            if (!temp.cStandardSammlung.get(i).istGleich(this.cStandardSammlung.get(i))) {
-                return false;
-            }
-        }
- 
-// Abschluss und Fallbackparameter
-        if (temp.Restinformationen.size() != this.Restinformationen.size()) {
-            return false;
-        }
-        for (int i = 0; i < Restinformationen.size(); i++) {
-            if (!temp.Restinformationen.get(i).equals(this.Restinformationen.get(i))) {
-                return false; 
-            }
-        }
- 
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
- 
-        return true;
-    } // Ende istGleich
- 
-// Ende der generierten Methoden für GuKKiCalvTimezone
-// @formatter:on    	   	  	   	    	    	 
+			} else if (zeile.length() > 2 && zeile.substring(0, 2).equals("X-")) {
+				X_PROPSammlung.add(zeile);
+			} else {
+				Restinformationen.add(zeile);
+			}
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+	} // Ende neueZeile V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+
+	/**
+	 * Diese Methode kopiert die iCalendar-Komponente GuKKiCalvTimezone und gibt
+	 * diese Kopie zurück Version V 0.0.3 (RFC 5545, RFC 7968)
+	 * 2021-12-22T15-12-22
+	 */
+	protected GuKKiCalvTimezone kopieren() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		GuKKiCalvTimezone temp = new GuKKiCalvTimezone();
+		temp.kennung = this.kennung;
+		temp.LAST_MOD = this.LAST_MOD == null ? null : this.LAST_MOD.kopieren();
+		temp.TZID = this.TZID == null ? null : this.TZID.kopieren();
+		temp.TZURL = this.TZURL == null ? null : this.TZURL.kopieren();
+		for (GuKKiCalcDaylight cDaylight : this.cDaylightSammlung) {
+			temp.cDaylightSammlung.add(cDaylight.kopieren());
+		}
+		for (GuKKiCalcStandard cStandard : this.cStandardSammlung) {
+			temp.cStandardSammlung.add(cStandard.kopieren());
+		}
+
+		/* Abschluss und Fallbackparameter */
+
+		for (String X_PROP : this.X_PROPSammlung) {
+			temp.X_PROPSammlung.add(X_PROP);
+		}
+		for (String Restinformation : this.Restinformationen) {
+			temp.Restinformationen.add(Restinformation);
+		}
+		temp.status = GuKKiCalcStatus.KOPIERT;
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return temp;
+	} // Ende kopieren V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+
+	/**
+	 * Vergleichen aller Attribute der Komponente GuKKiCalvTimezone Version V
+	 * 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+	 *
+	 * @return boolean
+	 */
+	protected boolean istGleich(Object dasAndere) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		if (!dasAndere.getClass().equals(this.getClass())) {
+			return false;
+		}
+		GuKKiCalvTimezone temp = (GuKKiCalvTimezone) dasAndere;
+		if (!((temp.LAST_MOD == null && this.LAST_MOD == null)
+				|| (temp.LAST_MOD != null && this.LAST_MOD != null && temp.LAST_MOD.istGleich(this.LAST_MOD)))) {
+			return false;
+		}
+		if (!((temp.TZID == null && this.TZID == null)
+				|| (temp.TZID != null && this.TZID != null && temp.TZID.istGleich(this.TZID)))) {
+			return false;
+		}
+		if (!((temp.TZURL == null && this.TZURL == null)
+				|| (temp.TZURL != null && this.TZURL != null && temp.TZURL.istGleich(this.TZURL)))) {
+			return false;
+		}
+		if (temp.cDaylightSammlung.size() != this.cDaylightSammlung.size()) {
+			return false;
+		}
+		for (int i = 0; i < cDaylightSammlung.size(); i++) {
+			if (!temp.cDaylightSammlung.get(i).istGleich(this.cDaylightSammlung.get(i))) {
+				return false;
+			}
+		}
+		if (temp.cStandardSammlung.size() != this.cStandardSammlung.size()) {
+			return false;
+		}
+		for (int i = 0; i < cStandardSammlung.size(); i++) {
+			if (!temp.cStandardSammlung.get(i).istGleich(this.cStandardSammlung.get(i))) {
+				return false;
+			}
+		}
+
+		/* Abschluss und Fallbackparameter */
+
+		if (temp.X_PROPSammlung.size() != this.X_PROPSammlung.size()) {
+			return false;
+		}
+		for (int i = 0; i < X_PROPSammlung.size(); i++) {
+			if (!temp.X_PROPSammlung.get(i).equals(this.X_PROPSammlung.get(i))) {
+				return false;
+			}
+		}
+		if (temp.Restinformationen.size() != this.Restinformationen.size()) {
+			return false;
+		}
+		for (int i = 0; i < Restinformationen.size(); i++) {
+			if (!temp.Restinformationen.get(i).equals(this.Restinformationen.get(i))) {
+				return false;
+			}
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return true;
+	} // Ende istGleich V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+
+	/**
+	 * Mit dieser Methode werden die einzelnen Eigenschaften als gültige
+	 * Parameterkette ausgegeben Version V 0.0.3 (RFC 5545, RFC 7968)
+	 * 2021-12-22T15-12-22
+	 */
+	protected String ausgeben() throws Exception {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String componentDatenstrom = ausgebenInDatenstrom("BEGIN:VTIMEZONE");
+		componentDatenstrom += this.LAST_MOD == null ? "" : ausgebenInDatenstrom(this.LAST_MOD.ausgeben());
+		componentDatenstrom += this.TZID == null ? "" : ausgebenInDatenstrom(this.TZID.ausgeben());
+		componentDatenstrom += this.TZURL == null ? "" : ausgebenInDatenstrom(this.TZURL.ausgeben());
+		for (GuKKiCalcDaylight cDaylight : this.cDaylightSammlung) {
+			componentDatenstrom += cDaylight.ausgeben();
+		}
+		for (GuKKiCalcStandard cStandard : this.cStandardSammlung) {
+			componentDatenstrom += cStandard.ausgeben();
+		}
+
+		/* Abschluss und Fallbackparameter */
+
+		for (String X_PROP : this.X_PROPSammlung) {
+			componentDatenstrom += ausgebenInDatenstrom(X_PROP);
+		}
+		for (String Restinformation : this.Restinformationen) {
+			componentDatenstrom += ausgebenInDatenstrom(Restinformation);
+		}
+		componentDatenstrom += ausgebenInDatenstrom("END:VTIMEZONE");
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return componentDatenstrom;
+	} // Ende ausgeben V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+
+	protected void abschliessen() {
+		status = GuKKiCalcStatus.GELESEN;
+	}
 
 	/**
 	 * Gibt Identifikationsdaten der VTIMEZONE-Komponente aus
