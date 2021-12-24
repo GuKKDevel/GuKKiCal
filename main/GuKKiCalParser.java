@@ -25,9 +25,9 @@ public class GuKKiCalParser {
 	/*
 	 * Hilfsdaten zur Weiterverarbeitung der Kalenderinformationen
 	 */
-	String iCalendarDaten = "";
-
-	String nz = "\n";
+	String kalenderPfad = "";
+	String kalenderName = "";
+	int kalenderNummer = 0;
 
 	/**
 	 * Der Klasse GuKKiCalParser dient dazu, über die Methode kalenderEinlesen,
@@ -58,9 +58,10 @@ public class GuKKiCalParser {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		String kalenderPfad = inPath;
-		String kalenderName = bestimmenKalenderName(inPath);
-		int kalenderNummer = 0;
+		this.iCalendarSammlung = iCalendarSammlung;
+		this.kalenderPfad = inPath;
+		this.kalenderName = bestimmenKalenderName(inPath);
+		this.kalenderNummer = 0;
 		/*
 		 * Datenstrom zur Verarbeitung der Kalenderdaten
 		 */
@@ -79,14 +80,14 @@ public class GuKKiCalParser {
 				folgezeile = iCalendarDatenstrom.readLine();
 
 				if (folgezeile == null) {
-					neueZeile(zeile,iCalendarSammlung);
+					neueZeile(zeile);
 					datenVorhanden = false;
 				} else {
 					if (folgezeile.length() > 0) {
 						if (folgezeile.substring(0, 1).equals(" ")) {
 							zeile = zeile.substring(0, zeile.length()) + folgezeile.substring(1);
 						} else {
-							neueZeile(zeile,iCalendarSammlung);
+							neueZeile(zeile);
 							zeile = folgezeile;
 						}
 					}
@@ -103,11 +104,13 @@ public class GuKKiCalParser {
 		}
 	} // Ende kalenderEinlesen
 
-	void neueZeile(String zeile, ArrayList<GuKKiCaliCalendar> iCalendarSammlung) throws Exception{
+	void neueZeile(String zeile) throws Exception{
 		if (zeile.equals("BEGIN:VCALENDAR")) {
+			kalenderNummer++;
 			iCalendarNeu = new GuKKiCaliCalendar();
 		}
 		else if (zeile.equals("END:VCALENDAR")) {
+			iCalendarNeu.abschliessen(kalenderName+String.format("%03d", kalenderNummer), kalenderPfad);
 			iCalendarSammlung.add(iCalendarNeu);
 		}
 		else {

@@ -31,11 +31,15 @@ public class Ausprobieren {
 //				parser.kalenderEinlesen(iCalendarSammlung,
 //						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics");
 //			}
-		} finally {
+		} catch (Exception ex){
+		ex.printStackTrace();
+		}
+		finally {
 
 		}
 		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
 			System.out.println(iCaliCalendar.toString("CETJZF"));
+//			System.out.println(iCaliCalendar.toString());
 			System.out.println("\n\n" + new Date().toString() + "\n\n");
 		}
 		logger.finest("beendet");
@@ -56,7 +60,7 @@ public class Ausprobieren {
 		logger.setLevel(Level.FINE);
 //		Handler handler = new FileHandler("/home/programmieren/TestFiles/iCalender/temp.log");
 		Handler handler = new ConsoleHandler();
-		handler.setLevel(Level.FINE);
+		handler.setLevel(Level.FINEST);
 		handler.setFormatter(new Formatter() {
 			@Override
 			public String format(LogRecord record) {

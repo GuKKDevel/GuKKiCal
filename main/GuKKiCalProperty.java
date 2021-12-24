@@ -604,6 +604,9 @@ class GuKKiCalProperty {
 		this.literal = propertyLiteral;
 	}
 
+	String getLANGUAGE () {
+		return LANGUAGE;
+	}
 //	String getRestinformationen() {
 //		return Restinformationen.toString();
 //	}
