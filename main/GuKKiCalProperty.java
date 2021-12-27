@@ -274,320 +274,339 @@ class GuKKiCalProperty {
 		}
 	}
 
-    /**
-     * übertragen der Parameter in das korrekte Feld
-     * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
-     */
-    void parameterBestimmen(String parameter, String trenner) {
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-        if (parameter.length() > 7 && parameter.substring(0, 7).equals("ALTREP=")) {
-            this.ALTREP = parameter.substring(7);
-        } else if (parameter.length() > 3 && parameter.substring(0, 3).equals("CN=")) {
-            this.CN = parameter.substring(3);
-        } else if (parameter.length() > 7 && parameter.substring(0, 7).equals("CUTYPE=")) {
-            this.CUTYPE = parameter.substring(7);
-        } else if (parameter.length() > 15 && parameter.substring(0, 15).equals("DELEGATED-FROM=")) {
-            this.DELFROM = parameter.substring(15);
-        } else if (parameter.length() > 13 && parameter.substring(0, 13).equals("DELEGATED-TO=")) {
-            this.DELTO = parameter.substring(13);
-        } else if (parameter.length() > 4 && parameter.substring(0, 4).equals("DIR=")) {
-            this.DIR = parameter.substring(4);
-        } else if (parameter.length() > 8 && parameter.substring(0, 8).equals("DISPLAY=")) {
-            this.DISPLAY = parameter.substring(8);
-        } else if (parameter.length() > 6 && parameter.substring(0, 6).equals("EMAIL=")) {
-            this.EMAIL = parameter.substring(6);
-        } else if (parameter.length() > 9 && parameter.substring(0, 9).equals("ENCODING=")) {
-            this.ENCODING = parameter.substring(9);
-        } else if (parameter.length() > 7 && parameter.substring(0, 7).equals("FBTYPE=")) {
-            this.FBTYPE = parameter.substring(7);
-        } else if (parameter.length() > 8 && parameter.substring(0, 8).equals("FEATURE=")) {
-            this.FEATURE = parameter.substring(8);
-        } else if (parameter.length() > 8 && parameter.substring(0, 8).equals("FMTTYPE=")) {
-            this.FMTTYPE = parameter.substring(8);
-        } else if (parameter.length() > 6 && parameter.substring(0, 6).equals("LABEL=")) {
-            this.LABEL = parameter.substring(6);
-        } else if (parameter.length() > 9 && parameter.substring(0, 9).equals("LANGUAGE=")) {
-            this.LANGUAGE = parameter.substring(9);
-        } else if (parameter.length() > 7 && parameter.substring(0, 7).equals("MEMBER=")) {
-            this.MEMBER = parameter.substring(7);
-        } else if (parameter.length() > 9 && parameter.substring(0, 9).equals("PARTSTAT=")) {
-            this.PARTSTAT = parameter.substring(9);
-        } else if (parameter.length() > 6 && parameter.substring(0, 6).equals("RANGE=")) {
-            this.RANGE = parameter.substring(6);
-        } else if (parameter.length() > 8 && parameter.substring(0, 8).equals("RELATED=")) {
-            this.RELATED = parameter.substring(8);
-        } else if (parameter.length() > 8 && parameter.substring(0, 8).equals("RELTYPE=")) {
-            this.RELTYPE = parameter.substring(8);
-        } else if (parameter.length() > 5 && parameter.substring(0, 5).equals("ROLE=")) {
-            this.ROLE = parameter.substring(5);
-        } else if (parameter.length() > 5 && parameter.substring(0, 5).equals("RSVP=")) {
-            this.RSVP = parameter.substring(5);
-        } else if (parameter.length() > 8 && parameter.substring(0, 8).equals("SENT-BY=")) {
-            this.SENTBY = parameter.substring(8);
-        } else if (parameter.length() > 5 && parameter.substring(0, 5).equals("TZID=")) {
-            this.TZID = parameter.substring(5);
-        } else if (parameter.length() > 6 && parameter.substring(0, 6).equals("VALUE=")) {
-            this.VALUETYPE = parameter.substring(6);
- 
-        /* Abschluss und Fallbackparameter */
- 
-        } else if (parameter.length() > 2 && parameter.substring(0, 2).equals("X-")) {
-            this.X_PARMSammlung.add(parameter + trenner);
-        } else {
-            this.Restinformationen.add(parameter + trenner);
-        }
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
-    } // Ende der generierten Methode parameterBestimmen für GuKKiCalProperty V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
- 
-    /**
-     * Kopieren aller Parameter der Eigenschaft
-     * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
-     *
-     * @return GuKKiCalProperty
-     */
-    protected GuKKiCalProperty kopieren() {
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-        GuKKiCalProperty temp = new GuKKiCalProperty();
-        temp.literal = this.literal;
-        temp.wert = this.wert;
-        temp.ALTREP = this.ALTREP == null ? null : this.ALTREP;
-        temp.CN = this.CN == null ? null : this.CN;
-        temp.CUTYPE = this.CUTYPE == null ? null : this.CUTYPE;
-        temp.DELFROM = this.DELFROM == null ? null : this.DELFROM;
-        temp.DELTO = this.DELTO == null ? null : this.DELTO;
-        temp.DIR = this.DIR == null ? null : this.DIR;
-        temp.DISPLAY = this.DISPLAY == null ? null : this.DISPLAY;
-        temp.EMAIL = this.EMAIL == null ? null : this.EMAIL;
-        temp.ENCODING = this.ENCODING == null ? null : this.ENCODING;
-        temp.FBTYPE = this.FBTYPE == null ? null : this.FBTYPE;
-        temp.FEATURE = this.FEATURE == null ? null : this.FEATURE;
-        temp.FMTTYPE = this.FMTTYPE == null ? null : this.FMTTYPE;
-        temp.LABEL = this.LABEL == null ? null : this.LABEL;
-        temp.LANGUAGE = this.LANGUAGE == null ? null : this.LANGUAGE;
-        temp.MEMBER = this.MEMBER == null ? null : this.MEMBER;
-        temp.PARTSTAT = this.PARTSTAT == null ? null : this.PARTSTAT;
-        temp.RANGE = this.RANGE == null ? null : this.RANGE;
-        temp.RELATED = this.RELATED == null ? null : this.RELATED;
-        temp.RELTYPE = this.RELTYPE == null ? null : this.RELTYPE;
-        temp.ROLE = this.ROLE == null ? null : this.ROLE;
-        temp.RSVP = this.RSVP == null ? null : this.RSVP;
-        temp.SENTBY = this.SENTBY == null ? null : this.SENTBY;
-        temp.TZID = this.TZID == null ? null : this.TZID;
-        temp.VALUETYPE = this.VALUETYPE == null ? null : this.VALUETYPE;
- 
-        /* Abschluss und Fallbackparameter */
- 
-        for (String X_PARM : this.X_PARMSammlung) {
-            temp.X_PARMSammlung.add(X_PARM);
-        }
-        for (String Restinformation : this.Restinformationen) {
-            temp.Restinformationen.add(Restinformation);
-        }
-        temp.status = GuKKiCalcStatus.KOPIERT;
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
-        return temp;
-    } // Ende der generierten Methode kopieren für GuKKiCalProperty V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
- 
-    /**
-     * Vergleichen aller Parameter des Attributs
-     * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
-     *
-     * @return boolean
-     */
-    protected boolean istGleich(Object dasAndere) {
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-        if (!dasAndere.getClass().equals(this.getClass())) {
-            return false;
-        }
-        GuKKiCalProperty temp = (GuKKiCalProperty) dasAndere;
-        if (!((temp.ALTREP == null && this.ALTREP == null)
-          || (temp.ALTREP != null && this.ALTREP != null && temp.ALTREP.equals(this.ALTREP)))) {
-            return false;
-         }
-        if (!((temp.CN == null && this.CN == null)
-          || (temp.CN != null && this.CN != null && temp.CN.equals(this.CN)))) {
-            return false;
-         }
-        if (!((temp.CUTYPE == null && this.CUTYPE == null)
-          || (temp.CUTYPE != null && this.CUTYPE != null && temp.CUTYPE.equals(this.CUTYPE)))) {
-            return false;
-         }
-        if (!((temp.DELFROM == null && this.DELFROM == null)
-          || (temp.DELFROM != null && this.DELFROM != null && temp.DELFROM.equals(this.DELFROM)))) {
-            return false;
-         }
-        if (!((temp.DELTO == null && this.DELTO == null)
-          || (temp.DELTO != null && this.DELTO != null && temp.DELTO.equals(this.DELTO)))) {
-            return false;
-         }
-        if (!((temp.DIR == null && this.DIR == null)
-          || (temp.DIR != null && this.DIR != null && temp.DIR.equals(this.DIR)))) {
-            return false;
-         }
-        if (!((temp.DISPLAY == null && this.DISPLAY == null)
-          || (temp.DISPLAY != null && this.DISPLAY != null && temp.DISPLAY.equals(this.DISPLAY)))) {
-            return false;
-         }
-        if (!((temp.EMAIL == null && this.EMAIL == null)
-          || (temp.EMAIL != null && this.EMAIL != null && temp.EMAIL.equals(this.EMAIL)))) {
-            return false;
-         }
-        if (!((temp.ENCODING == null && this.ENCODING == null)
-          || (temp.ENCODING != null && this.ENCODING != null && temp.ENCODING.equals(this.ENCODING)))) {
-            return false;
-         }
-        if (!((temp.FBTYPE == null && this.FBTYPE == null)
-          || (temp.FBTYPE != null && this.FBTYPE != null && temp.FBTYPE.equals(this.FBTYPE)))) {
-            return false;
-         }
-        if (!((temp.FEATURE == null && this.FEATURE == null)
-          || (temp.FEATURE != null && this.FEATURE != null && temp.FEATURE.equals(this.FEATURE)))) {
-            return false;
-         }
-        if (!((temp.FMTTYPE == null && this.FMTTYPE == null)
-          || (temp.FMTTYPE != null && this.FMTTYPE != null && temp.FMTTYPE.equals(this.FMTTYPE)))) {
-            return false;
-         }
-        if (!((temp.LABEL == null && this.LABEL == null)
-          || (temp.LABEL != null && this.LABEL != null && temp.LABEL.equals(this.LABEL)))) {
-            return false;
-         }
-        if (!((temp.LANGUAGE == null && this.LANGUAGE == null)
-          || (temp.LANGUAGE != null && this.LANGUAGE != null && temp.LANGUAGE.equals(this.LANGUAGE)))) {
-            return false;
-         }
-        if (!((temp.MEMBER == null && this.MEMBER == null)
-          || (temp.MEMBER != null && this.MEMBER != null && temp.MEMBER.equals(this.MEMBER)))) {
-            return false;
-         }
-        if (!((temp.PARTSTAT == null && this.PARTSTAT == null)
-          || (temp.PARTSTAT != null && this.PARTSTAT != null && temp.PARTSTAT.equals(this.PARTSTAT)))) {
-            return false;
-         }
-        if (!((temp.RANGE == null && this.RANGE == null)
-          || (temp.RANGE != null && this.RANGE != null && temp.RANGE.equals(this.RANGE)))) {
-            return false;
-         }
-        if (!((temp.RELATED == null && this.RELATED == null)
-          || (temp.RELATED != null && this.RELATED != null && temp.RELATED.equals(this.RELATED)))) {
-            return false;
-         }
-        if (!((temp.RELTYPE == null && this.RELTYPE == null)
-          || (temp.RELTYPE != null && this.RELTYPE != null && temp.RELTYPE.equals(this.RELTYPE)))) {
-            return false;
-         }
-        if (!((temp.ROLE == null && this.ROLE == null)
-          || (temp.ROLE != null && this.ROLE != null && temp.ROLE.equals(this.ROLE)))) {
-            return false;
-         }
-        if (!((temp.RSVP == null && this.RSVP == null)
-          || (temp.RSVP != null && this.RSVP != null && temp.RSVP.equals(this.RSVP)))) {
-            return false;
-         }
-        if (!((temp.SENTBY == null && this.SENTBY == null)
-          || (temp.SENTBY != null && this.SENTBY != null && temp.SENTBY.equals(this.SENTBY)))) {
-            return false;
-         }
-        if (!((temp.TZID == null && this.TZID == null)
-          || (temp.TZID != null && this.TZID != null && temp.TZID.equals(this.TZID)))) {
-            return false;
-         }
-        if (!((temp.VALUETYPE == null && this.VALUETYPE == null)
-          || (temp.VALUETYPE != null && this.VALUETYPE != null && temp.VALUETYPE.equals(this.VALUETYPE)))) {
-            return false;
-         }
- 
-        /* Abschluss und Fallbackparameter */
- 
-        if (temp.X_PARMSammlung.size() != this.X_PARMSammlung.size()) {
- 			  return false;
-        }
-        for (int i =0; i < X_PARMSammlung.size(); i++) {
-            if (!temp.X_PARMSammlung.get(i).equals(this.X_PARMSammlung.get(i))) {
-                return false; 
-            }
-        }
-        if (temp.Restinformationen.size() != this.Restinformationen.size()) {
- 			  return false;
-		 }
-        for (int i =0; i < Restinformationen.size(); i++) {
-            if (!temp.Restinformationen.get(i).equals(this.Restinformationen.get(i))) {
-                return false; 
-            }
-        }
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
-        return true;
-    } // Ende der generierten Methode istGleich für GuKKiCalProperty V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
-    /**
-     * Datenstromausgabe aller Parameter des Attributs
-     * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
-     *
-     * @return String
-     */
-    protected String ausgeben() {
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-        String schreibText = "";
-        String sammelText = "";
-        String endeText = "";
-        String trenner = "";
-        schreibText += this.ALTREP == null ? "" : ";ALTREP=" + this.ALTREP;
-        schreibText += this.CN == null ? "" : ";CN=" + this.CN;
-        schreibText += this.CUTYPE == null ? "" : ";CUTYPE=" + this.CUTYPE;
-        schreibText += this.DELFROM == null ? "" : ";DELEGATED-FROM=" + this.DELFROM;
-        schreibText += this.DELTO == null ? "" : ";DELEGATED-TO=" + this.DELTO;
-        schreibText += this.DIR == null ? "" : ";DIR=" + this.DIR;
-        schreibText += this.DISPLAY == null ? "" : ";DISPLAY=" + this.DISPLAY;
-        schreibText += this.EMAIL == null ? "" : ";EMAIL=" + this.EMAIL;
-        schreibText += this.ENCODING == null ? "" : ";ENCODING=" + this.ENCODING;
-        schreibText += this.FBTYPE == null ? "" : ";FBTYPE=" + this.FBTYPE;
-        schreibText += this.FEATURE == null ? "" : ";FEATURE=" + this.FEATURE;
-        schreibText += this.FMTTYPE == null ? "" : ";FMTTYPE=" + this.FMTTYPE;
-        schreibText += this.LABEL == null ? "" : ";LABEL=" + this.LABEL;
-        schreibText += this.LANGUAGE == null ? "" : ";LANGUAGE=" + this.LANGUAGE;
-        schreibText += this.MEMBER == null ? "" : ";MEMBER=" + this.MEMBER;
-        schreibText += this.PARTSTAT == null ? "" : ";PARTSTAT=" + this.PARTSTAT;
-        schreibText += this.RANGE == null ? "" : ";RANGE=" + this.RANGE;
-        schreibText += this.RELATED == null ? "" : ";RELATED=" + this.RELATED;
-        schreibText += this.RELTYPE == null ? "" : ";RELTYPE=" + this.RELTYPE;
-        schreibText += this.ROLE == null ? "" : ";ROLE=" + this.ROLE;
-        schreibText += this.RSVP == null ? "" : ";RSVP=" + this.RSVP;
-        schreibText += this.SENTBY == null ? "" : ";SENT-BY=" + this.SENTBY;
-        schreibText += this.TZID == null ? "" : ";TZID=" + this.TZID;
-        schreibText += this.VALUETYPE == null ? "" : ";VALUE=" + this.VALUETYPE;
- 
-        /* Abschluss und Fallbackparameter */
- 
-        sammelText = "";
-        for (String X_PARM : this.X_PARMSammlung) {
-            sammelText += X_PARM;
-        }
-        if (sammelText.length() > 0 ) {
-            if (sammelText.substring(sammelText.length()-1).equals(":")) {
-                endeText = sammelText.substring(0,sammelText.length()-1);
-            }
-            else {
-                schreibText += ";" + sammelText.substring(0,sammelText.length()-1);
-            }
-        }
-        sammelText = "";
-        for (String Restinformation : this.Restinformationen) {
-            sammelText += Restinformation;
-        }
-        if (sammelText.length() > 0 ) {
-            if (sammelText.substring(sammelText.length()-1).equals(":")) {
-                endeText = sammelText.substring(0,sammelText.length()-1);
-            }
-            else {
-                schreibText += ";" + sammelText.substring(0,sammelText.length()-1);
-            }
-        }
-        if (endeText.length() > 0) {
-            schreibText += ";"+endeText;
-        }
-        if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
-        return this.literal + schreibText + ":" + this.wert;
-    } // Ende der generierten Methode ausgeben für GuKKiCalProperty V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
-    
+	/**
+	 * übertragen der Parameter in das korrekte Feld Version V 0.0.3 (RFC 5545,
+	 * RFC 7968) 2021-12-22T15-12-22
+	 */
+	void parameterBestimmen(String parameter, String trenner) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		if (parameter.length() > 7 && parameter.substring(0, 7).equals("ALTREP=")) {
+			this.ALTREP = parameter.substring(7);
+		} else if (parameter.length() > 3 && parameter.substring(0, 3).equals("CN=")) {
+			this.CN = parameter.substring(3);
+		} else if (parameter.length() > 7 && parameter.substring(0, 7).equals("CUTYPE=")) {
+			this.CUTYPE = parameter.substring(7);
+		} else if (parameter.length() > 15 && parameter.substring(0, 15).equals("DELEGATED-FROM=")) {
+			this.DELFROM = parameter.substring(15);
+		} else if (parameter.length() > 13 && parameter.substring(0, 13).equals("DELEGATED-TO=")) {
+			this.DELTO = parameter.substring(13);
+		} else if (parameter.length() > 4 && parameter.substring(0, 4).equals("DIR=")) {
+			this.DIR = parameter.substring(4);
+		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("DISPLAY=")) {
+			this.DISPLAY = parameter.substring(8);
+		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("EMAIL=")) {
+			this.EMAIL = parameter.substring(6);
+		} else if (parameter.length() > 9 && parameter.substring(0, 9).equals("ENCODING=")) {
+			this.ENCODING = parameter.substring(9);
+		} else if (parameter.length() > 7 && parameter.substring(0, 7).equals("FBTYPE=")) {
+			this.FBTYPE = parameter.substring(7);
+		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("FEATURE=")) {
+			this.FEATURE = parameter.substring(8);
+		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("FMTTYPE=")) {
+			this.FMTTYPE = parameter.substring(8);
+		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("LABEL=")) {
+			this.LABEL = parameter.substring(6);
+		} else if (parameter.length() > 9 && parameter.substring(0, 9).equals("LANGUAGE=")) {
+			this.LANGUAGE = parameter.substring(9);
+		} else if (parameter.length() > 7 && parameter.substring(0, 7).equals("MEMBER=")) {
+			this.MEMBER = parameter.substring(7);
+		} else if (parameter.length() > 9 && parameter.substring(0, 9).equals("PARTSTAT=")) {
+			this.PARTSTAT = parameter.substring(9);
+		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("RANGE=")) {
+			this.RANGE = parameter.substring(6);
+		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("RELATED=")) {
+			this.RELATED = parameter.substring(8);
+		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("RELTYPE=")) {
+			this.RELTYPE = parameter.substring(8);
+		} else if (parameter.length() > 5 && parameter.substring(0, 5).equals("ROLE=")) {
+			this.ROLE = parameter.substring(5);
+		} else if (parameter.length() > 5 && parameter.substring(0, 5).equals("RSVP=")) {
+			this.RSVP = parameter.substring(5);
+		} else if (parameter.length() > 8 && parameter.substring(0, 8).equals("SENT-BY=")) {
+			this.SENTBY = parameter.substring(8);
+		} else if (parameter.length() > 5 && parameter.substring(0, 5).equals("TZID=")) {
+			this.TZID = parameter.substring(5);
+		} else if (parameter.length() > 6 && parameter.substring(0, 6).equals("VALUE=")) {
+			this.VALUETYPE = parameter.substring(6);
+
+			/* Abschluss und Fallbackparameter */
+
+		} else if (parameter.length() > 2 && parameter.substring(0, 2).equals("X-")) {
+			this.X_PARMSammlung.add(parameter + trenner);
+		} else {
+			this.Restinformationen.add(parameter + trenner);
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+	} // Ende der generierten Methode parameterBestimmen für GuKKiCalProperty V
+		// 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+
+	/**
+	 * Kopieren aller Parameter der Eigenschaft Version V 0.0.3 (RFC 5545, RFC
+	 * 7968) 2021-12-22T15-12-22
+	 *
+	 * @return GuKKiCalProperty
+	 */
+	protected GuKKiCalProperty kopieren() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		GuKKiCalProperty temp = new GuKKiCalProperty();
+		temp.literal = this.literal;
+		temp.wert = this.wert;
+		temp.ALTREP = this.ALTREP == null ? null : this.ALTREP;
+		temp.CN = this.CN == null ? null : this.CN;
+		temp.CUTYPE = this.CUTYPE == null ? null : this.CUTYPE;
+		temp.DELFROM = this.DELFROM == null ? null : this.DELFROM;
+		temp.DELTO = this.DELTO == null ? null : this.DELTO;
+		temp.DIR = this.DIR == null ? null : this.DIR;
+		temp.DISPLAY = this.DISPLAY == null ? null : this.DISPLAY;
+		temp.EMAIL = this.EMAIL == null ? null : this.EMAIL;
+		temp.ENCODING = this.ENCODING == null ? null : this.ENCODING;
+		temp.FBTYPE = this.FBTYPE == null ? null : this.FBTYPE;
+		temp.FEATURE = this.FEATURE == null ? null : this.FEATURE;
+		temp.FMTTYPE = this.FMTTYPE == null ? null : this.FMTTYPE;
+		temp.LABEL = this.LABEL == null ? null : this.LABEL;
+		temp.LANGUAGE = this.LANGUAGE == null ? null : this.LANGUAGE;
+		temp.MEMBER = this.MEMBER == null ? null : this.MEMBER;
+		temp.PARTSTAT = this.PARTSTAT == null ? null : this.PARTSTAT;
+		temp.RANGE = this.RANGE == null ? null : this.RANGE;
+		temp.RELATED = this.RELATED == null ? null : this.RELATED;
+		temp.RELTYPE = this.RELTYPE == null ? null : this.RELTYPE;
+		temp.ROLE = this.ROLE == null ? null : this.ROLE;
+		temp.RSVP = this.RSVP == null ? null : this.RSVP;
+		temp.SENTBY = this.SENTBY == null ? null : this.SENTBY;
+		temp.TZID = this.TZID == null ? null : this.TZID;
+		temp.VALUETYPE = this.VALUETYPE == null ? null : this.VALUETYPE;
+
+		/* Abschluss und Fallbackparameter */
+
+		for (String X_PARM : this.X_PARMSammlung) {
+			temp.X_PARMSammlung.add(X_PARM);
+		}
+		for (String Restinformation : this.Restinformationen) {
+			temp.Restinformationen.add(Restinformation);
+		}
+		temp.status = GuKKiCalcStatus.KOPIERT;
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return temp;
+	} // Ende der generierten Methode kopieren für GuKKiCalProperty V 0.0.3 (RFC
+		// 5545, RFC 7968) 2021-12-22T15-12-22
+
+	/**
+	 * Vergleichen aller Parameter des Attributs Version V 0.0.3 (RFC 5545, RFC
+	 * 7968) 2021-12-22T15-12-22
+	 *
+	 * @return boolean
+	 */
+	protected boolean istGleich(Object dasAndere) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		if (!dasAndere.getClass().equals(this.getClass())) {
+			return false;
+		}
+		GuKKiCalProperty temp = (GuKKiCalProperty) dasAndere;
+		if (!((temp.ALTREP == null && this.ALTREP == null)
+				|| (temp.ALTREP != null && this.ALTREP != null && temp.ALTREP.equals(this.ALTREP)))) {
+			return false;
+		}
+		if (!((temp.CN == null && this.CN == null)
+				|| (temp.CN != null && this.CN != null && temp.CN.equals(this.CN)))) {
+			return false;
+		}
+		if (!((temp.CUTYPE == null && this.CUTYPE == null)
+				|| (temp.CUTYPE != null && this.CUTYPE != null && temp.CUTYPE.equals(this.CUTYPE)))) {
+			return false;
+		}
+		if (!((temp.DELFROM == null && this.DELFROM == null)
+				|| (temp.DELFROM != null && this.DELFROM != null && temp.DELFROM.equals(this.DELFROM)))) {
+			return false;
+		}
+		if (!((temp.DELTO == null && this.DELTO == null)
+				|| (temp.DELTO != null && this.DELTO != null && temp.DELTO.equals(this.DELTO)))) {
+			return false;
+		}
+		if (!((temp.DIR == null && this.DIR == null)
+				|| (temp.DIR != null && this.DIR != null && temp.DIR.equals(this.DIR)))) {
+			return false;
+		}
+		if (!((temp.DISPLAY == null && this.DISPLAY == null)
+				|| (temp.DISPLAY != null && this.DISPLAY != null && temp.DISPLAY.equals(this.DISPLAY)))) {
+			return false;
+		}
+		if (!((temp.EMAIL == null && this.EMAIL == null)
+				|| (temp.EMAIL != null && this.EMAIL != null && temp.EMAIL.equals(this.EMAIL)))) {
+			return false;
+		}
+		if (!((temp.ENCODING == null && this.ENCODING == null)
+				|| (temp.ENCODING != null && this.ENCODING != null && temp.ENCODING.equals(this.ENCODING)))) {
+			return false;
+		}
+		if (!((temp.FBTYPE == null && this.FBTYPE == null)
+				|| (temp.FBTYPE != null && this.FBTYPE != null && temp.FBTYPE.equals(this.FBTYPE)))) {
+			return false;
+		}
+		if (!((temp.FEATURE == null && this.FEATURE == null)
+				|| (temp.FEATURE != null && this.FEATURE != null && temp.FEATURE.equals(this.FEATURE)))) {
+			return false;
+		}
+		if (!((temp.FMTTYPE == null && this.FMTTYPE == null)
+				|| (temp.FMTTYPE != null && this.FMTTYPE != null && temp.FMTTYPE.equals(this.FMTTYPE)))) {
+			return false;
+		}
+		if (!((temp.LABEL == null && this.LABEL == null)
+				|| (temp.LABEL != null && this.LABEL != null && temp.LABEL.equals(this.LABEL)))) {
+			return false;
+		}
+		if (!((temp.LANGUAGE == null && this.LANGUAGE == null)
+				|| (temp.LANGUAGE != null && this.LANGUAGE != null && temp.LANGUAGE.equals(this.LANGUAGE)))) {
+			return false;
+		}
+		if (!((temp.MEMBER == null && this.MEMBER == null)
+				|| (temp.MEMBER != null && this.MEMBER != null && temp.MEMBER.equals(this.MEMBER)))) {
+			return false;
+		}
+		if (!((temp.PARTSTAT == null && this.PARTSTAT == null)
+				|| (temp.PARTSTAT != null && this.PARTSTAT != null && temp.PARTSTAT.equals(this.PARTSTAT)))) {
+			return false;
+		}
+		if (!((temp.RANGE == null && this.RANGE == null)
+				|| (temp.RANGE != null && this.RANGE != null && temp.RANGE.equals(this.RANGE)))) {
+			return false;
+		}
+		if (!((temp.RELATED == null && this.RELATED == null)
+				|| (temp.RELATED != null && this.RELATED != null && temp.RELATED.equals(this.RELATED)))) {
+			return false;
+		}
+		if (!((temp.RELTYPE == null && this.RELTYPE == null)
+				|| (temp.RELTYPE != null && this.RELTYPE != null && temp.RELTYPE.equals(this.RELTYPE)))) {
+			return false;
+		}
+		if (!((temp.ROLE == null && this.ROLE == null)
+				|| (temp.ROLE != null && this.ROLE != null && temp.ROLE.equals(this.ROLE)))) {
+			return false;
+		}
+		if (!((temp.RSVP == null && this.RSVP == null)
+				|| (temp.RSVP != null && this.RSVP != null && temp.RSVP.equals(this.RSVP)))) {
+			return false;
+		}
+		if (!((temp.SENTBY == null && this.SENTBY == null)
+				|| (temp.SENTBY != null && this.SENTBY != null && temp.SENTBY.equals(this.SENTBY)))) {
+			return false;
+		}
+		if (!((temp.TZID == null && this.TZID == null)
+				|| (temp.TZID != null && this.TZID != null && temp.TZID.equals(this.TZID)))) {
+			return false;
+		}
+		if (!((temp.VALUETYPE == null && this.VALUETYPE == null)
+				|| (temp.VALUETYPE != null && this.VALUETYPE != null && temp.VALUETYPE.equals(this.VALUETYPE)))) {
+			return false;
+		}
+
+		/* Abschluss und Fallbackparameter */
+
+		if (temp.X_PARMSammlung.size() != this.X_PARMSammlung.size()) {
+			return false;
+		}
+		for (int i = 0; i < X_PARMSammlung.size(); i++) {
+			if (!temp.X_PARMSammlung.get(i).equals(this.X_PARMSammlung.get(i))) {
+				return false;
+			}
+		}
+		if (temp.Restinformationen.size() != this.Restinformationen.size()) {
+			return false;
+		}
+		for (int i = 0; i < Restinformationen.size(); i++) {
+			if (!temp.Restinformationen.get(i).equals(this.Restinformationen.get(i))) {
+				return false;
+			}
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return true;
+	} // Ende der generierten Methode istGleich für GuKKiCalProperty V 0.0.3
+		// (RFC 5545, RFC 7968) 2021-12-22T15-12-22
+
+	/**
+	 * Datenstromausgabe aller Parameter des Attributs Version V 0.0.3 (RFC
+	 * 5545, RFC 7968) 2021-12-22T15-12-22
+	 *
+	 * @return String
+	 */
+	protected String ausgeben() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String schreibText = "";
+		String sammelText = "";
+		String endeText = "";
+		String trenner = "";
+		schreibText += this.ALTREP == null ? "" : ";ALTREP=" + this.ALTREP;
+		schreibText += this.CN == null ? "" : ";CN=" + this.CN;
+		schreibText += this.CUTYPE == null ? "" : ";CUTYPE=" + this.CUTYPE;
+		schreibText += this.DELFROM == null ? "" : ";DELEGATED-FROM=" + this.DELFROM;
+		schreibText += this.DELTO == null ? "" : ";DELEGATED-TO=" + this.DELTO;
+		schreibText += this.DIR == null ? "" : ";DIR=" + this.DIR;
+		schreibText += this.DISPLAY == null ? "" : ";DISPLAY=" + this.DISPLAY;
+		schreibText += this.EMAIL == null ? "" : ";EMAIL=" + this.EMAIL;
+		schreibText += this.ENCODING == null ? "" : ";ENCODING=" + this.ENCODING;
+		schreibText += this.FBTYPE == null ? "" : ";FBTYPE=" + this.FBTYPE;
+		schreibText += this.FEATURE == null ? "" : ";FEATURE=" + this.FEATURE;
+		schreibText += this.FMTTYPE == null ? "" : ";FMTTYPE=" + this.FMTTYPE;
+		schreibText += this.LABEL == null ? "" : ";LABEL=" + this.LABEL;
+		schreibText += this.LANGUAGE == null ? "" : ";LANGUAGE=" + this.LANGUAGE;
+		schreibText += this.MEMBER == null ? "" : ";MEMBER=" + this.MEMBER;
+		schreibText += this.PARTSTAT == null ? "" : ";PARTSTAT=" + this.PARTSTAT;
+		schreibText += this.RANGE == null ? "" : ";RANGE=" + this.RANGE;
+		schreibText += this.RELATED == null ? "" : ";RELATED=" + this.RELATED;
+		schreibText += this.RELTYPE == null ? "" : ";RELTYPE=" + this.RELTYPE;
+		schreibText += this.ROLE == null ? "" : ";ROLE=" + this.ROLE;
+		schreibText += this.RSVP == null ? "" : ";RSVP=" + this.RSVP;
+		schreibText += this.SENTBY == null ? "" : ";SENT-BY=" + this.SENTBY;
+		schreibText += this.TZID == null ? "" : ";TZID=" + this.TZID;
+		schreibText += this.VALUETYPE == null ? "" : ";VALUE=" + this.VALUETYPE;
+
+		/* Abschluss und Fallbackparameter */
+
+		sammelText = "";
+		for (String X_PARM : this.X_PARMSammlung) {
+			sammelText += X_PARM;
+		}
+		if (sammelText.length() > 0) {
+			if (sammelText.substring(sammelText.length() - 1).equals(":")) {
+				endeText = sammelText.substring(0, sammelText.length() - 1);
+			} else {
+				schreibText += ";" + sammelText.substring(0, sammelText.length() - 1);
+			}
+		}
+		sammelText = "";
+		for (String Restinformation : this.Restinformationen) {
+			sammelText += Restinformation;
+		}
+		if (sammelText.length() > 0) {
+			if (sammelText.substring(sammelText.length() - 1).equals(":")) {
+				endeText = sammelText.substring(0, sammelText.length() - 1);
+			} else {
+				schreibText += ";" + sammelText.substring(0, sammelText.length() - 1);
+			}
+		}
+		if (endeText.length() > 0) {
+			schreibText += ";" + endeText;
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return this.literal + schreibText + ":" + this.wert;
+	} // Ende der generierten Methode ausgeben für GuKKiCalProperty V 0.0.3 (RFC
+		// 5545, RFC 7968) 2021-12-22T15-12-22
+
 	String getWert() {
 		return wert;
 	}
@@ -604,7 +623,7 @@ class GuKKiCalProperty {
 		this.literal = propertyLiteral;
 	}
 
-	String getLANGUAGE () {
+	String getLANGUAGE() {
 		return LANGUAGE;
 	}
 //	String getRestinformationen() {
@@ -678,6 +697,32 @@ class GuKKiCalProperty {
 		ausgabe += "wert=" + wert + nz;
 
 		return ausgabe.substring(0, ausgabe.length() - 1);
+	}
+
+	public String[] getAllX_PARM() {
+		String[] temp = null;
+
+		if (X_PARMSammlung.size() > 0) {
+			temp = new String[X_PARMSammlung.size()];
+			for (int i = 0; i < X_PARMSammlung.size(); i++) {
+				temp[i] = X_PARMSammlung.get(i);
+			}
+		}
+
+		return temp;
+	}
+
+	public String[] getAllRestinformationen() {
+
+		String[] temp = null;
+
+		if (Restinformationen.size() > 0) {
+			temp = new String[Restinformationen.size()];
+			for (int i = 0; i < Restinformationen.size(); i++) {
+				temp[i] = Restinformationen.get(i);
+			}
+		}
+		return temp;
 	}
 
 	/**

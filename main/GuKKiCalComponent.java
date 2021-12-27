@@ -118,11 +118,11 @@ public class GuKKiCalComponent {
 		} else {
 			ausgabeString = vComponentDaten.substring(0, laenge - 1) + "\n ";
 			anf = laenge - 1;
+			for (; anf < vComponentDaten.length() - laenge; anf += laenge - 1) {
+				ausgabeString += vComponentDaten.substring(anf, anf + laenge - 1) + "\n ";
+			}
+			ausgabeString += vComponentDaten.substring(anf) + "\n";
 		}
-		for (; anf < vComponentDaten.length() - laenge; anf += laenge - 1) {
-			ausgabeString += vComponentDaten.substring(anf, anf + laenge - 1) + "\n ";
-		}
-		ausgabeString += vComponentDaten.substring(anf) + "\n";
 
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet\n");

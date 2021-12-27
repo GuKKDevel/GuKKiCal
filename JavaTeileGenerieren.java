@@ -529,11 +529,6 @@ public class JavaTeileGenerieren {
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("    } // Ende der generierten Methode parameterBestimmen für GuKKiCalProperty " + version);
 			pWriter.println(" ");
-//		} catch (IOException ioe) {
-//			ioe.printStackTrace();
-//		} finally {
-//		}
-//		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-kopieren"));) {
 			
 			System.out.println("Generieren der Methode kopieren für GuKKiCalProperty");
 
@@ -573,11 +568,6 @@ public class JavaTeileGenerieren {
 			pWriter.println("        return temp;");
 			pWriter.println("    } // Ende der generierten Methode kopieren für GuKKiCalProperty " + version);
 			pWriter.println(" ");
-//		} catch (IOException ioe) {
-//			ioe.printStackTrace();
-//		} finally {
-//		}
-//		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-istGleich"));) {
 
 		System.out.println("Generieren der Methode istGleich für GuKKiCalProperty");
 
@@ -593,7 +583,6 @@ public class JavaTeileGenerieren {
 			pWriter.println("            return false;");
 			pWriter.println("        }");
 			pWriter.println("        GuKKiCalProperty temp = (GuKKiCalProperty) dasAndere;");
-
 			for (String[] strings : parameter) {
 				if (strings[0].equals("1")) {
 					pWriter.println(
@@ -637,14 +626,8 @@ public class JavaTeileGenerieren {
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("        return true;");
 			pWriter.println("    } // Ende der generierten Methode istGleich für GuKKiCalProperty " + version);
+			pWriter.println(" ");
 
-//		} catch (IOException ioe) {
-//			ioe.printStackTrace();
-//		} finally {
-//
-//		}
-//		try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + "GuKKiCalProperty-ausgeben"));) {
-		
 			System.out.println("Generieren der Methode ausgeben für GuKKiCalProperty");
 
 			pWriter.println("    /**");
@@ -714,7 +697,36 @@ public class JavaTeileGenerieren {
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("        return this.literal + schreibText + \":\" + this.wert;");
 			pWriter.println("    } // Ende der generierten Methode ausgeben für GuKKiCalProperty " + version);
+			pWriter.println(" ");
 
+			System.out.println("Generieren der Getter- und Setter-Methoden für GuKKiCalProperty");
+			
+			for (String[] strings : parameter) {
+				if (strings[0].equals("1")) {
+					pWriter.println("    public String get" + strings[1] + "() {");
+					pWriter.println("        return "+ strings[1] +";");
+					pWriter.println("    }");
+					pWriter.println("    public boolean set" + strings[1] + "(String p" + strings[1] + ") {");
+					pWriter.println("        this." + strings[1] + " = p" + strings[1] + ";");
+					pWriter.println("        return true;");
+					pWriter.println("    }");
+					pWriter.println(" ");
+
+				} else if (strings[0].equals("2")) {
+					pWriter.println("    public String [] getAll" + strings[1] + "() {");
+					pWriter.println("        return "+ strings[1] +"Sammlung.toArray();");
+					pWriter.println("    }");
+//					pWriter.println("    public boolean set" + strings[1] + "(String p" + strings[1] + ") {");
+//					pWriter.println("        this." + strings[1] + " = p" + strings[1] + ";");
+//					pWriter.println("        return true;");
+//					pWriter.println("    }");
+					pWriter.println(" ");
+				}
+			}
+			pWriter.println("    public String [] getAllX_PARM() {");
+			pWriter.println("        return X_PARMSammlung.toArray();");
+			pWriter.println("    }");
+			
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {

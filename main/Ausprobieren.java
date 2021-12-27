@@ -1,5 +1,14 @@
 package main;
 
+import java.io.PrintWriter;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,19 +17,33 @@ import java.util.logging.*;
 public class Ausprobieren {
 	Logger logger = Logger.getLogger("GuKKiCal");
 
+	ArrayList<GuKKiCaliCalendar> iCalendarSammlung = new ArrayList<GuKKiCaliCalendar>();
+	GuKKiCalParser parser = new GuKKiCalParser();
+
+//	BufferedWriter iCalWriter = null;
+	PrintWriter iCalWriter = null;
+	String inPfad = "/home/programmieren/TestFiles/iCalender/";
+	String ausPfad = "/home/programmieren/TestFiles/iCalender/a";
+//	String[] kalender = {"TestKalender","Standard-KHG", "Google", "temp", "Abfallkalender" };
+	String[] kalender = {"TestKalender"};
+
 	public Ausprobieren() throws Exception {
 		loggerhandling();
-		ArrayList<GuKKiCaliCalendar> iCalendarSammlung = new ArrayList<GuKKiCaliCalendar>();
 		try {
-		
-			GuKKiCalParser parser = new GuKKiCalParser();
 			System.out.println(new Date());
-			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/TestKalender.ics");
-			System.out.println(new Date());
-			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Google.ics");
-			System.out.println(new Date());
-			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Standard-KHG.ics");
-			System.out.println(new Date());
+			for (String pkalender : kalender) {
+				parser.kalenderEinlesen(iCalendarSammlung, inPfad + kalender[0] + ".ics");
+				System.out.println(new Date());
+				String ausgebenauf = ausPfad + pkalender + ".ics";
+				File iCalFile = new File(ausgebenauf);
+				iCalWriter = new PrintWriter(iCalFile, "UTF-8");
+				iCalWriter.println(iCalendarSammlung.get(iCalendarSammlung.size() - 1).ausgeben());
+				iCalWriter.flush();
+			}
+//			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Google.ics");
+//			System.out.println(new Date());
+//			parser.kalenderEinlesen(iCalendarSammlung, "/home/programmieren/TestFiles/iCalender/Standard-KHG.ics");
+//			System.out.println(new Date());
 
 			// Standard-KHG TestKalender Google temp Abfallkalender
 
@@ -31,17 +54,15 @@ public class Ausprobieren {
 //				parser.kalenderEinlesen(iCalendarSammlung,
 //						"C:\\users\\GuKKDevel\\Desktop\\Programmierung\\gitRepos\\IgnoreForGit\\iCalender\\Testkalender.ics");
 //			}
-		} catch (Exception ex){
-		ex.printStackTrace();
-		}
-		finally {
+		
+		} finally {
 
 		}
-		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
-			System.out.println(iCaliCalendar.toString("CETJZF"));
-//			System.out.println(iCaliCalendar.toString());
-			System.out.println("\n\n" + new Date().toString() + "\n\n");
-		}
+//		for (GuKKiCaliCalendar iCaliCalendar : iCalendarSammlung) {
+//			System.out.println(iCaliCalendar.toString("CAETJZF"));
+////			System.out.println(iCaliCalendar.toString());
+//			System.out.println("\n\n" + new Date().toString() + "\n\n");
+//		}
 		logger.finest("beendet");
 		// TODO Automatisch generierter Konstruktorstub
 	}
