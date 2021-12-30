@@ -15,7 +15,7 @@ public class GuKKiCalComponent {
 	 */
 	GuKKiCalcKennung kennung = GuKKiCalcKennung.UNDEFINIERT;
 	GuKKiCalcStatus status = GuKKiCalcStatus.UNDEFINIERT;
-	String schluessel = "";
+	GuKKiCalcSchluessel schluessel = new GuKKiCalcSchluessel();
 
 	boolean bearbeiteSubKomponente = false;
 	boolean vEventBearbeiten = false;
