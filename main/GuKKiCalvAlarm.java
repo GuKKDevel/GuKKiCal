@@ -2,7 +2,8 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -215,13 +216,13 @@ public class GuKKiCalvAlarm extends GuKKiCalComponent {
 	 */
 	private GuKKiCalProperty DESCRIPTION = null;
 	private GuKKiCalProperty SUMMARY = null;
-	private ArrayList<GuKKiCalProperty> ATTACHSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> ATTENDEESammlung = new ArrayList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> ATTACHSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> ATTENDEESammlung = new LinkedList<GuKKiCalProperty>();
 	/*
 	 * Here are the x-prop and iana-prop are to be stored
 	 */
-	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
-	private ArrayList<String> Restinformationen = new ArrayList<String>();
+	private List<String> X_PROPSammlung = new LinkedList<String>();
+	private List<String> Restinformationen = new LinkedList<String>();
 
 	/*
 	 * allgemeine Variablen

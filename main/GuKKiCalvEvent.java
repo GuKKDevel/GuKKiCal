@@ -2,10 +2,11 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.ArrayList;
 
 /**
  * Die Klasse GuKKiCalvEvent enthält alle Daten für eine VEVENT-Komponente im iCal Format
@@ -171,31 +172,31 @@ public class GuKKiCalvEvent extends GuKKiCalComponent {
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 */
-	private ArrayList<GuKKiCalProperty> ATTACHSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> ATTENDEESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> CATEGORIESSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> COMMENTSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> CONFERENCESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> CONTACTSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> EXDATESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> IMAGESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RSTATUSSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RELATEDSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RELATED_TOSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RESOURCESSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RDATESammlung = new ArrayList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> ATTACHSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> ATTENDEESammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> CATEGORIESSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> COMMENTSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> CONFERENCESammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> CONTACTSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> EXDATESammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> IMAGESammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RSTATUSSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RELATEDSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RELATED_TOSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RESOURCESSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RDATESammlung = new LinkedList<GuKKiCalProperty>();
 	/*
 	 * X-Name Properties
 	 */
-	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
+	private List<String> X_PROPSammlung = new LinkedList<String>();
 
-	private ArrayList<String> Restinformationen = new ArrayList<String>();
+	private List<String> Restinformationen = new LinkedList<String>();
 	/*
 	 * Sammlungen der VEVENT-Komponenten
 	 */
-	private ArrayList<GuKKiCalvAlarm> vAlarmSammlung = new ArrayList<GuKKiCalvAlarm>();
+	private List<GuKKiCalvAlarm> vAlarmSammlung = new LinkedList<GuKKiCalvAlarm>();
 
-	ArrayList<String> vAlarmDatenArray = new ArrayList<String>();
+	private List<String> vAlarmDatenArray = new LinkedList<String>();
 	boolean vAlarmDatenSammeln = false;
 	private GuKKiCalvAlarm vAlarmEvent = null;
 

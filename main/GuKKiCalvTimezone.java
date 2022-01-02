@@ -1,6 +1,7 @@
 package main;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -262,19 +263,19 @@ public class GuKKiCalvTimezone extends GuKKiCalComponent {
 	 * One of ’standardc’ or ’daylightc’ MUST occur and each MAY occur more than
 	 * once.
 	 */
-	private ArrayList<GuKKiCalcDaylight> cDaylightSammlung = new ArrayList<GuKKiCalcDaylight>();
-	private ArrayList<GuKKiCalcStandard> cStandardSammlung = new ArrayList<GuKKiCalcStandard>();
+	private List<GuKKiCalcDaylight> cDaylightSammlung = new LinkedList<GuKKiCalcDaylight>();
+	private List<GuKKiCalcStandard> cStandardSammlung = new LinkedList<GuKKiCalcStandard>();
 	/*
 	 * X-Name Properties
 	 */
-	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
-	private ArrayList<String> Restinformationen = new ArrayList<String>();
+	private List<String> X_PROPSammlung = new LinkedList<String>();
+	private List<String> Restinformationen = new LinkedList<String>();
 	/*
 	 * Zwischenspeicher für den Datenstrom für cDaylight und cStandard nebst
 	 * Verarbeitungsschalter
 	 */
-	ArrayList<String> cDaylightDatenArray = new ArrayList<String>();
-	ArrayList<String> cStandardDatenArray = new ArrayList<String>();
+	List<String> cDaylightDatenArray = new LinkedList<String>();
+	List<String> cStandardDatenArray = new LinkedList<String>();
 	boolean cDaylightDatenSammeln = false;
 	boolean cStandardDatenSammeln = false;
 

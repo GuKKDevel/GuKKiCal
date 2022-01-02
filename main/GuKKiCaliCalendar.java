@@ -5,6 +5,8 @@ import exceptions.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -95,48 +97,30 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 */
-	ArrayList<GuKKiCalProperty> CATEGORIESSammlung = new ArrayList<GuKKiCalProperty>();
-	ArrayList<GuKKiCalProperty> DESCRIPTIONSammlung = new ArrayList<GuKKiCalProperty>();
-	ArrayList<GuKKiCalProperty> IMAGESammlung = new ArrayList<GuKKiCalProperty>();
-	ArrayList<GuKKiCalProperty> NAMESammlung = new ArrayList<GuKKiCalProperty>();
+	List<GuKKiCalProperty> CATEGORIESSammlung = new LinkedList<GuKKiCalProperty>();
+	List<GuKKiCalProperty> DESCRIPTIONSammlung = new LinkedList<GuKKiCalProperty>();
+	List<GuKKiCalProperty> IMAGESammlung = new LinkedList<GuKKiCalProperty>();
+	List<GuKKiCalProperty> NAMESammlung = new LinkedList<GuKKiCalProperty>();
 	/*
 	 * Here are the x-prop and iana-prop are to be stored
 	 */
-	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
-	private ArrayList<String> Restinformationen = new ArrayList<String>();
+	private List<String> X_PROPSammlung = new LinkedList<String>();
+	private List<String> Restinformationen = new LinkedList<String>();
 	/*
 	 * Sammlungen der Kalender-Komponenten
 	 */
-	ArrayList<GuKKiCalvEvent> vEventSammlung = new ArrayList<GuKKiCalvEvent>();
-	ArrayList<GuKKiCalvTodo> vTodoSammlung = new ArrayList<GuKKiCalvTodo>();
-	ArrayList<GuKKiCalvJournal> vJournalSammlung = new ArrayList<GuKKiCalvJournal>();
-	ArrayList<GuKKiCalvFreeBusy> vFreeBusySammlung = new ArrayList<GuKKiCalvFreeBusy>();
-	ArrayList<GuKKiCalvTimezone> vTimezoneSammlung = new ArrayList<GuKKiCalvTimezone>();
+	List<GuKKiCalvEvent> vEventSammlung = new LinkedList<GuKKiCalvEvent>();
+	List<GuKKiCalvTodo> vTodoSammlung = new LinkedList<GuKKiCalvTodo>();
+	List<GuKKiCalvJournal> vJournalSammlung = new LinkedList<GuKKiCalvJournal>();
+	List<GuKKiCalvFreeBusy> vFreeBusySammlung = new LinkedList<GuKKiCalvFreeBusy>();
+	List<GuKKiCalvTimezone> vTimezoneSammlung = new LinkedList<GuKKiCalvTimezone>();
 	/*
 	 * Aufbereitete Komponenten
 	 */
 	HashMap<String, GuKKiCalvTimezone> vTimezones = new HashMap<String, GuKKiCalvTimezone>();
-//	/*
-//	 * Generelle Verarbeitungsvariablen
-//	 */
-//	String nz = "\n";
-//	String zeile = "";
-//	/*
-//	 * Hilfsdaten zur Weiterverarbeitung der Kalenderinformationen
-//	 */
-//	String vComponentDaten = "";
-//	boolean iCalendarBearbeiten = false;
-//	String iCalendarDaten = "";
-//	boolean vEventDatenSammeln = false;
-//	ArrayList<String> vEventDatenArray = new ArrayList<String>();
-//	boolean vTodoDatenSammeln = false;
-//	ArrayList<String> vTodoDatenArray = new ArrayList<String>();
-//	boolean vJournalDatenSammeln = false;
-//	ArrayList<String> vJournalDatenArray = new ArrayList<String>();
-//	boolean vFreeBusyDatenSammeln = false;
-//	ArrayList<String> vFreeBusyDatenArray = new ArrayList<String>();
-//	boolean vTimezoneDatenSammeln = false;
-//	ArrayList<String> vTimezoneDatenArray = new ArrayList<String>();
+	/*
+	 * Generelle Verarbeitungsvariablen
+	 */
 
 	public GuKKiCaliCalendar() {
 		/*	@formatter:off */
@@ -172,7 +156,7 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 		if (this.iCalendarName.equals("")) {
 			this.iCalendarName = iCalendarName;
 		}
-		this.schluessel = this.iCalendarName;
+		this.schluessel.kalendername = this.iCalendarName.toString();
 		status = GuKKiCalcStatus.GELESEN;
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
@@ -636,19 +620,25 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 		if (ausgabeLevel.toUpperCase().indexOf("E") >= 0) {
 			ausgabeString += nz;
 			for (GuKKiCalvEvent vEvent : vEventSammlung) {
-				ausgabeString += schluessel + ":" + vEvent.toString(ausgabeLevel) + nz;
+				ausgabeString += this.schluessel.kalendername + ":" + vEvent.toString(ausgabeLevel) + nz;
 			}
 		}
 		if (ausgabeLevel.toUpperCase().indexOf("T") >= 0) {
 			ausgabeString += nz;
 			for (GuKKiCalvTodo vTodo : vTodoSammlung) {
-				ausgabeString += schluessel + ":" + vTodo.toString(ausgabeLevel) + nz;
+				ausgabeString += this.schluessel.kalendername + ":" + vTodo.toString(ausgabeLevel) + nz;
+			}
+		}
+		if (ausgabeLevel.toUpperCase().indexOf("J") >= 0) {
+			ausgabeString += nz;
+			for (GuKKiCalvJournal vJournal : vJournalSammlung) {
+				ausgabeString += this.schluessel.kalendername + ":" + vJournal.toString(ausgabeLevel) + nz;
 			}
 		}
 		if (ausgabeLevel.toUpperCase().indexOf("Z") >= 0) {
 			ausgabeString += nz;
 			for (GuKKiCalvTimezone vTimezone : vTimezoneSammlung) {
-				ausgabeString += "Schlüssel: " + vTimezone.toString() + "\n";
+				ausgabeString += this.schluessel.kalendername + ":" + vTimezone.toString() + "\n";
 			}
 //			for (GuKKiCalvTimezone vTimezone : vTimezoneSammlung) {
 //				ausgabeString += schluessel + ":" + vTimezone.toString(ausgabeLevel) + nz;

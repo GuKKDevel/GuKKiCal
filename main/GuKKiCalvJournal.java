@@ -1,6 +1,7 @@
 package main;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -121,27 +122,27 @@ public class GuKKiCalvJournal extends GuKKiCalComponent {
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 */
-	private ArrayList<GuKKiCalProperty> ATTACHSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> ATTENDEESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> CATEGORIESSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> COMMENTSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> CONTACTSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> DESCRIPTIONSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> EXDATESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> IMAGESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RSTATUSSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RELATEDSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RDATESammlung = new ArrayList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> ATTACHSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> ATTENDEESammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> CATEGORIESSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> COMMENTSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> CONTACTSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> DESCRIPTIONSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> EXDATESammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> IMAGESammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RSTATUSSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RELATEDSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RDATESammlung = new LinkedList<GuKKiCalProperty>();
 	/*
 	 * X-Name Properties
 	 */
-	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
+	private List<String> X_PROPSammlung = new LinkedList<String>();
 
-	private ArrayList<String> Restinformationen = new ArrayList<String>();
+	private List<String> Restinformationen = new LinkedList<String>();
 	/*
 	 * Sammlungen der VEVENT-Komponenten
 	 */
-	private ArrayList<GuKKiCalvAlarm> vAlarmSammlung = new ArrayList<GuKKiCalvAlarm>();
+	private List<GuKKiCalvAlarm> vAlarmSammlung = new LinkedList<GuKKiCalvAlarm>();
 
 	
 	public GuKKiCalvJournal () {
@@ -574,4 +575,20 @@ public class GuKKiCalvJournal extends GuKKiCalComponent {
             return componentDatenstrom;
         } // Ende ausgeben V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
     protected void abschliessen(){status = GuKKiCalcStatus.GELESEN;}	
+
+	/**
+	 * Gibt statt der Adresse die UID des vEvent zurück
+	 */
+    @Override
+	public String toString() {
+		return "J," + UID.getWert() + "," + (SEQ == null ? "" : SEQ.getWert()) + ","
+				+ (RECURID == null ? "" : RECURID.getWert()) + "";
+	} // Ende toString()
+
+	/**
+	 * Gibt sämtliche Daten des vEvent aus
+	 */
+	public String toString(String ausgabeLevel) {
+		return "Journal-Identifikation=" + this.toString() + "<-->" + (SUMMARY == null ? "" : SUMMARY.getWert());
+	} // Ende toString(String)
 }

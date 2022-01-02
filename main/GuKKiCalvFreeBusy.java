@@ -1,6 +1,7 @@
 package main;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -136,15 +137,15 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
 	 * 			attendee / comment / freebusy / rstatus / 
 	 *				x-prop /iana-prop
 	 */
-	private ArrayList<GuKKiCalProperty> ATTENDEESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> COMMENTSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> FREEBUSYSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RSTATUSSammlung = new ArrayList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> ATTENDEESammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> COMMENTSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> FREEBUSYSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalProperty> RSTATUSSammlung = new LinkedList<GuKKiCalProperty>();
 	/*
 	 * Here are the x-prop and iana-prop are to be stored
 	 */
-	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
-	private ArrayList<String> Restinformationen = new ArrayList<String>();
+	private List<String> X_PROPSammlung = new LinkedList<String>();
+	private List<String> Restinformationen = new LinkedList<String>();
 	
 	protected GuKKiCalvFreeBusy() {
 		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
