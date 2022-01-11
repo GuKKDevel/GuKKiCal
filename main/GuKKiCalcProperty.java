@@ -87,7 +87,7 @@ import java.util.logging.Logger;
  * 
  * 
  */
-class GuKKiCalProperty {
+class GuKKiCalcProperty {
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
 	/*
@@ -136,7 +136,7 @@ class GuKKiCalProperty {
 	/**
 	 * leerer Konstruktor
 	 */
-	protected GuKKiCalProperty() {
+	protected GuKKiCalcProperty() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -151,7 +151,7 @@ class GuKKiCalProperty {
 	 * 
 	 */
 
-	protected GuKKiCalProperty(String literal) {
+	protected GuKKiCalcProperty(String literal) {
 
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
@@ -164,7 +164,7 @@ class GuKKiCalProperty {
 		}
 	}
 
-	public GuKKiCalProperty(String propertyDaten, String literal) {
+	public GuKKiCalcProperty(String propertyDaten, String literal) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -341,20 +341,20 @@ class GuKKiCalProperty {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
-	} // Ende der generierten Methode parameterBestimmen für GuKKiCalProperty V
+	} // Ende der generierten Methode parameterBestimmen für GuKKiCalcProperty V
 		// 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
 	 * Kopieren aller Parameter der Eigenschaft Version V 0.0.3 (RFC 5545, RFC
 	 * 7968) 2021-12-22T15-12-22
 	 *
-	 * @return GuKKiCalProperty
+	 * @return GuKKiCalcProperty
 	 */
-	protected GuKKiCalProperty kopieren() {
+	protected GuKKiCalcProperty kopieren() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		GuKKiCalProperty temp = new GuKKiCalProperty();
+		GuKKiCalcProperty temp = new GuKKiCalcProperty();
 		temp.literal = this.literal;
 		temp.wert = this.wert;
 		temp.ALTREP = this.ALTREP == null ? null : this.ALTREP;
@@ -395,7 +395,8 @@ class GuKKiCalProperty {
 			logger.log(logLevel, "beendet");
 		}
 		return temp;
-	} // Ende der generierten Methode kopieren für GuKKiCalProperty V 0.0.3 (RFC
+	} // Ende der generierten Methode kopieren für GuKKiCalcProperty V 0.0.3
+		// (RFC
 		// 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
@@ -411,7 +412,7 @@ class GuKKiCalProperty {
 		if (!dasAndere.getClass().equals(this.getClass())) {
 			return false;
 		}
-		GuKKiCalProperty temp = (GuKKiCalProperty) dasAndere;
+		GuKKiCalcProperty temp = (GuKKiCalcProperty) dasAndere;
 		if (!((temp.ALTREP == null && this.ALTREP == null)
 				|| (temp.ALTREP != null && this.ALTREP != null && temp.ALTREP.equals(this.ALTREP)))) {
 			return false;
@@ -531,7 +532,7 @@ class GuKKiCalProperty {
 			logger.log(logLevel, "beendet");
 		}
 		return true;
-	} // Ende der generierten Methode istGleich für GuKKiCalProperty V 0.0.3
+	} // Ende der generierten Methode istGleich für GuKKiCalcProperty V 0.0.3
 		// (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
@@ -604,11 +605,12 @@ class GuKKiCalProperty {
 			logger.log(logLevel, "beendet");
 		}
 		return this.literal + schreibText + ":" + this.wert;
-	} // Ende der generierten Methode ausgeben für GuKKiCalProperty V 0.0.3 (RFC
+	} // Ende der generierten Methode ausgeben für GuKKiCalcProperty V 0.0.3
+		// (RFC
 		// 5545, RFC 7968) 2021-12-22T15-12-22
 
 	String getWert() {
-		return wert;
+		return wert == null ? "" : wert;
 	}
 
 	void setWert(String propertyWert) {

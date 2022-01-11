@@ -1,18 +1,19 @@
 package main;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import exceptions.GuKKiCalF_FalscheKomponente;
-import exceptions.GuKKiCalW_FalscheKomponente;
 
 /**
+ * Schluessel der einzelnen Componenten
  * 
  * @author GuKKDevel
- *
- *         Schluessel der einzelnen Componenten
  */
 class GuKKiCalcSchluessel {
+	Logger logger = Logger.getLogger("GuKKiCal");
+	Level logLevel = Level.FINEST;
 
-	// Status des Schlüssels
-	GuKKiCalcStatus status = GuKKiCalcStatus.UNDEFINIERT;
 	// Komponente, für die der Schlüssel gilt
 	GuKKiCalcKennung komponente = GuKKiCalcKennung.UNDEFINIERT;
 
@@ -38,347 +39,271 @@ class GuKKiCalcSchluessel {
 	private String DTSTAMP = "";
 
 	/**
-	 * Konstruktor nur für das Anlegen einer beliebigen Komponente
+	 * Konstruktor für Komponente vCalendar
 	 * 
 	 * @param komponente
+	 * @param parameter  - pNAME
+	 * 
+	 * @throws GuKKiCalF_FalscheKomponente
 	 */
-	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente) {
+	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente, String pNAME) throws GuKKiCalF_FalscheKomponente {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 		this.komponente = komponente;
-		this.status = GuKKiCalcStatus.UNDEFINIERT;
-	}
-
-	/**
-	 * Konstruktor für Komponente
-	 * 
-	 * vCalendar (nichts) <br>
-	 * vEvent (nichts) <br>
-	 * vTodo (nichts) <br>
-	 * vJournal (nichts) <br>
-	 * vAlarm (nichts) <br>
-	 * vTimezone (nur TZID) - fehlt NAME <br>
-	 * vDaylight (nichts) <br>
-	 * vStandard (nichts) <br>
-	 * vFreeBusy (nichts)
-	 * 
-	 * @param komponente
-	 * @param parameter1 - NAME bzw TZID
-	 * @throws GuKKiCalF_FalscheKomponente
-	 */
-	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente, String parameter1) throws GuKKiCalF_FalscheKomponente {
 		switch (komponente) {
 			case CALENDAR:
-//				temp = "C " + NAME + " ";
-				this.NAME = parameter1;
-				this.status = GuKKiCalcStatus.KOMPLETT;
+				this.NAME = pNAME;
 				break;
 			case TIMEZONE:
-//				temp = "Z " + NAME + "," + TZID + " ";
-				this.TZID = parameter1;
-				this.status = GuKKiCalcStatus.TEILWEISE;
-				break;
 			case EVENT:
-//				temp = "E " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
 			case TODO:
-//				temp = "T " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
 			case JOURNAL:
-//				temp = "J " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";			case ALARM:
 			case ALARM:
-//				temp = "A " + NAME + "," + UID + "," + SEQ + "," + RECURID + "," + ACTION + "," + TRIGGER + " ";
 			case DAYLIGHT:
-//				temp = "D " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
 			case STANDARD:
-//				temp = "S " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
 			case FREEBUSY:
-//				temp = "F " + NAME + "," + UID + "," + DTSTAMP + " ";
 			default:
 				throw new GuKKiCalF_FalscheKomponente();
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
 		}
 	}
 
 	/**
-	 * Konstruktor für Komponente <br>
-	 * 
-	 * vCalendar (nichts) <br>
-	 * vEvent (nichts) <br>
-	 * vTodo (nichts) <br>
-	 * vJournal (nichts) <br>
-	 * vAlarm (nur ACTION und TRIGGER) - fehlt NAME, UID, SEQ, RECURID <br>
-	 * vTimezone (nichts <br>
-	 * vDaylight (nur DTSTART und TZOFFSETFROM) - fehlt NAME und TZID <br>
-	 * vStandard (nichts) <br>
-	 * vFreeBusy (nur UID und DTSTAMP) - fehlt NAME
+	 * Konstruktor für Komponente vTimezone
 	 * 
 	 * @param komponente
-	 * @param parameter1 - ACTION bzw. DTSTART bzw. UID
-	 * @param parameter2 - TRIGGER bzw. TZOFFSETFROM bzw. DTSTAMP
+	 * @param parameter  - pNAME
+	 * @param parameter  - pTZID
+	 * 
 	 * @throws GuKKiCalF_FalscheKomponente
 	 */
-	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente, String parameter1, String parameter2)
+	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente, String pNAME, String pTZID)
 			throws GuKKiCalF_FalscheKomponente {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		this.komponente = komponente;
 		switch (komponente) {
-			case ALARM:
-//				temp = "A " + NAME + "," + UID + "," + SEQ + "," + RECURID + "," + ACTION + "," + TRIGGER + " ";				this.ACTION = parameter1;
-				this.TRIGGER = parameter2;
-				this.status = GuKKiCalcStatus.TEILWEISE;
-				break;
-			case DAYLIGHT:
-//				temp = "D " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
-			case STANDARD:
-//				temp = "S " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
-				this.DTSTART = parameter1;
-				this.TZOFFSETFROM = parameter2;
-				this.status = GuKKiCalcStatus.TEILWEISE;
-				break;
-			case FREEBUSY:
-//				temp = "F " + NAME + "," + UID + "," + DTSTAMP + " ";
-				this.UID = parameter1;
-				this.DTSTAMP = parameter2;
-				this.status = GuKKiCalcStatus.TEILWEISE;
+			case TIMEZONE:
+				this.NAME = pNAME;
+				this.TZID = pTZID;
 				break;
 			case CALENDAR:
-//				temp = "C " + NAME + " ";
 			case EVENT:
-//				temp = "E " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
 			case TODO:
-//				temp = "T " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
 			case JOURNAL:
-//				temp = "J " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-			case TIMEZONE:
-//				temp = "Z " + NAME + "," + TZID + " ";	
+			case ALARM:
+			case DAYLIGHT:
+			case STANDARD:
+			case FREEBUSY:
 			default:
 				throw new GuKKiCalF_FalscheKomponente();
 
 		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	}
 
 	/**
-	 * Konstruktor für Komponente <br>
-	 * 
-	 * vCalendar (nichts) <br>
-	 * vEvent (nur UID, SEQ und RECURID) - fehlt NAME <br>
-	 * vTodo (nur UID, SEQ und RECURID) - fehlt NAME <br>
-	 * vJournal (nur UID, SEQ und RECURID) - fehlt NAME <br>
-	 * vAlarm (nichts) <br>
-	 * vTimezone (nichts <br>
-	 * vDaylight (nichts) <br>
-	 * vStandard (nichts) <br>
-	 * vFreeBusy (nichts)
+	 * Konstruktor für Komponente vFREEBUSY <br>
 	 * 
 	 * @param komponente
-	 * @param parameter1
-	 * @param parameter2
-	 * @param parameter3
+	 * @param parameter  - pNAME
+	 * @param parameter  - pUID
+	 * @param parameter  - pDTSTAMP
+	 * 
 	 * @throws GuKKiCalF_FalscheKomponente
 	 */
-	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente, String parameter1, String parameter2, String parameter3)
+	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente, String pNAME, String pUID, String pDTSTAMP)
 			throws GuKKiCalF_FalscheKomponente {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		this.komponente = komponente;
 		switch (komponente) {
-			case EVENT:
-//				temp = "E " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-			case TODO:
-//				temp = "T " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-			case JOURNAL:
-//				temp = "J " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-				this.UID = parameter1;
-				this.SEQ = parameter2;
-				this.RECURID = parameter3;
-				this.status = GuKKiCalcStatus.TEILWEISE;
+			case FREEBUSY:
+				this.NAME = pNAME;
+				this.UID = pUID;
+				this.DTSTAMP = pDTSTAMP;
 				break;
 			case CALENDAR:
-//				temp = "C " + NAME + " ";
+			case EVENT:
+			case TODO:
+			case JOURNAL:
 			case ALARM:
-//				temp = "A " + NAME + "," + UID + "," + SEQ + "," + RECURID + "," + ACTION + "," + TRIGGER + " ";
 			case TIMEZONE:
-//				temp = "Z " + NAME + "," + TZID + " ";
 			case DAYLIGHT:
-//				temp = "D " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
 			case STANDARD:
-//				temp = "S " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
-			case FREEBUSY:
-//				temp = "F " + NAME + "," + UID + "," + DTSTAMP + " ";
 			default:
 				throw new GuKKiCalF_FalscheKomponente();
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
 		}
 	}
 
 	/**
-	 * Einfügen des Teilschlüssels für vCalendar
+	 * Konstruktor für Komponente vEVENT, vTodo, vJournal, vDaylight, vStandard
+	 * <br>
 	 * 
-	 * @param pNAME
+	 * @param komponente
+	 * @param parameter  - NAME
+	 * @param parameter  - UID od. TZID
+	 * @param parameter  - SEQ od. DTSTART
+	 * @param parameter  - RECURID od. TZOFFSETFROM
+	 * 
+	 * @throws GuKKiCalF_FalscheKomponente
 	 */
-	public void einfuegenCSchluessel(String pNAME)throws GuKKiCalF_FalscheKomponente  {
-		this.NAME = pNAME;
+	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente, String pNAME, String pUID_TZID, String pSEQ_DTSTART,
+			String pRECURID_TZOFFSETFROM) throws GuKKiCalF_FalscheKomponente {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		this.komponente = komponente;
 		switch (komponente) {
-			case CALENDAR:
-//				temp = "C " + NAME + " ";
-				this.status = GuKKiCalcStatus.KOMPLETT;
-				break;
 			case EVENT:
-//				temp = "E " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
 			case TODO:
-//				temp = "T " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
 			case JOURNAL:
-//				temp = "J " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-				if (this.UID.equals("") && this.SEQ.equals("") && this.RECURID.equals("")) {
-					this.status = GuKKiCalcStatus.TEILWEISE;
-				} else {
-					this.status = GuKKiCalcStatus.KOMPLETT;
-				}
-				break;
-			case ALARM:
-//				temp = "A " + NAME + "," + UID + "," + SEQ + "," + RECURID + "," + ACTION + "," + TRIGGER + " ";
-				if (this.UID.equals("") && this.SEQ.equals("") && this.RECURID.equals("") || this.ACTION.equals("")
-						|| this.TRIGGER.equals("")) {
-					this.status = GuKKiCalcStatus.TEILWEISE;
-				} else {
-					this.status = GuKKiCalcStatus.KOMPLETT;
-				}
-				break;
-			case TIMEZONE:
-//				temp = "Z " + NAME + "," + TZID + " ";
-				if (this.TZID.equals("")) {
-					this.status = GuKKiCalcStatus.TEILWEISE;
-				} else {
-					this.status = GuKKiCalcStatus.KOMPLETT;
-				}
+				logger.info(komponente.toString());
+				logger.info(pNAME+"#"+pUID_TZID+"#"+pRECURID_TZOFFSETFROM);
+				this.NAME = pNAME;
+				this.UID = pUID_TZID;
+				this.SEQ = pSEQ_DTSTART;
+				this.RECURID = pRECURID_TZOFFSETFROM;
 				break;
 			case DAYLIGHT:
-//				temp = "D " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
 			case STANDARD:
-//				temp = "S " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
-				if (this.TZID.equals("") || this.DTSTART.equals("") && this.TZOFFSETFROM.equals("")) {
-					this.status = GuKKiCalcStatus.TEILWEISE;
-				} else {
-					this.status = GuKKiCalcStatus.KOMPLETT;
-				}
+				this.NAME = pNAME;
+				this.TZID = pUID_TZID;
+				this.DTSTART = pSEQ_DTSTART;
+				this.TZOFFSETFROM = pRECURID_TZOFFSETFROM;
 				break;
+			case CALENDAR:
+			case ALARM:
+			case TIMEZONE:
 			case FREEBUSY:
-//				temp = "F " + NAME + "," + UID + "," + DTSTAMP + " ";
-				if (this.UID.equals("") && this.DTSTAMP.equals("")) {
-					this.status = GuKKiCalcStatus.TEILWEISE;
-				} else {
-					this.status = GuKKiCalcStatus.KOMPLETT;
-				}
-				break;
 			default:
 				throw new GuKKiCalF_FalscheKomponente();
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
 		}
 	}
 
 	/**
-	 * Einfügen des Teilschluessels für vEvent
+	 * Konstruktor für Komponente vALARM <br>
 	 * 
-	 * @param pUID
-	 * @param pSEQ
-	 * @param pRECURID
-	 */
-	public void einfuegenESchluessel(String pUID, String pSEQ, String pRECURID) throws GuKKiCalF_FalscheKomponente {
-		einfuegenETJSchluessel(pUID, pSEQ, pRECURID);
-	}
-
-	/**
-	 * Einfügen des Teilschluessels für vTodo
+	 * @param komponente
+	 * @param NAME
+	 * @param UID
+	 * @param SEQ
+	 * @param RECURID
+	 * @param ACTION
+	 * @param TRIGGER
 	 * 
-	 * @param pUID
-	 * @param pSEQ
-	 * @param pRECURID
+	 * @throws GuKKiCalF_FalscheKomponente
 	 */
-	public void einfuegenTSchluessel(String pUID, String pSEQ, String pRECURID)throws GuKKiCalF_FalscheKomponente  {
-		einfuegenETJSchluessel(pUID, pSEQ, pRECURID);
-	}
-
-	/**
-	 * Einfügen des Teilschluessels für vJournal
-	 * 
-	 * @param pUID
-	 * @param pSEQ
-	 * @param pRECURID
-	 */
-	public void einfuegenJSchluessel(String pUID, String pSEQ, String pRECURID) throws GuKKiCalF_FalscheKomponente {
-		einfuegenETJSchluessel(pUID, pSEQ, pRECURID);
-	}
-
-	/**
-	 * Einfügen des Teilschluessels für vEvent, vTodo oder vJournal
-	 * 
-	 * @param pUID
-	 * @param pSEQ
-	 * @param pRECURID
-	 */
-	public void einfuegenETJSchluessel(String pUID, String pSEQ, String pRECURID)throws GuKKiCalF_FalscheKomponente  {
-		this.UID = pUID;
-		this.SEQ = pSEQ;
-		this.RECURID = pRECURID;
+	public GuKKiCalcSchluessel(GuKKiCalcKennung komponente, String pNAME, String pUID, String pSEQ, String pRECURID,
+			String pACTION, String pTRIGGER) throws GuKKiCalF_FalscheKomponente {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		this.komponente = komponente;
 		switch (komponente) {
-			case CALENDAR:
-//				temp = "C " + NAME + " ";
-				break;
-			case EVENT:
-//				temp = "E " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-				break;
-			case TODO:
-//				temp = "T " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-				break;
-			case JOURNAL:
-//				temp = "J " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-				break;
 			case ALARM:
-//				temp = "A " + NAME + "," + UID + "," + SEQ + "," + RECURID + "," + ACTION + "," + TRIGGER + " ";
+				this.NAME = pNAME;
+				this.UID = pUID;
+				this.SEQ = pSEQ;
+				this.RECURID = pRECURID;
+				this.ACTION = pACTION;
+				this.TRIGGER = pTRIGGER;
 				break;
+			case CALENDAR:
+			case EVENT:
+			case TODO:
+			case JOURNAL:
 			case TIMEZONE:
-//				temp = "Z " + NAME + "," + TZID + " ";
-				break;
 			case DAYLIGHT:
-//				temp = "D " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
-				break;
 			case STANDARD:
-//				temp = "S " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
-				break;
 			case FREEBUSY:
-//				temp = "F " + NAME + "," + UID + "," + DTSTAMP + " ";
-				break;
 			default:
 				throw new GuKKiCalF_FalscheKomponente();
 		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
 	}
 
-	public void einfuegenZSchluessel(String pTZID) throws GuKKiCalF_FalscheKomponente {
-		this.TZID = pTZID;
+	public boolean istGleich(GuKKiCalcSchluessel anderer) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String temp;
+		try {
+			temp = vergleichen(anderer);
+		} catch (GuKKiCalF_FalscheKomponente fk) {
+			return false;
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return temp.equals("0");
+	}
+
+	public String vergleichen(GuKKiCalcSchluessel anderer) throws GuKKiCalF_FalscheKomponente {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String temp = null;
+		if (this.komponente != anderer.komponente) {
+			throw new GuKKiCalF_FalscheKomponente();
+		}
 		switch (komponente) {
 			case CALENDAR:
-//				temp = "C " + NAME + " ";
+				temp = String.valueOf(this.NAME.compareTo(anderer.NAME));
 				break;
 			case EVENT:
-//				temp = "E " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-				break;
 			case TODO:
-//				temp = "T " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
-				break;
 			case JOURNAL:
-//				temp = "J " + NAME + "," + UID + "," + SEQ + "," + RECURID + " ";
+				temp = String.valueOf((this.NAME + this.UID + this.SEQ + this.RECURID)
+						.compareTo(anderer.NAME + anderer.UID + anderer.SEQ + anderer.RECURID));
 				break;
 			case ALARM:
-//				temp = "A " + NAME + "," + UID + "," + SEQ + "," + RECURID + "," + ACTION + "," + TRIGGER + " ";
+				temp = String.valueOf((this.NAME + this.UID + this.SEQ + this.RECURID + this.ACTION + this.TRIGGER)
+						.compareTo(anderer.NAME + anderer.UID + anderer.SEQ + anderer.RECURID + anderer.ACTION
+								+ anderer.TRIGGER));
 				break;
 			case TIMEZONE:
-//				temp = "Z " + NAME + "," + TZID + " ";
+				temp = String.valueOf((this.NAME + this.TZID).compareTo(anderer.NAME + anderer.TZID));
 				break;
 			case DAYLIGHT:
-//				temp = "D " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
-				break;
 			case STANDARD:
-//				temp = "S " + NAME + "," + TZID + "," + DTSTART + "," + TZOFFSETFROM + " ";
+				temp = String.valueOf((this.NAME + this.TZID + this.DTSTART + this.TZOFFSETFROM)
+						.compareTo(anderer.NAME + anderer.TZID + anderer.DTSTART + anderer.TZOFFSETFROM));
 				break;
 			case FREEBUSY:
-//				temp = "F " + NAME + "," + UID + "," + DTSTAMP + " ";
+				temp = String.valueOf(
+						(this.NAME + this.UID + this.DTSTAMP).compareTo(anderer.NAME + anderer.UID + anderer.DTSTAMP));
 				break;
 			default:
 				throw new GuKKiCalF_FalscheKomponente();
+
 		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return temp;
 	}
 
 	@Override
 	public String toString() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
 		String temp = "";
 		switch (komponente) {
 			case CALENDAR:
@@ -409,53 +334,10 @@ class GuKKiCalcSchluessel {
 				temp = "F " + NAME + "," + UID + "," + DTSTAMP + " ";
 				break;
 			default:
-		}
-		return temp;
-	}
 
-	public boolean istGleich(GuKKiCalcSchluessel anderer) {
-		String temp;
-		try {
-			temp = vergleichen(anderer);
-		} catch (GuKKiCalW_FalscheKomponente fk) {
-			return false;
 		}
-		return temp.equals("0");
-	}
-
-	public String vergleichen(GuKKiCalcSchluessel anderer) throws GuKKiCalW_FalscheKomponente {
-		String temp = null;
-		if (this.komponente != anderer.komponente) {
-			throw new GuKKiCalW_FalscheKomponente();
-		}
-		switch (komponente) {
-			case CALENDAR:
-				temp = String.valueOf(this.NAME.compareTo(anderer.NAME));
-				break;
-			case EVENT:
-			case TODO:
-			case JOURNAL:
-				temp = String.valueOf((this.NAME + this.UID + this.SEQ + this.RECURID)
-						.compareTo(anderer.NAME + anderer.UID + anderer.SEQ + anderer.RECURID));
-				break;
-			case ALARM:
-				temp = String.valueOf((this.NAME + this.UID + this.SEQ + this.RECURID + this.ACTION + this.TRIGGER)
-						.compareTo(anderer.NAME + anderer.UID + anderer.SEQ + anderer.RECURID + anderer.ACTION
-								+ anderer.TRIGGER));
-				break;
-			case TIMEZONE:
-				temp = String.valueOf((this.NAME + this.TZID).compareTo(anderer.NAME + anderer.TZID));
-				break;
-			case DAYLIGHT:
-			case STANDARD:
-				temp = String.valueOf((this.NAME + this.TZID + this.DTSTART + this.TZOFFSETFROM)
-						.compareTo(anderer.NAME + anderer.TZID + anderer.DTSTART + anderer.TZOFFSETFROM));
-				break;
-			case FREEBUSY:
-				temp = String.valueOf(
-						(this.NAME + this.UID + this.DTSTAMP).compareTo(anderer.NAME + anderer.UID + anderer.DTSTAMP));
-				break;
-			default:
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
 		}
 		return temp;
 	}

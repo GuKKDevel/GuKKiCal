@@ -1,4 +1,4 @@
-package main;
+
 
 public class GenaralTests {
 
@@ -15,12 +15,12 @@ public class GenaralTests {
 //}
 //	public static void main(String[] args) throws Exception {
 //	// TODO Automatisch generierter Methodenstub
-//	GuKKiCalProperty property = null;
-////	property = new GuKKiCalProperty("CREATED:20151123T103732Z", "CREATED");
-////	property = new GuKKiCalProperty("X-LIC-ERROR;X-LIC-ERRORTYPE=VALUE-PARSE-ERROR:No value for DESCRIPTION property. Removing entire property:", "X-LIC-ERROR");
-//	property = new GuKKiCalProperty("SUMMARY;CN=\"TEST:Angiologie;Ulrich\"", "SUMMARY");}
+//	GuKKiCalcProperty property = null;
+////	property = new GuKKiCalcProperty("CREATED:20151123T103732Z", "CREATED");
+////	property = new GuKKiCalcProperty("X-LIC-ERROR;X-LIC-ERRORTYPE=VALUE-PARSE-ERROR:No value for DESCRIPTION property. Removing entire property:", "X-LIC-ERROR");
+//	property = new GuKKiCalcProperty("SUMMARY;CN=\"TEST:Angiologie;Ulrich\"", "SUMMARY");}
 
-//static GuKKiCalProperty eintragen(String propertyZeile) throws Exception {
+//static GuKKiCalcProperty eintragen(String propertyZeile) throws Exception {
 ////	System.out.println("GuKKiCalComponent.checkDTSTAMP begonnen");
 ////	System.out.println("Zeile="+zeichenkette);
 //	

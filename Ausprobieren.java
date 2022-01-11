@@ -1,23 +1,22 @@
-package main;
 
 import java.io.PrintWriter;
 import java.io.File;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.*;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
+import main.GuKKiCalParser;
+import main.GuKKiCalvCalendar;
 
 public class Ausprobieren {
 	Logger logger = Logger.getLogger("GuKKiCal");
 
-	ArrayList<GuKKiCaliCalendar> iCalendarSammlung = new ArrayList<GuKKiCaliCalendar>();
+	ArrayList<GuKKiCalvCalendar> vCalendarSammlung = new ArrayList<GuKKiCalvCalendar>();
 	GuKKiCalParser parser = new GuKKiCalParser();
 
 //	BufferedWriter iCalWriter = null;
@@ -25,21 +24,25 @@ public class Ausprobieren {
 	String inPfad = machineHandling("TestFiles/iCalender/");
 	String ausPfad = machineHandling("TestFiles/iCalender/a");
 //	String[] kalender = {"TestKalender","Standard-KHG", "Google", "temp", "Abfallkalender" };
-	String[] kalender = { "aTestKalender" };
+	String[] kalender = { "TestKalender" };
+
+	boolean ausgeben = false;
 
 	public Ausprobieren() throws Exception {
 		loggerhandling();
 		try {
 			System.out.println(new Date());
 			for (String pkalender : kalender) {
-				parser.kalenderEinlesen(iCalendarSammlung, inPfad + kalender[0] + ".ics");
+				parser.kalenderEinlesen(vCalendarSammlung, inPfad + kalender[0] + ".ics");
 				System.out.println(new Date());
-				String ausgebenauf = ausPfad + pkalender + ".ics";
-				File iCalFile = new File(ausgebenauf);
-				iCalWriter = new PrintWriter(iCalFile, "UTF-8");
-				iCalWriter.println(iCalendarSammlung.get(iCalendarSammlung.size() - 1).ausgeben());
-				iCalWriter.flush();
-				System.out.println(iCalendarSammlung.get(iCalendarSammlung.size() - 1).toString("CAETJZF"));
+				if (ausgeben) {
+					String ausgebenauf = ausPfad + pkalender + ".ics";
+					File iCalFile = new File(ausgebenauf);
+					iCalWriter = new PrintWriter(iCalFile, "UTF-8");
+					iCalWriter.println(vCalendarSammlung.get(vCalendarSammlung.size() - 1).ausgeben());
+					iCalWriter.flush();
+				}
+				System.out.println(vCalendarSammlung.get(vCalendarSammlung.size() - 1).toString("CETJAZDSF"));
 			}
 		} finally {
 
@@ -59,7 +62,7 @@ public class Ausprobieren {
 		logger.setLevel(Level.FINE);
 //		Handler handler = new FileHandler("/home/programmieren/TestFiles/iCalender/temp.log");
 		Handler handler = new ConsoleHandler();
-		handler.setLevel(Level.FINEST);
+		handler.setLevel(Level.FINE);
 		handler.setFormatter(new Formatter() {
 			@Override
 			public String format(LogRecord record) {

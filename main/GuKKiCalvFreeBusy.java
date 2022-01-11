@@ -107,7 +107,7 @@ import java.util.logging.Logger;
 	 * @formatter:on
 	 * 
 	 */
-public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
+public class GuKKiCalvFreeBusy extends GuKKiCalvComponent {
 
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
@@ -120,27 +120,27 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
 	/*
 	 * The following are REQUIRED, but MUST NOT occur more than once.
 	 */
-	private GuKKiCalProperty DTSTAMP = null;
-	private GuKKiCalProperty UID = null;
+	private GuKKiCalcProperty DTSTAMP = null;
+	private GuKKiCalcProperty UID = null;
 	/*
 	 * The following are OPTIONAL, but MUST NOT occur more than once. 
 	 * contact / dtstart / dtend / organizer / url /
 	 * 
 	 */
-	private GuKKiCalProperty CONTACT = null;
-	private GuKKiCalProperty DTSTART = null;
-	private GuKKiCalProperty DTEND = null;
-	private GuKKiCalProperty ORGANIZER = null;
-	private GuKKiCalProperty URL = null;
+	private GuKKiCalcProperty CONTACT = null;
+	private GuKKiCalcProperty DTSTART = null;
+	private GuKKiCalcProperty DTEND = null;
+	private GuKKiCalcProperty ORGANIZER = null;
+	private GuKKiCalcProperty URL = null;
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 * 			attendee / comment / freebusy / rstatus / 
 	 *				x-prop /iana-prop
 	 */
-	private List<GuKKiCalProperty> ATTENDEESammlung = new LinkedList<GuKKiCalProperty>();
-	private List<GuKKiCalProperty> COMMENTSammlung = new LinkedList<GuKKiCalProperty>();
-	private List<GuKKiCalProperty> FREEBUSYSammlung = new LinkedList<GuKKiCalProperty>();
-	private List<GuKKiCalProperty> RSTATUSSammlung = new LinkedList<GuKKiCalProperty>();
+	private List<GuKKiCalcProperty> ATTENDEESammlung = new LinkedList<GuKKiCalcProperty>();
+	private List<GuKKiCalcProperty> COMMENTSammlung = new LinkedList<GuKKiCalcProperty>();
+	private List<GuKKiCalcProperty> FREEBUSYSammlung = new LinkedList<GuKKiCalcProperty>();
+	private List<GuKKiCalcProperty> RSTATUSSammlung = new LinkedList<GuKKiCalcProperty>();
 	/*
 	 * Here are the x-prop and iana-prop are to be stored
 	 */
@@ -158,32 +158,32 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
      * untersucht und die jeweilige Eigenschaft wird abgespeichert
      * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      */
-    protected void neueZeile(String zeile) throws Exception {
+    protected void neueZeile(String zeile) /* throws Exception */ {
         if (logger.isLoggable(logLevel)) {
             logger.log(logLevel, "begonnen");
         }
         if (zeile.length() > 8 && zeile.substring(0, 8).equals("ATTENDEE")) {
-            ATTENDEESammlung.add(new GuKKiCalProperty(zeile, "ATTENDEE"));
+            ATTENDEESammlung.add(new GuKKiCalcProperty(zeile, "ATTENDEE"));
         } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("COMMENT")) {
-            COMMENTSammlung.add(new GuKKiCalProperty(zeile, "COMMENT"));
+            COMMENTSammlung.add(new GuKKiCalcProperty(zeile, "COMMENT"));
         } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("CONTACT")) {
-            CONTACT = new GuKKiCalProperty(zeile, "CONTACT");
+            CONTACT = new GuKKiCalcProperty(zeile, "CONTACT");
         } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("DTEND")) {
-            DTEND = new GuKKiCalProperty(zeile, "DTEND");
+            DTEND = new GuKKiCalcProperty(zeile, "DTEND");
         } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
-            DTSTAMP = new GuKKiCalProperty(zeile, "DTSTAMP");
+            DTSTAMP = new GuKKiCalcProperty(zeile, "DTSTAMP");
         } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTART")) {
-            DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
+            DTSTART = new GuKKiCalcProperty(zeile, "DTSTART");
         } else if (zeile.length() > 8 && zeile.substring(0, 8).equals("FREEBUSY")) {
-            FREEBUSYSammlung.add(new GuKKiCalProperty(zeile, "FREEBUSY"));
+            FREEBUSYSammlung.add(new GuKKiCalcProperty(zeile, "FREEBUSY"));
         } else if (zeile.length() > 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
-            ORGANIZER = new GuKKiCalProperty(zeile, "ORGANIZER");
+            ORGANIZER = new GuKKiCalcProperty(zeile, "ORGANIZER");
         } else if (zeile.length() > 14 && zeile.substring(0, 14).equals("REQUEST-STATUS")) {
-            RSTATUSSammlung.add(new GuKKiCalProperty(zeile, "REQUEST-STATUS"));
+            RSTATUSSammlung.add(new GuKKiCalcProperty(zeile, "REQUEST-STATUS"));
         } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("UID")) {
-            UID = new GuKKiCalProperty(zeile, "UID");
+            UID = new GuKKiCalcProperty(zeile, "UID");
         } else if (zeile.length() > 3 && zeile.substring(0, 3).equals("URL")) {
-            URL = new GuKKiCalProperty(zeile, "URL");
+            URL = new GuKKiCalcProperty(zeile, "URL");
  
 /* Abschluss und Fallbackparameter */
  
@@ -206,21 +206,21 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
         if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
         GuKKiCalvFreeBusy temp = new GuKKiCalvFreeBusy();
         temp.kennung = this.kennung;
-        for (GuKKiCalProperty ATTENDEE : ATTENDEESammlung) {
+        for (GuKKiCalcProperty ATTENDEE : ATTENDEESammlung) {
             temp.ATTENDEESammlung.add(ATTENDEE.kopieren());
         }
-        for (GuKKiCalProperty COMMENT : COMMENTSammlung) {
+        for (GuKKiCalcProperty COMMENT : COMMENTSammlung) {
             temp.COMMENTSammlung.add(COMMENT.kopieren());
         }
         temp.CONTACT = this.CONTACT == null ? null : this.CONTACT.kopieren();
         temp.DTEND = this.DTEND == null ? null : this.DTEND.kopieren();
         temp.DTSTAMP = this.DTSTAMP == null ? null : this.DTSTAMP.kopieren();
         temp.DTSTART = this.DTSTART == null ? null : this.DTSTART.kopieren();
-        for (GuKKiCalProperty FREEBUSY : FREEBUSYSammlung) {
+        for (GuKKiCalcProperty FREEBUSY : FREEBUSYSammlung) {
             temp.FREEBUSYSammlung.add(FREEBUSY.kopieren());
         }
         temp.ORGANIZER = this.ORGANIZER == null ? null : this.ORGANIZER.kopieren();
-        for (GuKKiCalProperty RSTATUS : RSTATUSSammlung) {
+        for (GuKKiCalcProperty RSTATUS : RSTATUSSammlung) {
             temp.RSTATUSSammlung.add(RSTATUS.kopieren());
         }
         temp.UID = this.UID == null ? null : this.UID.kopieren();
@@ -342,21 +342,21 @@ public class GuKKiCalvFreeBusy extends GuKKiCalComponent {
             logger.log(logLevel, "begonnen");
         }
         String componentDatenstrom = ausgebenInDatenstrom("BEGIN:VFREEBUSY");
-        for (GuKKiCalProperty ATTENDEE : ATTENDEESammlung) {
+        for (GuKKiCalcProperty ATTENDEE : ATTENDEESammlung) {
             componentDatenstrom += ausgebenInDatenstrom(ATTENDEE.ausgeben());
         }
-        for (GuKKiCalProperty COMMENT : COMMENTSammlung) {
+        for (GuKKiCalcProperty COMMENT : COMMENTSammlung) {
             componentDatenstrom += ausgebenInDatenstrom(COMMENT.ausgeben());
         }
         componentDatenstrom +=  this.CONTACT == null ? "" : ausgebenInDatenstrom(this.CONTACT.ausgeben());
         componentDatenstrom +=  this.DTEND == null ? "" : ausgebenInDatenstrom(this.DTEND.ausgeben());
         componentDatenstrom +=  this.DTSTAMP == null ? "" : ausgebenInDatenstrom(this.DTSTAMP.ausgeben());
         componentDatenstrom +=  this.DTSTART == null ? "" : ausgebenInDatenstrom(this.DTSTART.ausgeben());
-        for (GuKKiCalProperty FREEBUSY : FREEBUSYSammlung) {
+        for (GuKKiCalcProperty FREEBUSY : FREEBUSYSammlung) {
             componentDatenstrom += ausgebenInDatenstrom(FREEBUSY.ausgeben());
         }
         componentDatenstrom +=  this.ORGANIZER == null ? "" : ausgebenInDatenstrom(this.ORGANIZER.ausgeben());
-        for (GuKKiCalProperty RSTATUS : RSTATUSSammlung) {
+        for (GuKKiCalcProperty RSTATUS : RSTATUSSammlung) {
             componentDatenstrom += ausgebenInDatenstrom(RSTATUS.ausgeben());
         }
         componentDatenstrom +=  this.UID == null ? "" : ausgebenInDatenstrom(this.UID.ausgeben());

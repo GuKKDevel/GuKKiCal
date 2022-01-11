@@ -6,7 +6,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GuKKiCalComponent {
+public class GuKKiCalvComponent {
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
 
@@ -15,7 +15,7 @@ public class GuKKiCalComponent {
 	 */
 	GuKKiCalcKennung kennung = GuKKiCalcKennung.UNDEFINIERT;
 	GuKKiCalcStatus status = GuKKiCalcStatus.UNDEFINIERT;
-	GuKKiCalcSchluessel schluessel = new GuKKiCalcSchluessel();
+	GuKKiCalcSchluessel schluessel/* = new GuKKiCalcSchluessel();*/;
 
 	boolean bearbeiteSubKomponente = false;
 	boolean vEventBearbeiten = false;
@@ -28,10 +28,10 @@ public class GuKKiCalComponent {
 	GuKKiCalvAlarm vAlarmNeu;
 	boolean vTimezoneBearbeiten = false;
 	GuKKiCalvTimezone vTimezoneNeu;
-	boolean cDaylightBearbeiten = false;
-	GuKKiCalcDaylight cDaylightNeu;
-	boolean cStandardBearbeiten = false;
-	GuKKiCalcStandard cStandardNeu;
+	boolean vDaylightBearbeiten = false;
+	GuKKiCalvDaylight vDaylightNeu;
+	boolean vStandardBearbeiten = false;
+	GuKKiCalvStandard vStandardNeu;
 	boolean vFreeBusyBearbeiten = false;
 	GuKKiCalvFreeBusy vFreeBusyNeu;
 
@@ -43,7 +43,7 @@ public class GuKKiCalComponent {
 	/**
 	 * Konstruktor
 	 */
-	public GuKKiCalComponent() {
+	public GuKKiCalvComponent() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen\n");
 		}
@@ -68,17 +68,13 @@ public class GuKKiCalComponent {
 		boolean datenVorhanden = true;
 
 		try {
-//			System.out.println(vComponentDaten);
 			BufferedReader vComponentDatenstrom = new BufferedReader(new StringReader(vComponentDaten));
 			zeile = vComponentDatenstrom.readLine();
-//			System.out.println("-->" + zeile + "<--");
 			if (zeile == null) {
 				datenVorhanden = false;
 			}
 			while (datenVorhanden) {
 				folgezeile = vComponentDatenstrom.readLine();
-//				System.out.println("-->" + folgezeile + "<--");
-
 				if (folgezeile == null) {
 					verarbeitenZeile(zeile);
 					datenVorhanden = false;
@@ -102,7 +98,7 @@ public class GuKKiCalComponent {
 	}
 
 	protected void verarbeitenZeile(String zeile) throws Exception {
-		System.out.println("GuKKiCalComponent verarbeitenZeile-->" + zeile + "<--");
+		System.out.println("GuKKiCalvComponent verarbeitenZeile-->" + zeile + "<--");
 	}
 
 	protected String ausgebenInDatenstrom(String vComponentDaten) {
@@ -169,7 +165,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenACTION(GuKKiCalProperty property) {
+	boolean untersuchenACTION(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -243,7 +239,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenATTACH(GuKKiCalProperty property) {
+	boolean untersuchenATTACH(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -342,7 +338,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenATTENDEE(GuKKiCalProperty property) {
+	boolean untersuchenATTENDEE(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -389,7 +385,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenCALSCALE(GuKKiCalProperty property) {
+	boolean untersuchenCALSCALE(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -463,7 +459,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenCATEGORIES(GuKKiCalProperty property) {
+	boolean untersuchenCATEGORIES(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -526,7 +522,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenCLASS(GuKKiCalProperty property) {
+	boolean untersuchenCLASS(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -573,7 +569,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenCOLOR(GuKKiCalProperty property) {
+	boolean untersuchenCOLOR(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -625,7 +621,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenCOMMENT(GuKKiCalProperty property) {
+	boolean untersuchenCOMMENT(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -667,7 +663,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenCOMPLETED(GuKKiCalProperty property) {
+	boolean untersuchenCOMPLETED(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -749,7 +745,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenCONFERENCE(GuKKiCalProperty property) {
+	boolean untersuchenCONFERENCE(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -804,7 +800,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenCONTACT(GuKKiCalProperty property) {
+	boolean untersuchenCONTACT(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -853,7 +849,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenCREATED(GuKKiCalProperty property) {
+	boolean untersuchenCREATED(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -937,7 +933,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenDESCRIPTION(GuKKiCalProperty property) {
+	boolean untersuchenDESCRIPTION(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1005,7 +1001,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenDTEND(GuKKiCalProperty property) {
+	boolean untersuchenDTEND(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1065,7 +1061,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenDTSTAMP(GuKKiCalProperty property) {
+	boolean untersuchenDTSTAMP(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1137,7 +1133,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenDTSTART(GuKKiCalProperty property) {
+	boolean untersuchenDTSTART(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1202,7 +1198,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenDUE(GuKKiCalProperty property) {
+	boolean untersuchenDUE(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1255,7 +1251,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenDURATION(GuKKiCalProperty property) {
+	boolean untersuchenDURATION(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1338,7 +1334,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenEXDATE(GuKKiCalProperty property) {
+	boolean untersuchenEXDATE(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1404,7 +1400,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-//	boolean untersuchenEXRULE(GuKKiCalProperty property) {
+//	boolean untersuchenEXRULE(GuKKiCalcProperty property) {
 //		if (logger.isLoggable(logLevel)) {
 //			logger.log(logLevel, "begonnen");
 //		}
@@ -1470,7 +1466,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenFREEBUSY(GuKKiCalProperty property) {
+	boolean untersuchenFREEBUSY(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1556,7 +1552,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenGEO(GuKKiCalProperty property) {
+	boolean untersuchenGEO(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1633,7 +1629,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenIMAGE(GuKKiCalProperty property) {
+	boolean untersuchenIMAGE(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1696,7 +1692,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenLAST_MOD(GuKKiCalProperty property) {
+	boolean untersuchenLAST_MOD(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1756,7 +1752,7 @@ public class GuKKiCalComponent {
 	 * 
 	 */
 
-	boolean untersuchenLOCATION(GuKKiCalProperty property) {
+	boolean untersuchenLOCATION(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1810,7 +1806,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenMETHOD(GuKKiCalProperty property) {
+	boolean untersuchenMETHOD(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1867,7 +1863,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenNAME(GuKKiCalProperty property) {
+	boolean untersuchenNAME(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1940,7 +1936,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenORGANIZER(GuKKiCalProperty property) {
+	boolean untersuchenORGANIZER(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -1993,7 +1989,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenPERCENT(GuKKiCalProperty property) {
+	boolean untersuchenPERCENT(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -2113,7 +2109,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 	 
 	 */
-	boolean untersuchenPRODID(GuKKiCalProperty property) {
+	boolean untersuchenPRODID(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -2197,7 +2193,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenRDATE(GuKKiCalProperty property) {
+	boolean untersuchenRDATE(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -2362,7 +2358,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenREFRESH(GuKKiCalProperty property) {
+	boolean untersuchenREFRESH(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -2439,7 +2435,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenRELATED(GuKKiCalProperty property) {
+	boolean untersuchenRELATED(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -2485,7 +2481,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenREPEAT(GuKKiCalProperty property) {
+	boolean untersuchenREPEAT(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -2595,7 +2591,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenRSTATUS(GuKKiCalProperty property) {
+	boolean untersuchenRSTATUS(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -2647,7 +2643,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenRESOURCES(GuKKiCalProperty property) {
+	boolean untersuchenRESOURCES(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -2844,7 +2840,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenSOURCE(GuKKiCalProperty property) {
+	boolean untersuchenSOURCE(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3143,7 +3139,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenTRIGGER(GuKKiCalProperty property) {
+	boolean untersuchenTRIGGER(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3201,7 +3197,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenTZID(GuKKiCalProperty property) {
+	boolean untersuchenTZID(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3253,7 +3249,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenTZNAME(GuKKiCalProperty property) {
+	boolean untersuchenTZNAME(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3303,7 +3299,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenTZOFFSETFROM(GuKKiCalProperty property) {
+	boolean untersuchenTZOFFSETFROM(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3350,7 +3346,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenTZOFFSETTO(GuKKiCalProperty property) {
+	boolean untersuchenTZOFFSETTO(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3398,7 +3394,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenTZURL(GuKKiCalProperty property) {
+	boolean untersuchenTZURL(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3517,7 +3513,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenUID(GuKKiCalProperty property) {
+	boolean untersuchenUID(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3643,7 +3639,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenVERSION(GuKKiCalProperty property) {
+	boolean untersuchenVERSION(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -3701,7 +3697,7 @@ public class GuKKiCalComponent {
 	 * @formatter:on
 	 * 
 	 */
-	boolean untersuchenX_PROP(GuKKiCalProperty property) {
+	boolean untersuchenX_PROP(GuKKiCalcProperty property) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
