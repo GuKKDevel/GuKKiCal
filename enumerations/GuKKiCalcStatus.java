@@ -1,5 +1,5 @@
-package main;
+package enumerations;
 
-enum GuKKiCalcStatus {
+public enum GuKKiCalcStatus {
 	UNDEFINIERT, GELESEN, VERAENDERT, NEU, KOPIERT, TEILWEISE, KOMPLETT
 }

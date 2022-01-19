@@ -1,11 +1,20 @@
-package main;
+package component;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class GuKKiCalvDaylight extends GuKKiCalvComponent {
+import enumerations.*;
+import exceptions.*;
+
+/**
+ * 
+ * Die Klasse Standard ist eine Subklasse zu Timezone
+ * @author GuKKDevel
+ *
+ */
+class GuKKiCalvStandard extends GuKKiCalvComponent {
 
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
@@ -32,16 +41,22 @@ class GuKKiCalvDaylight extends GuKKiCalvComponent {
 	private List<String> X_PROPSammlung = new LinkedList<String>();
 	private List<String> Restinformationen = new LinkedList<String>();
 
-	protected GuKKiCalvDaylight() {
+
+	protected GuKKiCalvStandard() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		kennung = GuKKiCalcKennung.DAYLIGHT;
+		this.kennung = GuKKiCalcKennung.STANDARD;
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
 	}
-
+	protected void abschliessen(String pNAME, String pTZID) throws GuKKiCalException{
+		String tempDTSTART = this.DTSTART == null ? "" : this.DTSTART.getWert();
+		String tempTZOFFSETFROM = this.TZOFFSETFROM == null ? "" : this.TZOFFSETFROM.getWert();
+		this.schluessel = new GuKKiCalcSchluessel(this.kennung, pNAME,pTZID, tempDTSTART, tempTZOFFSETFROM);
+		status = GuKKiCalcStatus.GELESEN;
+	}
     /**
      * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten) Zeilen
      * untersucht und die jeweilige Eigenschaft wird abgespeichert
@@ -80,12 +95,12 @@ class GuKKiCalvDaylight extends GuKKiCalvComponent {
  
     /**
      * Diese Methode kopiert die iCalendar-Komponente
-     * GuKKiCalvDaylight und gibt diese Kopie zurück
+     * GuKKiCalvStandard und gibt diese Kopie zurück
      * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      */
-    protected GuKKiCalvDaylight kopieren() {
+    protected GuKKiCalvStandard kopieren() {
         if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-        GuKKiCalvDaylight temp = new GuKKiCalvDaylight();
+        GuKKiCalvStandard temp = new GuKKiCalvStandard();
         temp.kennung = this.kennung;
         for (GuKKiCalcProperty COMMENT : COMMENTSammlung) {
             temp.COMMENTSammlung.add(COMMENT.kopieren());
@@ -114,7 +129,7 @@ class GuKKiCalvDaylight extends GuKKiCalvComponent {
         return temp;
     } // Ende kopieren V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
     /**
-     * Vergleichen aller Attribute der Komponente GuKKiCalvDaylight
+     * Vergleichen aller Attribute der Komponente GuKKiCalvStandard
      * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      *
      * @return boolean
@@ -124,7 +139,7 @@ class GuKKiCalvDaylight extends GuKKiCalvComponent {
         if (!dasAndere.getClass().equals(this.getClass())) {
             return false;
         }
-        GuKKiCalvDaylight temp = (GuKKiCalvDaylight) dasAndere;
+        GuKKiCalvStandard temp = (GuKKiCalvStandard) dasAndere;
         if (temp.COMMENTSammlung.size() != this.COMMENTSammlung.size()) {
             return false;
         }
@@ -196,7 +211,7 @@ class GuKKiCalvDaylight extends GuKKiCalvComponent {
         if (logger.isLoggable(logLevel)) {
             logger.log(logLevel, "begonnen");
         }
-        String componentDatenstrom = ausgebenInDatenstrom("BEGIN:DAYLIGHT");
+        String componentDatenstrom = ausgebenInDatenstrom("BEGIN:STANDARD");
         for (GuKKiCalcProperty COMMENT : COMMENTSammlung) {
             componentDatenstrom += ausgebenInDatenstrom(COMMENT.ausgeben());
         }
@@ -219,12 +234,24 @@ class GuKKiCalvDaylight extends GuKKiCalvComponent {
         for (String Restinformation : this.Restinformationen) {
             componentDatenstrom += ausgebenInDatenstrom(Restinformation);
         }
-        componentDatenstrom += ausgebenInDatenstrom("END:DAYLIGHT");
+        componentDatenstrom += ausgebenInDatenstrom("END:STANDARD");
         if (logger.isLoggable(logLevel)) {
             logger.log(logLevel, "beendet");
         }
         return componentDatenstrom;
     } // Ende ausgeben V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
-    protected void abschliessen(){status = GuKKiCalcStatus.GELESEN;}
- 
+    /**
+	 * Gibt Identifikationsdaten der VTIMEZONE-Komponente aus
+	 */
+    @Override
+	public String toString() {
+		return this.schluessel.toString();
+	}
+
+	/**
+	 * Gibt einige Daten der VTIMEZONE-Komponente aus
+	 */
+	public String toString(String ausgabeLevel) {
+		return "Standard-Identifikation=" + this.toString()+nz;
+	}
 }

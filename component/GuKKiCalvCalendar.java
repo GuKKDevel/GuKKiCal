@@ -1,6 +1,4 @@
-package main;
-
-import exceptions.*;
+package component;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import enumerations.*;
+import exceptions.*;
 
 /**
  * Die Klasse GuKKiCalvEvent enthält alle Daten für eine VEVENT-Komponente im iCal Format
@@ -140,7 +141,7 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 	 * @throws Exception
 	 * 
 	 */
-	protected void abschliessen(String iCalendarName, String iCalendarPfad) throws Exception {
+	public void abschliessen(String iCalendarName, String iCalendarPfad) throws Exception {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -177,6 +178,10 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 					GuKKiCalvJournal vJournal = (GuKKiCalvJournal) vComponent;
 					vJournal.abschliessen(this.iCalendarName);
 					break;
+				case TIMEZONE:
+					GuKKiCalvTimezone vTimezone = (GuKKiCalvTimezone) vComponent;
+					vTimezone.abschliessen(this.iCalendarName);
+					break;
 			}
 
 		}
@@ -191,7 +196,7 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 	 * Zeilen untersucht und die jeweilige Eigenschaft wird abgespeichert
 	 * Version V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 	 */
-	protected void neueZeile(String zeile) throws GuKKiCalException {
+	public void neueZeile(String zeile) throws GuKKiCalException {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -228,7 +233,7 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 				}
 			} else if (vTimezoneBearbeiten) {
 				if (zeile.equals("END:VTIMEZONE")) {
-					vTimezoneNeu.abschliessen();
+//					vTimezoneNeu.abschliessen();
 					vTimezoneSammlung.add(vTimezoneNeu);
 					vComponentSammlung.add(vTimezoneNeu);
 					vTimezoneBearbeiten = false;
@@ -238,7 +243,7 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 				}
 			} else if (vFreeBusyBearbeiten) {
 				if (zeile.equals("END:VFREEBUSY")) {
-					vFreeBusyNeu.abschliessen();
+//					vFreeBusyNeu.abschliessen();
 					vFreeBusySammlung.add(vFreeBusyNeu);
 					vComponentSammlung.add(vFreeBusyNeu);
 					vFreeBusyBearbeiten = false;
@@ -605,6 +610,19 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 			logger.log(logLevel, "beendet");
 		}
 	}
+	
+	@Override
+	public String toString() {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String ausgabeString = nz + "vCalendarInformationen:" + nz + iCalendarName + " --- " + iCalendarPfad + nz
+				+ "vCalendarDaten:" + nz;
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return ausgabeString;
+	}
 
 	/**
 	 * 
@@ -642,27 +660,14 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 		}
 		if (ausgabeLevel.toUpperCase().indexOf("J") >= 0) {
 			for (GuKKiCalvJournal vJournal : vJournalSammlung) {
-				ausgabeString += vJournal.toString(ausgabeLevel) ;
+				ausgabeString += vJournal.toString(ausgabeLevel);
 			}
 		}
 		if (ausgabeLevel.toUpperCase().indexOf("Z") >= 0) {
 			for (GuKKiCalvTimezone vTimezone : vTimezoneSammlung) {
-				ausgabeString += vTimezone.toString(ausgabeLevel) + nz;
+				ausgabeString += vTimezone.toString(ausgabeLevel);
 			}
 		}
-		if (logger.isLoggable(logLevel)) {
-			logger.log(logLevel, "beendet");
-		}
-		return ausgabeString;
-	}
-
-	@Override
-	public String toString() {
-		if (logger.isLoggable(logLevel)) {
-			logger.log(logLevel, "begonnen");
-		}
-		String ausgabeString = nz + "vCalendarInformationen:" + nz + iCalendarName + " --- " + iCalendarPfad + nz
-				+ "vCalendarDaten:" + nz;
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}

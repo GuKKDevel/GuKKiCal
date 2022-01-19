@@ -1,8 +1,11 @@
-package main;
+package component;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import enumerations.*;
+import exceptions.*;
 
 /**
  * Grundliegende Struktur für die Property-Parameter
@@ -183,10 +186,10 @@ class GuKKiCalcProperty {
 		}
 
 		status = GuKKiCalcStatus.GELESEN;
-//		if (!propertyDaten.equals(ausgeben())) {
-//			logger.fine("Eingang:" + propertyDaten);
-//			logger.fine("Ausgang:" + ausgeben());
-//		}
+		if (!propertyDaten.equals(this.ausgeben())) {
+			logger.fine("Eingang:" + propertyDaten);
+			logger.fine("Ausgang:" + this.ausgeben());
+		}
 
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
@@ -550,8 +553,11 @@ class GuKKiCalcProperty {
 		String endeText = "";
 		String trenner = "";
 		schreibText += this.ALTREP == null ? "" : ";ALTREP=" + this.ALTREP;
+		schreibText += this.RSVP == null ? "" : ";RSVP=" + this.RSVP;
 		schreibText += this.CN == null ? "" : ";CN=" + this.CN;
+		schreibText += this.PARTSTAT == null ? "" : ";PARTSTAT=" + this.PARTSTAT;
 		schreibText += this.CUTYPE == null ? "" : ";CUTYPE=" + this.CUTYPE;
+		schreibText += this.ROLE == null ? "" : ";ROLE=" + this.ROLE;
 		schreibText += this.DELFROM == null ? "" : ";DELEGATED-FROM=" + this.DELFROM;
 		schreibText += this.DELTO == null ? "" : ";DELEGATED-TO=" + this.DELTO;
 		schreibText += this.DIR == null ? "" : ";DIR=" + this.DIR;
@@ -564,14 +570,11 @@ class GuKKiCalcProperty {
 		schreibText += this.LABEL == null ? "" : ";LABEL=" + this.LABEL;
 		schreibText += this.LANGUAGE == null ? "" : ";LANGUAGE=" + this.LANGUAGE;
 		schreibText += this.MEMBER == null ? "" : ";MEMBER=" + this.MEMBER;
-		schreibText += this.PARTSTAT == null ? "" : ";PARTSTAT=" + this.PARTSTAT;
+		schreibText += this.TZID == null ? "" : ";TZID=" + this.TZID;
 		schreibText += this.RANGE == null ? "" : ";RANGE=" + this.RANGE;
 		schreibText += this.RELATED == null ? "" : ";RELATED=" + this.RELATED;
 		schreibText += this.RELTYPE == null ? "" : ";RELTYPE=" + this.RELTYPE;
-		schreibText += this.ROLE == null ? "" : ";ROLE=" + this.ROLE;
-		schreibText += this.RSVP == null ? "" : ";RSVP=" + this.RSVP;
 		schreibText += this.SENTBY == null ? "" : ";SENT-BY=" + this.SENTBY;
-		schreibText += this.TZID == null ? "" : ";TZID=" + this.TZID;
 		schreibText += this.VALUETYPE == null ? "" : ";VALUE=" + this.VALUETYPE;
 
 		/* Abschluss und Fallbackparameter */

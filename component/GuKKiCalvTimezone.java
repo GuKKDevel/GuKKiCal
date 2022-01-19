@@ -1,9 +1,13 @@
-package main;
+package component;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import enumerations.*;
+import exceptions.*;
 
 /**
  * 
@@ -265,6 +269,7 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 	 */
 	private List<GuKKiCalvDaylight> vDaylightSammlung = new LinkedList<GuKKiCalvDaylight>();
 	private List<GuKKiCalvStandard> vStandardSammlung = new LinkedList<GuKKiCalvStandard>();
+	private List<GuKKiCalvComponent> vComponentSammlung = new LinkedList<GuKKiCalvComponent>();
 	/*
 	 * X-Name Properties
 	 */
@@ -285,104 +290,29 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 	protected GuKKiCalvTimezone() {
 		/*	@formatter:off */
 		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-		status = GuKKiCalcStatus.UNDEFINIERT;
+		this.kennung = GuKKiCalcKennung.TIMEZONE;
 		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "beendet");}
 		/*	@formatter:on */
 	}
 
-	/**
-	 * Erstellen einer VTIMEZONE-Komponente aus dem Teil eines
-	 * Kalenderdatenstroms
-	 * 
-	 * @param vTimezoneDaten
-	 * 
-	 * @throws Exception
-	 */
-//	public GuKKiCalvTimezone(String vTimezoneDaten) throws Exception {
-//		if (logger.isLoggable(logLevel)) {
-//			logger.log(logLevel, "begonnen");
-//		}
-//		kennung = GuKKiCalcKennung.TIMEZONE;
-//
-//		einlesenAusDatenstrom(vTimezoneDaten);
-//
-//// @formatter:off    	 
-//// Generieren der restlichen Verarbeitungsschritte im Konstruktor für den Datenstrom
-// 
-//// Subkomponente: vDaylight GuKKiCalvDaylight DAYLIGHT
-//        if (vDaylightDatenArray.size() != 0) {
-//            vDaylightSammlungAnlegen();
-//        }
-// 
-//// Subkomponente: vStandard GuKKiCalvStandard STANDARD
-//        if (vStandardDatenArray.size() != 0) {
-//            vStandardSammlungAnlegen();
-//        }
-// 
-//        status = GuKKiCalcStatus.GELESEN;
-// 
-//        if (Restinformationen.size() > 0) {
-//            for (String Restinformation : Restinformationen) {
-//                logger.log(Level.INFO, "Restinformation:" + "-->" + Restinformation + "<--");
-//            }
-//        }
-//        if (logger.isLoggable(logLevel)) {
-//            logger.log(logLevel, "beendet");
-//        }
-//    }
-// 
-//// Generieren der Methoden für den Aufbau der Komponentensammlungen
-// 
-//// Subkomponente: vDaylight GuKKiCalvDaylight DAYLIGHT
-//    private void vDaylightSammlungAnlegen() throws Exception {
-//        if (logger.isLoggable(logLevel)) {
-//            logger.log(logLevel, "begonnen");
-//        }
-// 
-//        String vDaylightDaten = "";
-// 
-//        for (String zeile : vDaylightDatenArray) {
-//            if (zeile.equals("BEGIN:DAYLIGHT")) {
-//                vDaylightDaten = zeile + nz;
-//            } else if (zeile.equals("END:DAYLIGHT")) {
-//                vDaylightDaten += zeile + nz;
-//                vDaylightSammlung.add(new GuKKiCalvDaylight(vDaylightDaten));
-//                vDaylightDaten = "";
-//            } else {
-//                vDaylightDaten += zeile + nz;
-//            }
-//        }
-// 
-//        if (logger.isLoggable(logLevel)) {
-//            logger.log(logLevel, "beendet");
-//        }
-//    }
-// 
-//// Subkomponente: vStandard GuKKiCalvStandard STANDARD
-//    private void vStandardSammlungAnlegen() throws Exception {
-//        if (logger.isLoggable(logLevel)) {
-//            logger.log(logLevel, "begonnen");
-//        }
-// 
-//        String vStandardDaten = "";
-// 
-//        for (String zeile : vStandardDatenArray) {
-//            if (zeile.equals("BEGIN:STANDARD")) {
-//                vStandardDaten = zeile + nz;
-//            } else if (zeile.equals("END:STANDARD")) {
-//                vStandardDaten += zeile + nz;
-//                vStandardSammlung.add(new GuKKiCalvStandard(vStandardDaten));
-//                vStandardDaten = "";
-//            } else {
-//                vStandardDaten += zeile + nz;
-//            }
-//        }
-// 
-//        if (logger.isLoggable(logLevel)) {
-//            logger.log(logLevel, "beendet");
-//        }
-//    }
-// @formatter:on
+	protected void abschliessen(String pNAME) throws GuKKiCalException {
+		String tempTZID = this.TZID == null ? "" : this.TZID.getWert();
+		this.schluessel = new GuKKiCalcSchluessel(this.kennung, pNAME, tempTZID);
+		for (Iterator iterator = vComponentSammlung.iterator(); iterator.hasNext();) {
+			GuKKiCalvComponent vComponent = (GuKKiCalvComponent) iterator.next();
+			switch (vComponent.kennung) {
+				case DAYLIGHT:
+					GuKKiCalvDaylight vDaylight = (GuKKiCalvDaylight) vComponent;
+					vDaylight.abschliessen(pNAME, tempTZID);
+					break;
+				case STANDARD:
+					GuKKiCalvStandard vStandard = (GuKKiCalvStandard) vComponent;
+					vStandard.abschliessen(pNAME, tempTZID);
+					break;
+			}
+		}
+		status = GuKKiCalcStatus.GELESEN;
+	}
 
 	/**
 	 * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten)
@@ -396,8 +326,9 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 		if (bearbeiteSubKomponente) {
 			if (vDaylightBearbeiten) {
 				if (zeile.equals("END:DAYLIGHT")) {
-					vDaylightNeu.abschliessen();
+//					vDaylightNeu.abschliessen();
 					vDaylightSammlung.add(vDaylightNeu);
+					vComponentSammlung.add(vDaylightNeu);
 					vDaylightBearbeiten = false;
 					bearbeiteSubKomponente = false;
 				} else {
@@ -405,8 +336,9 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 				}
 			} else if (vStandardBearbeiten) {
 				if (zeile.equals("END:STANDARD")) {
-					vStandardNeu.abschliessen();
+//					vStandardNeu.abschliessen();
 					vStandardSammlung.add(vStandardNeu);
+					vComponentSammlung.add(vStandardNeu);
 					vStandardBearbeiten = false;
 					bearbeiteSubKomponente = false;
 				} else {
@@ -580,22 +512,32 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 		return componentDatenstrom;
 	} // Ende ausgeben V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
-	protected void abschliessen() {
-		status = GuKKiCalcStatus.GELESEN;
-	}
-
 	/**
 	 * Gibt Identifikationsdaten der VTIMEZONE-Komponente aus
 	 */
 	public String toString() {
-		return (TZID == null ? "" : TZID.getWert());
+		return this.schluessel.toString();
 	}
 
 	/**
 	 * Gibt einige Daten der VTIMEZONE-Komponente aus
 	 */
 	public String toString(String ausgabeLevel) {
-		return "Timezone-Identifikation=" + this.toString();
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		String ausgabeString = "Timezone-Identifikation=" + this.toString()+nz;
+		if (ausgabeLevel.toUpperCase().indexOf("D") >= 0) {
+			for (GuKKiCalvDaylight vDaylight : vDaylightSammlung) {
+				ausgabeString += vDaylight.toString(ausgabeLevel);
+			}
+		}
+		if (ausgabeLevel.toUpperCase().indexOf("S") >= 0) {
+			for (GuKKiCalvStandard vStandard : vStandardSammlung) {
+				ausgabeString += vStandard.toString(ausgabeLevel);
+			}
+		}
+		return ausgabeString;
 	}
 
 }

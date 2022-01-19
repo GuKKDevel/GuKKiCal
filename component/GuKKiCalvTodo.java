@@ -1,4 +1,4 @@
-package main;
+package component;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -6,126 +6,101 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import exceptions.GuKKiCalF_FalscheKomponente;
+import enumerations.*;
+import exceptions.*;
 
 /**
- * Die Klasse GuKKiCalvEvent enthält alle Daten für eine VEVENT-Komponente im iCal Format
- *         
+ * Die Klasse GuKKiCalvTodo enthält alle Daten für eine VTODO-Komponente im iCal Format
+ * 
  * @author GuKKDevel
- *  
+ * 
  * @formatter:off
  * 
- * 
- * 	RFC 5545 (september 2009) item 3.6.1; p. 52
  *  
- * 	Component Name: VEVENT
- * 
- * 	Purpose: Provide a grouping of component properties that describe an
- * 		event.
- * 
- * 	Description: A "VEVENT" calendar component is a grouping of
- * 		component properties, possibly including "VALARM" calendar
- * 		components, that represents a scheduled amount of time on a
- * 		calendar. For example, it can be an activity; such as a one-hour
- * 		long, department meeting from 8:00 AM to 9:00 AM, tomorrow.
- * 		Generally, an event will take up time on an individual calendar.
- * 		Hence, the event will appear as an opaque interval in a search for
- * 		busy time. Alternately, the event can have its Time Transparency
- * 		set to "TRANSPARENT" in order to prevent blocking of the event in
- * 		searches for busy time.
- * 
- * 		The "VEVENT" is also the calendar component used to specify an
- * 		anniversary or daily reminder within a calendar. These events
- * 		have a DATE value type for the "DTSTART" property instead of the
- * 		default value type of DATE-TIME. If such a "VEVENT" has a "DTEND"
- * 		property, it MUST be specified as a DATE value also. The
- * 		anniversary type of "VEVENT" can span more than one date (i.e.,
- * 		"DTEND" property value is set to a calendar date after the
- * 		"DTSTART" property value). If such a "VEVENT" has a "DURATION"
- * 		property, it MUST be specified as a "dur-day" or "dur-week" value.
- * 
- * 		The "DTSTART" property for a "VEVENT" specifies the inclusive
- * 		start of the event. For recurring events, it also specifies the
- * 		very first instance in the recurrence set. The "DTEND" property
- * 		for a "VEVENT" calendar component specifies the non-inclusive end
- * 		of the event. For cases where a "VEVENT" calendar component
- * 		specifies a "DTSTART" property with a DATE value type but no
- * 		"DTEND" nor "DURATION" property, the event’s duration is taken to
- * 		be one day. For cases where a "VEVENT" calendar component
- * 		specifies a "DTSTART" property with a DATE-TIME value type but no
- * 		"DTEND" property, the event ends on the same calendar date and
- * 		time of day specified by the "DTSTART" property.
- * 		
- * 		The "VEVENT" calendar component cannot be nested within another
- * 		calendar component. However, "VEVENT" calendar components can be
- * 		related to each other or to a "VTODO" or to a "VJOURNAL" calendar
- * 		component with the "RELATED-TO" property.
- * 
- * 	Format Definition: A "VEVENT" calendar component is defined by the
- * 		following notation:
- * 
- * 		eventc = "BEGIN" ":" "VEVENT" CRLF
- * 
- * 			eventprop *alarmc
- * 	
- *			"END" ":" "VEVENT" CRLF
+ *  RFC 5545 (september 2009) item 3.6.2; p. 55
+ *  
+ *  Component Name: VTODO
+ *  
+ *	Purpose: Provide a grouping of calendar properties that describe a
+ *		to-do.
  *
- *			eventprop = *(
+ *	Description: A "VTODO" calendar component is a grouping of component
+ *		properties and possibly "VALARM" calendar components that
+ *		represent an action-item or assignment. For example, it can be
+ *		used to represent an item of work assigned to an individual; such
+ *		as "turn in travel expense today".
+ *
+ *		The "VTODO" calendar component cannot be nested within another
+ *		calendar component. However, "VTODO" calendar components can be
+ *		related to each other or to a "VEVENT" or to a "VJOURNAL" calendar
+ *		component with the "RELATED-TO" property.
+ *
+ *		A "VTODO" calendar component without the "DTSTART" and "DUE" (or
+ *		"DURATION") properties specifies a to-do that will be associated
+ *		with each successive calendar date, until it is completed.
+ *
+ *	Format Definition: A "VTODO" calendar component is defined by the
+ *		following notation:
+ *
+ *		todoc= "BEGIN" ":" "VTODO" CRLF
  *	
- *		The following are REQUIRED, but MUST NOT occur more than once.
+ *			todoprop *alarmc
  *
+ *			"END" ":" "VTODO" CRLF
+ *
+ *
+ *			todoprop = *(
+ *
+ *		The following are REQUIRED, but MUST NOT occur more than once.
+ *	
  *				dtstamp / uid /
  *
- *		The following is REQUIRED if the component appears in an 
- *		iCalendar object that doesn’t specify the "METHOD" property
- *		otherwise, it is OPTIONAL
- *		in any case, it MUST NOT occur more than once.
- *
- *				dtstart /
- *
  *		The following are OPTIONAL, but MUST NOT occur more than once.
- *	
- *				class / created / description / geo /
- *				last-mod / location / organizer / priority /
- *				seq / status / summary / transp /
- *				url / recurid /
+ *
+ *				class / completed / created / description /
+ *				dtstart / geo / last-mod / location / organizer /
+ *				percent / priority / recurid / seq / status /
+ *				summary / url /
  *
  *		The following is OPTIONAL, but SHOULD NOT occur more than once.
  *
  *				rrule /
  *
- *		Either ’dtend’ or ’duration’ MAY appear in a ’eventprop’, 
- *		but ’dtend’ and ’duration’ MUST NOT occur in the same ’eventprop’.
+ *		Either ’due’ or ’duration’ MAY appear in
+ *		a ’todoprop’, but ’due’ and ’duration’
+ *		MUST NOT occur in the same ’todoprop’.
+ *		If ’duration’ appear in a ’todoprop’,
+ *		then ’dtstart’ MUST also appear in
+ *		the same ’todoprop’.
  *
- *				dtend / duration /
+ *				due / duration /
  *
  *		The following are OPTIONAL, and MAY occur more than once.
  *
- *				attach / attendee / categories / comment /
- *				contact / exdate / rstatus / related /
- *				resources / rdate / x-prop / iana-prop
- *			
+ *				attach / attendee / categories / comment / contact /
+ *				exdate / rstatus / related / resources /
+ *				rdate / x-prop / iana-prop
+ *				
  *			)
- *
- *	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+ * *	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
  *	Modifications by RFC 7986 (October 2016) item 4.; p. 4
  *
- *			eventprop =/ *(
+ *			todoprop =/ *(
  *
- *	The following are OPTIONAL, but MUST NOT occur more than once.
+ *		The following are OPTIONAL, but MUST NOT occur more than once.
  *
  *				color /
  *
- *	The following are OPTIONAL, and MAY occur more than once.
+ *		The following are OPTIONAL, and MAY occur more than once.
  *
  *				conference / image
  *
  *				)
  *
  * @formatter:on
- * 
+ *
  */
-public class GuKKiCalvEvent extends GuKKiCalvComponent {
+public class GuKKiCalvTodo extends GuKKiCalvComponent {
 
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
@@ -136,38 +111,35 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	private GuKKiCalcProperty DTSTAMP = null;
 	private GuKKiCalcProperty UID = null;
 	/*
-	 * The following is REQUIRED if the component appears in an iCalendar object
-	 * that doesn’t specify the "METHOD" property; otherwise, it is OPTIONAL in
-	 * any case, it MUST NOT occur more than once.
-	 */
-	private GuKKiCalcProperty DTSTART = null;
-	/*
 	 * The following are OPTIONAL, but MUST NOT occur more than once.
 	 */
 	private GuKKiCalcProperty CLASS = null;
 	private GuKKiCalcProperty COLOR = null;
+	private GuKKiCalcProperty COMPLETED = null;
 	private GuKKiCalcProperty CREATED = null;
 	private GuKKiCalcProperty DESCRIPTION = null;
+	private GuKKiCalcProperty DTSTART = null;
 	private GuKKiCalcProperty GEO = null;
 	private GuKKiCalcProperty LAST_MOD = null;
 	private GuKKiCalcProperty LOCATION = null;
 	private GuKKiCalcProperty ORGANIZER = null;
+	private GuKKiCalcProperty PERCENT = null;
 	private GuKKiCalcProperty PRIORITY = null;
+	private GuKKiCalcProperty RECURID = null;
 	private GuKKiCalcProperty SEQ = null;
 	private GuKKiCalcProperty STATUS = null;
 	private GuKKiCalcProperty SUMMARY = null;
-	private GuKKiCalcProperty TRANSP = null;
 	private GuKKiCalcProperty URL = null;
-	private GuKKiCalcProperty RECURID = null;
 	/*
 	 * The following is OPTIONAL, but SHOULD NOT occur more than once.
 	 */
 	private GuKKiCalcProperty RRULE = null;
 	/*
-	 * Either ’dtend’ or ’duration’ MAY appear in a ’eventprop’, but ’dtend’ and
-	 * ’duration’ MUST NOT occur in the same ’eventprop’.
+	 * Either ’dtend’ or ’duration’ MAY appear in a ’todoprop’, but ’dtend’ and
+	 * ’duration’ MUST NOT occur in the same ’todoprop’.
 	 */
-	private GuKKiCalcProperty DTEND = null;
+	private GuKKiCalcProperty DUE = null;
+	// TODO vTodoDUE
 	private GuKKiCalcProperty DURATION = null;
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
@@ -175,14 +147,13 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	private List<GuKKiCalcProperty> ATTACHSammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> ATTENDEESammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> CATEGORIESSammlung = new LinkedList<GuKKiCalcProperty>();
-	private List<GuKKiCalcProperty> COMMENTSammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> CONFERENCESammlung = new LinkedList<GuKKiCalcProperty>();
+	private List<GuKKiCalcProperty> COMMENTSammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> CONTACTSammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> EXDATESammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> IMAGESammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> RSTATUSSammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> RELATEDSammlung = new LinkedList<GuKKiCalcProperty>();
-	private List<GuKKiCalcProperty> RELATED_TOSammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> RESOURCESSammlung = new LinkedList<GuKKiCalcProperty>();
 	private List<GuKKiCalcProperty> RDATESammlung = new LinkedList<GuKKiCalcProperty>();
 	/*
@@ -191,30 +162,28 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	private List<String> X_PROPSammlung = new LinkedList<String>();
 	private List<String> Restinformationen = new LinkedList<String>();
 	/*
-	 * Sammlungen der VEVENT-Komponenten
+	 * Sammlungen der VTODO-Komponenten
 	 */
 	private List<GuKKiCalvAlarm> vAlarmSammlung = new LinkedList<GuKKiCalvAlarm>();
 
 	/*
 	 * allgemeine Variablen
 	 */
-
 	
 	/**
-	 * GuKKiCalvEvent bildet die iCal-Komponente VEVENT ab
+	 * GuKKiCalvTodo bildet die iCal-Komponente VTODO ab
 	 * 
 	 * @author GuKKDevel
 	 */
-	public GuKKiCalvEvent() {
+	public GuKKiCalvTodo() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		this.kennung = GuKKiCalcKennung.EVENT;
+		this.kennung = GuKKiCalcKennung.TODO;
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
-	} // Ende GuKKiCalvEvent()
-
+	} // Ende GuKKiCalvTodo()
 
 	protected void abschliessen(String pName) throws Exception {
 		String tempUID = this.UID == null ? "" : this.UID.getWert();
@@ -240,6 +209,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		if (bearbeiteSubKomponente) {
 			if (vAlarmBearbeiten) {
 				if (zeile.equals("END:VALARM")) {
+//                    vAlarmNeu.abschliessen();
 					vAlarmSammlung.add(vAlarmNeu);
 					vAlarmBearbeiten = false;
 					bearbeiteSubKomponente = false;
@@ -264,6 +234,8 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				COLOR = new GuKKiCalcProperty(zeile, "COLOR");
 			} else if (zeile.length() > 7 && zeile.substring(0, 7).equals("COMMENT")) {
 				COMMENTSammlung.add(new GuKKiCalcProperty(zeile, "COMMENT"));
+			} else if (zeile.length() > 9 && zeile.substring(0, 9).equals("COMPLETED")) {
+				COMPLETED = new GuKKiCalcProperty(zeile, "COMPLETED");
 			} else if (zeile.length() > 10 && zeile.substring(0, 10).equals("CONFERENCE")) {
 				CONFERENCESammlung.add(new GuKKiCalcProperty(zeile, "CONFERENCE"));
 			} else if (zeile.length() > 7 && zeile.substring(0, 7).equals("CONTACT")) {
@@ -272,12 +244,12 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				CREATED = new GuKKiCalcProperty(zeile, "CREATED");
 			} else if (zeile.length() > 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
 				DESCRIPTION = new GuKKiCalcProperty(zeile, "DESCRIPTION");
-			} else if (zeile.length() > 5 && zeile.substring(0, 5).equals("DTEND")) {
-				DTEND = new GuKKiCalcProperty(zeile, "DTEND");
 			} else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTAMP")) {
 				DTSTAMP = new GuKKiCalcProperty(zeile, "DTSTAMP");
 			} else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTART")) {
 				DTSTART = new GuKKiCalcProperty(zeile, "DTSTART");
+			} else if (zeile.length() > 3 && zeile.substring(0, 3).equals("DUE")) {
+				DUE = new GuKKiCalcProperty(zeile, "DUE");
 			} else if (zeile.length() > 8 && zeile.substring(0, 8).equals("DURATION")) {
 				DURATION = new GuKKiCalcProperty(zeile, "DURATION");
 			} else if (zeile.length() > 6 && zeile.substring(0, 6).equals("EXDATE")) {
@@ -292,6 +264,8 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				LOCATION = new GuKKiCalcProperty(zeile, "LOCATION");
 			} else if (zeile.length() > 9 && zeile.substring(0, 9).equals("ORGANIZER")) {
 				ORGANIZER = new GuKKiCalcProperty(zeile, "ORGANIZER");
+			} else if (zeile.length() > 16 && zeile.substring(0, 16).equals("PERCENT-COMPLETE")) {
+				PERCENT = new GuKKiCalcProperty(zeile, "PERCENT-COMPLETE");
 			} else if (zeile.length() > 8 && zeile.substring(0, 8).equals("PRIORITY")) {
 				PRIORITY = new GuKKiCalcProperty(zeile, "PRIORITY");
 			} else if (zeile.length() > 5 && zeile.substring(0, 5).equals("RDATE")) {
@@ -312,8 +286,6 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				STATUS = new GuKKiCalcProperty(zeile, "STATUS");
 			} else if (zeile.length() > 7 && zeile.substring(0, 7).equals("SUMMARY")) {
 				SUMMARY = new GuKKiCalcProperty(zeile, "SUMMARY");
-			} else if (zeile.length() > 6 && zeile.substring(0, 6).equals("TRANSP")) {
-				TRANSP = new GuKKiCalcProperty(zeile, "TRANSP");
 			} else if (zeile.length() > 3 && zeile.substring(0, 3).equals("UID")) {
 				UID = new GuKKiCalcProperty(zeile, "UID");
 			} else if (zeile.length() > 3 && zeile.substring(0, 3).equals("URL")) {
@@ -333,15 +305,15 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	} // Ende neueZeile V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
-	 * Diese Methode kopiert die iCalendar-Komponente GuKKiCalvEvent und gibt
+	 * Diese Methode kopiert die iCalendar-Komponente GuKKiCalvTodo und gibt
 	 * diese Kopie zurück Version V 0.0.3 (RFC 5545, RFC 7968)
 	 * 2021-12-22T15-12-22
 	 */
-	protected GuKKiCalvEvent kopieren() {
+	protected GuKKiCalvTodo kopieren() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		GuKKiCalvEvent temp = new GuKKiCalvEvent();
+		GuKKiCalvTodo temp = new GuKKiCalvTodo();
 		temp.kennung = this.kennung;
 		for (GuKKiCalcProperty ATTACH : ATTACHSammlung) {
 			temp.ATTACHSammlung.add(ATTACH.kopieren());
@@ -357,6 +329,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		for (GuKKiCalcProperty COMMENT : COMMENTSammlung) {
 			temp.COMMENTSammlung.add(COMMENT.kopieren());
 		}
+		temp.COMPLETED = this.COMPLETED == null ? null : this.COMPLETED.kopieren();
 		for (GuKKiCalcProperty CONFERENCE : CONFERENCESammlung) {
 			temp.CONFERENCESammlung.add(CONFERENCE.kopieren());
 		}
@@ -365,9 +338,9 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		}
 		temp.CREATED = this.CREATED == null ? null : this.CREATED.kopieren();
 		temp.DESCRIPTION = this.DESCRIPTION == null ? null : this.DESCRIPTION.kopieren();
-		temp.DTEND = this.DTEND == null ? null : this.DTEND.kopieren();
 		temp.DTSTAMP = this.DTSTAMP == null ? null : this.DTSTAMP.kopieren();
 		temp.DTSTART = this.DTSTART == null ? null : this.DTSTART.kopieren();
+		temp.DUE = this.DUE == null ? null : this.DUE.kopieren();
 		temp.DURATION = this.DURATION == null ? null : this.DURATION.kopieren();
 		for (GuKKiCalcProperty EXDATE : EXDATESammlung) {
 			temp.EXDATESammlung.add(EXDATE.kopieren());
@@ -379,6 +352,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		temp.LAST_MOD = this.LAST_MOD == null ? null : this.LAST_MOD.kopieren();
 		temp.LOCATION = this.LOCATION == null ? null : this.LOCATION.kopieren();
 		temp.ORGANIZER = this.ORGANIZER == null ? null : this.ORGANIZER.kopieren();
+		temp.PERCENT = this.PERCENT == null ? null : this.PERCENT.kopieren();
 		temp.PRIORITY = this.PRIORITY == null ? null : this.PRIORITY.kopieren();
 		for (GuKKiCalcProperty RDATE : RDATESammlung) {
 			temp.RDATESammlung.add(RDATE.kopieren());
@@ -397,7 +371,6 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		temp.SEQ = this.SEQ == null ? null : this.SEQ.kopieren();
 		temp.STATUS = this.STATUS == null ? null : this.STATUS.kopieren();
 		temp.SUMMARY = this.SUMMARY == null ? null : this.SUMMARY.kopieren();
-		temp.TRANSP = this.TRANSP == null ? null : this.TRANSP.kopieren();
 		temp.UID = this.UID == null ? null : this.UID.kopieren();
 		temp.URL = this.URL == null ? null : this.URL.kopieren();
 		for (GuKKiCalvAlarm vAlarm : this.vAlarmSammlung) {
@@ -420,7 +393,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	} // Ende kopieren V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
-	 * Vergleichen aller Attribute der Komponente GuKKiCalvEvent Version V 0.0.3
+	 * Vergleichen aller Attribute der Komponente GuKKiCalvTodo Version V 0.0.3
 	 * (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 	 *
 	 * @return boolean
@@ -432,7 +405,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		if (!dasAndere.getClass().equals(this.getClass())) {
 			return false;
 		}
-		GuKKiCalvEvent temp = (GuKKiCalvEvent) dasAndere;
+		GuKKiCalvTodo temp = (GuKKiCalvTodo) dasAndere;
 		if (temp.ATTACHSammlung.size() != this.ATTACHSammlung.size()) {
 			return false;
 		}
@@ -473,6 +446,10 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				return false;
 			}
 		}
+		if (!((temp.COMPLETED == null && this.COMPLETED == null)
+				|| (temp.COMPLETED != null && this.COMPLETED != null && temp.COMPLETED.istGleich(this.COMPLETED)))) {
+			return false;
+		}
 		if (temp.CONFERENCESammlung.size() != this.CONFERENCESammlung.size()) {
 			return false;
 		}
@@ -497,16 +474,16 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				&& this.DESCRIPTION != null && temp.DESCRIPTION.istGleich(this.DESCRIPTION)))) {
 			return false;
 		}
-		if (!((temp.DTEND == null && this.DTEND == null)
-				|| (temp.DTEND != null && this.DTEND != null && temp.DTEND.istGleich(this.DTEND)))) {
-			return false;
-		}
 		if (!((temp.DTSTAMP == null && this.DTSTAMP == null)
 				|| (temp.DTSTAMP != null && this.DTSTAMP != null && temp.DTSTAMP.istGleich(this.DTSTAMP)))) {
 			return false;
 		}
 		if (!((temp.DTSTART == null && this.DTSTART == null)
 				|| (temp.DTSTART != null && this.DTSTART != null && temp.DTSTART.istGleich(this.DTSTART)))) {
+			return false;
+		}
+		if (!((temp.DUE == null && this.DUE == null)
+				|| (temp.DUE != null && this.DUE != null && temp.DUE.istGleich(this.DUE)))) {
 			return false;
 		}
 		if (!((temp.DURATION == null && this.DURATION == null)
@@ -543,6 +520,10 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		}
 		if (!((temp.ORGANIZER == null && this.ORGANIZER == null)
 				|| (temp.ORGANIZER != null && this.ORGANIZER != null && temp.ORGANIZER.istGleich(this.ORGANIZER)))) {
+			return false;
+		}
+		if (!((temp.PERCENT == null && this.PERCENT == null)
+				|| (temp.PERCENT != null && this.PERCENT != null && temp.PERCENT.istGleich(this.PERCENT)))) {
 			return false;
 		}
 		if (!((temp.PRIORITY == null && this.PRIORITY == null)
@@ -601,10 +582,6 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 				|| (temp.SUMMARY != null && this.SUMMARY != null && temp.SUMMARY.istGleich(this.SUMMARY)))) {
 			return false;
 		}
-		if (!((temp.TRANSP == null && this.TRANSP == null)
-				|| (temp.TRANSP != null && this.TRANSP != null && temp.TRANSP.istGleich(this.TRANSP)))) {
-			return false;
-		}
 		if (!((temp.UID == null && this.UID == null)
 				|| (temp.UID != null && this.UID != null && temp.UID.istGleich(this.UID)))) {
 			return false;
@@ -655,7 +632,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		String componentDatenstrom = ausgebenInDatenstrom("BEGIN:VEVENT");
+		String componentDatenstrom = ausgebenInDatenstrom("BEGIN:VTODO");
 		for (GuKKiCalcProperty ATTACH : ATTACHSammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(ATTACH.ausgeben());
 		}
@@ -670,6 +647,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		for (GuKKiCalcProperty COMMENT : COMMENTSammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(COMMENT.ausgeben());
 		}
+		componentDatenstrom += this.COMPLETED == null ? "" : ausgebenInDatenstrom(this.COMPLETED.ausgeben());
 		for (GuKKiCalcProperty CONFERENCE : CONFERENCESammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(CONFERENCE.ausgeben());
 		}
@@ -678,9 +656,9 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		}
 		componentDatenstrom += this.CREATED == null ? "" : ausgebenInDatenstrom(this.CREATED.ausgeben());
 		componentDatenstrom += this.DESCRIPTION == null ? "" : ausgebenInDatenstrom(this.DESCRIPTION.ausgeben());
-		componentDatenstrom += this.DTEND == null ? "" : ausgebenInDatenstrom(this.DTEND.ausgeben());
 		componentDatenstrom += this.DTSTAMP == null ? "" : ausgebenInDatenstrom(this.DTSTAMP.ausgeben());
 		componentDatenstrom += this.DTSTART == null ? "" : ausgebenInDatenstrom(this.DTSTART.ausgeben());
+		componentDatenstrom += this.DUE == null ? "" : ausgebenInDatenstrom(this.DUE.ausgeben());
 		componentDatenstrom += this.DURATION == null ? "" : ausgebenInDatenstrom(this.DURATION.ausgeben());
 		for (GuKKiCalcProperty EXDATE : EXDATESammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(EXDATE.ausgeben());
@@ -692,6 +670,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		componentDatenstrom += this.LAST_MOD == null ? "" : ausgebenInDatenstrom(this.LAST_MOD.ausgeben());
 		componentDatenstrom += this.LOCATION == null ? "" : ausgebenInDatenstrom(this.LOCATION.ausgeben());
 		componentDatenstrom += this.ORGANIZER == null ? "" : ausgebenInDatenstrom(this.ORGANIZER.ausgeben());
+		componentDatenstrom += this.PERCENT == null ? "" : ausgebenInDatenstrom(this.PERCENT.ausgeben());
 		componentDatenstrom += this.PRIORITY == null ? "" : ausgebenInDatenstrom(this.PRIORITY.ausgeben());
 		for (GuKKiCalcProperty RDATE : RDATESammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(RDATE.ausgeben());
@@ -710,7 +689,6 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		componentDatenstrom += this.SEQ == null ? "" : ausgebenInDatenstrom(this.SEQ.ausgeben());
 		componentDatenstrom += this.STATUS == null ? "" : ausgebenInDatenstrom(this.STATUS.ausgeben());
 		componentDatenstrom += this.SUMMARY == null ? "" : ausgebenInDatenstrom(this.SUMMARY.ausgeben());
-		componentDatenstrom += this.TRANSP == null ? "" : ausgebenInDatenstrom(this.TRANSP.ausgeben());
 		componentDatenstrom += this.UID == null ? "" : ausgebenInDatenstrom(this.UID.ausgeben());
 		componentDatenstrom += this.URL == null ? "" : ausgebenInDatenstrom(this.URL.ausgeben());
 		for (GuKKiCalvAlarm vAlarm : this.vAlarmSammlung) {
@@ -725,7 +703,7 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		for (String Restinformation : this.Restinformationen) {
 			componentDatenstrom += ausgebenInDatenstrom(Restinformation);
 		}
-		componentDatenstrom += ausgebenInDatenstrom("END:VEVENT");
+		componentDatenstrom += ausgebenInDatenstrom("END:VTODO");
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
@@ -741,10 +719,10 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 	} // Ende toString()
 
 	/**
-	 * Gibt sämtliche Schlüssel des vEvent und die aller Subkomponenten aus
+	 * Gibt sämtliche Schlüssel des vTodo und die aller Subkomponenten aus
 	 */
 	public String toString(String ausgabeLevel) {
-		String ausgabeString = "Event-Identifikation=" + this.toString() + "<-->"
+		String ausgabeString = "ToDo-Identifikation=" + this.toString() + "<-->"
 				+ (SUMMARY == null ? "" : SUMMARY.getWert())+nz;
 		if (ausgabeLevel.toUpperCase().indexOf("A") >= 0) {
 			for (GuKKiCalvAlarm vAlarm : vAlarmSammlung) {
@@ -754,4 +732,4 @@ public class GuKKiCalvEvent extends GuKKiCalvComponent {
 		return ausgabeString;
 
 	} // Ende toString(String)
-} // Ende GuKKiCalvEvent-Klasse
+}

@@ -1,4 +1,4 @@
-package main;
+package component;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -6,6 +6,14 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import enumerations.*;
+import exceptions.*;
+/** 
+ * Grundliegende Klasse für alle Komponenten eines iCalendar
+ * 
+ * @author GuKKDevel
+ *
+ */
 public class GuKKiCalvComponent {
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;

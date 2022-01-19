@@ -10,8 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import component.GuKKiCalvCalendar;
 import main.GuKKiCalParser;
-import main.GuKKiCalvCalendar;
 
 public class Ausprobieren {
 	Logger logger = Logger.getLogger("GuKKiCal");
@@ -23,18 +23,18 @@ public class Ausprobieren {
 	PrintWriter iCalWriter = null;
 	String inPfad = machineHandling("TestFiles/iCalender/");
 	String ausPfad = machineHandling("TestFiles/iCalender/a");
-//	String[] kalender = {"TestKalender","Standard-KHG", "Google", "temp", "Abfallkalender" };
-	String[] kalender = { "TestKalender" };
+	String[] kalender = { "TestKalender", "Standard-KHG", "Google", "temp", "Abfallkalender" };
+//	String[] kalender = { "Abfallkalender" };
 
 	boolean ausgeben = false;
 
 	public Ausprobieren() throws Exception {
 		loggerhandling();
 		try {
-			System.out.println(new Date());
+			System.out.println(new Date() + " Startzeit");
 			for (String pkalender : kalender) {
-				parser.kalenderEinlesen(vCalendarSammlung, inPfad + kalender[0] + ".ics");
-				System.out.println(new Date());
+				parser.kalenderEinlesen(vCalendarSammlung, inPfad + pkalender + ".ics");
+				System.out.println(new Date() + " " + pkalender);
 				if (ausgeben) {
 					String ausgebenauf = ausPfad + pkalender + ".ics";
 					File iCalFile = new File(ausgebenauf);
@@ -42,7 +42,7 @@ public class Ausprobieren {
 					iCalWriter.println(vCalendarSammlung.get(vCalendarSammlung.size() - 1).ausgeben());
 					iCalWriter.flush();
 				}
-				System.out.println(vCalendarSammlung.get(vCalendarSammlung.size() - 1).toString("CETJAZDSF"));
+//				System.out.println(vCalendarSammlung.get(vCalendarSammlung.size() - 1).toString("CETJAZDSF"));
 			}
 		} finally {
 

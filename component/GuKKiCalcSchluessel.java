@@ -1,9 +1,10 @@
-package main;
+package component;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import exceptions.GuKKiCalF_FalscheKomponente;
+import enumerations.*;
+import exceptions.*;
 
 /**
  * Schluessel der einzelnen Componenten
@@ -168,8 +169,6 @@ class GuKKiCalcSchluessel {
 			case EVENT:
 			case TODO:
 			case JOURNAL:
-				logger.info(komponente.toString());
-				logger.info(pNAME+"#"+pUID_TZID+"#"+pRECURID_TZOFFSETFROM);
 				this.NAME = pNAME;
 				this.UID = pUID_TZID;
 				this.SEQ = pSEQ_DTSTART;
