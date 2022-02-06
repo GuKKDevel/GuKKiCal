@@ -6,9 +6,9 @@ public class GuKKiCalF_FalscheKlasse extends GuKKiCalFehler {
 		// TODO Automatisch generierter Konstruktorstub
 	}
 
-	public GuKKiCalF_FalscheKlasse(String fehlerGrund) {
-		super(fehlerGrund);
-		// TODO Automatisch generierter Konstruktorstub
-	}
+//	public GuKKiCalF_FalscheKlasse(String fehlerGrund) {
+//		super(fehlerGrund);
+//		// TODO Automatisch generierter Konstruktorstub
+//	}
 
 }

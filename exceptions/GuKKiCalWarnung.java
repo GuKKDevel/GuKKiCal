@@ -9,6 +9,6 @@ package exceptions;
 *
 * Diese Exceptions behindern den Ablauf und sollten behoben werden
 */
-public class GuKKiCalWarnung extends Exception {
+public class GuKKiCalWarnung extends GuKKiCalException {
 
 }

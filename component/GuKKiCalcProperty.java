@@ -1,8 +1,11 @@
-package main;
+package component;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import enumerations.*;
+import exceptions.*;
 
 /**
  * Grundliegende Struktur für die Property-Parameter
@@ -87,7 +90,7 @@ import java.util.logging.Logger;
  * 
  * 
  */
-class GuKKiCalProperty {
+class GuKKiCalcProperty {
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
 	/*
@@ -136,7 +139,7 @@ class GuKKiCalProperty {
 	/**
 	 * leerer Konstruktor
 	 */
-	protected GuKKiCalProperty() {
+	protected GuKKiCalcProperty() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -151,7 +154,7 @@ class GuKKiCalProperty {
 	 * 
 	 */
 
-	protected GuKKiCalProperty(String literal) {
+	protected GuKKiCalcProperty(String literal) {
 
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
@@ -164,7 +167,7 @@ class GuKKiCalProperty {
 		}
 	}
 
-	public GuKKiCalProperty(String propertyDaten, String literal) {
+	public GuKKiCalcProperty(String propertyDaten, String literal) {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
@@ -183,10 +186,10 @@ class GuKKiCalProperty {
 		}
 
 		status = GuKKiCalcStatus.GELESEN;
-//		if (!propertyDaten.equals(ausgeben())) {
-//			logger.fine("Eingang:" + propertyDaten);
-//			logger.fine("Ausgang:" + ausgeben());
-//		}
+		if (!propertyDaten.equals(this.ausgeben())) {
+			logger.fine("Eingang:" + propertyDaten);
+			logger.fine("Ausgang:" + this.ausgeben());
+		}
 
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
@@ -341,20 +344,20 @@ class GuKKiCalProperty {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
-	} // Ende der generierten Methode parameterBestimmen für GuKKiCalProperty V
+	} // Ende der generierten Methode parameterBestimmen für GuKKiCalcProperty V
 		// 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
 	 * Kopieren aller Parameter der Eigenschaft Version V 0.0.3 (RFC 5545, RFC
 	 * 7968) 2021-12-22T15-12-22
 	 *
-	 * @return GuKKiCalProperty
+	 * @return GuKKiCalcProperty
 	 */
-	protected GuKKiCalProperty kopieren() {
+	protected GuKKiCalcProperty kopieren() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		GuKKiCalProperty temp = new GuKKiCalProperty();
+		GuKKiCalcProperty temp = new GuKKiCalcProperty();
 		temp.literal = this.literal;
 		temp.wert = this.wert;
 		temp.ALTREP = this.ALTREP == null ? null : this.ALTREP;
@@ -395,7 +398,8 @@ class GuKKiCalProperty {
 			logger.log(logLevel, "beendet");
 		}
 		return temp;
-	} // Ende der generierten Methode kopieren für GuKKiCalProperty V 0.0.3 (RFC
+	} // Ende der generierten Methode kopieren für GuKKiCalcProperty V 0.0.3
+		// (RFC
 		// 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
@@ -411,7 +415,7 @@ class GuKKiCalProperty {
 		if (!dasAndere.getClass().equals(this.getClass())) {
 			return false;
 		}
-		GuKKiCalProperty temp = (GuKKiCalProperty) dasAndere;
+		GuKKiCalcProperty temp = (GuKKiCalcProperty) dasAndere;
 		if (!((temp.ALTREP == null && this.ALTREP == null)
 				|| (temp.ALTREP != null && this.ALTREP != null && temp.ALTREP.equals(this.ALTREP)))) {
 			return false;
@@ -531,7 +535,7 @@ class GuKKiCalProperty {
 			logger.log(logLevel, "beendet");
 		}
 		return true;
-	} // Ende der generierten Methode istGleich für GuKKiCalProperty V 0.0.3
+	} // Ende der generierten Methode istGleich für GuKKiCalcProperty V 0.0.3
 		// (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
@@ -549,8 +553,11 @@ class GuKKiCalProperty {
 		String endeText = "";
 		String trenner = "";
 		schreibText += this.ALTREP == null ? "" : ";ALTREP=" + this.ALTREP;
+		schreibText += this.RSVP == null ? "" : ";RSVP=" + this.RSVP;
 		schreibText += this.CN == null ? "" : ";CN=" + this.CN;
+		schreibText += this.PARTSTAT == null ? "" : ";PARTSTAT=" + this.PARTSTAT;
 		schreibText += this.CUTYPE == null ? "" : ";CUTYPE=" + this.CUTYPE;
+		schreibText += this.ROLE == null ? "" : ";ROLE=" + this.ROLE;
 		schreibText += this.DELFROM == null ? "" : ";DELEGATED-FROM=" + this.DELFROM;
 		schreibText += this.DELTO == null ? "" : ";DELEGATED-TO=" + this.DELTO;
 		schreibText += this.DIR == null ? "" : ";DIR=" + this.DIR;
@@ -563,14 +570,11 @@ class GuKKiCalProperty {
 		schreibText += this.LABEL == null ? "" : ";LABEL=" + this.LABEL;
 		schreibText += this.LANGUAGE == null ? "" : ";LANGUAGE=" + this.LANGUAGE;
 		schreibText += this.MEMBER == null ? "" : ";MEMBER=" + this.MEMBER;
-		schreibText += this.PARTSTAT == null ? "" : ";PARTSTAT=" + this.PARTSTAT;
+		schreibText += this.TZID == null ? "" : ";TZID=" + this.TZID;
 		schreibText += this.RANGE == null ? "" : ";RANGE=" + this.RANGE;
 		schreibText += this.RELATED == null ? "" : ";RELATED=" + this.RELATED;
 		schreibText += this.RELTYPE == null ? "" : ";RELTYPE=" + this.RELTYPE;
-		schreibText += this.ROLE == null ? "" : ";ROLE=" + this.ROLE;
-		schreibText += this.RSVP == null ? "" : ";RSVP=" + this.RSVP;
 		schreibText += this.SENTBY == null ? "" : ";SENT-BY=" + this.SENTBY;
-		schreibText += this.TZID == null ? "" : ";TZID=" + this.TZID;
 		schreibText += this.VALUETYPE == null ? "" : ";VALUE=" + this.VALUETYPE;
 
 		/* Abschluss und Fallbackparameter */
@@ -604,11 +608,12 @@ class GuKKiCalProperty {
 			logger.log(logLevel, "beendet");
 		}
 		return this.literal + schreibText + ":" + this.wert;
-	} // Ende der generierten Methode ausgeben für GuKKiCalProperty V 0.0.3 (RFC
+	} // Ende der generierten Methode ausgeben für GuKKiCalcProperty V 0.0.3
+		// (RFC
 		// 5545, RFC 7968) 2021-12-22T15-12-22
 
 	String getWert() {
-		return wert;
+		return wert == null ? "" : wert;
 	}
 
 	void setWert(String propertyWert) {
