@@ -42,7 +42,7 @@ public class Ausprobieren {
 					iCalWriter.println(vCalendarSammlung.get(vCalendarSammlung.size() - 1).ausgeben());
 					iCalWriter.flush();
 				}
-//				System.out.println(vCalendarSammlung.get(vCalendarSammlung.size() - 1).toString("CETJAZDSF"));
+//				System.out.println(iCalendarSammlung.get(iCalendarSammlung.size() - 1).toString("CETJAZDSF"));
 			}
 		} finally {
 
@@ -80,7 +80,7 @@ public class Ausprobieren {
 		if (System.getProperty("os.name").equals("Linux")) {
 			return "/home/programmieren/" + verzeichnis;
 		} else {
-			return "P:/" + verzeichnis;
+			return System.getProperty("user.home") + "/Workspace/" + verzeichnis;
 		}
 	}
 }

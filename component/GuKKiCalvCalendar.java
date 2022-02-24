@@ -75,7 +75,7 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 	/*
 	 * Daten für die KalenderDatei
 	 */
-	String iCalendarName = null;
+	String vCalendarName = null;
 	String iCalendarPfad = null;
 
 	/* Daten für das VCALENDAR-Element */
@@ -141,46 +141,46 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 	 * @throws Exception
 	 * 
 	 */
-	public void abschliessen(String iCalendarName, String iCalendarPfad) throws Exception {
+	public void abschliessen(String vCalendarName, String iCalendarPfad) throws Exception {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
 		this.iCalendarPfad = this.SOURCE == null ? iCalendarPfad : this.SOURCE.getWert();
-		this.iCalendarName = "";
+		this.vCalendarName = "";
 		boolean langDE = false;
 		boolean langEN = false;
 		for (GuKKiCalcProperty NAME : NAMESammlung) {
 			if (NAME.getLANGUAGE().equals("de")) {
-				this.iCalendarName = NAME.getWert();
+				this.vCalendarName = NAME.getWert();
 				langDE = true;
 				break;
 			} else if (NAME.getLANGUAGE().equals("en") && !langDE) {
-				this.iCalendarName = NAME.getWert();
+				this.vCalendarName = NAME.getWert();
 				langEN = true;
 			}
 		}
-		if (this.iCalendarName.equals("")) {
-			this.iCalendarName = iCalendarName;
+		if (this.vCalendarName.equals("")) {
+			this.vCalendarName = vCalendarName;
 		}
-		this.schluessel = new GuKKiCalcSchluessel(kennung, this.iCalendarName);
+		this.schluessel = new GuKKiCalcSchluessel(kennung, this.vCalendarName);
 		for (Iterator iterator = vComponentSammlung.iterator(); iterator.hasNext();) {
 			GuKKiCalvComponent vComponent = (GuKKiCalvComponent) iterator.next();
 			switch (vComponent.kennung) {
 				case EVENT:
 					GuKKiCalvEvent vEvent = (GuKKiCalvEvent) vComponent;
-					vEvent.abschliessen(this.iCalendarName);
+					vEvent.abschliessen(this.vCalendarName);
 					break;
 				case TODO:
 					GuKKiCalvTodo vTodo = (GuKKiCalvTodo) vComponent;
-					vTodo.abschliessen(this.iCalendarName);
+					vTodo.abschliessen(this.vCalendarName);
 					break;
 				case JOURNAL:
 					GuKKiCalvJournal vJournal = (GuKKiCalvJournal) vComponent;
-					vJournal.abschliessen(this.iCalendarName);
+					vJournal.abschliessen(this.vCalendarName);
 					break;
 				case TIMEZONE:
 					GuKKiCalvTimezone vTimezone = (GuKKiCalvTimezone) vComponent;
-					vTimezone.abschliessen(this.iCalendarName);
+					vTimezone.abschliessen(this.vCalendarName);
 					break;
 			}
 
@@ -316,7 +316,7 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 	} // Ende neueZeile V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
-	 * Diese Methode kopiert die iCalendar-Komponente GuKKiCalvCalendar und gibt
+	 * Diese Methode kopiert die vCalendar-Komponente GuKKiCalvCalendar und gibt
 	 * diese Kopie zurück Version V 0.0.3 (RFC 5545, RFC 7968)
 	 * 2021-12-22T15-12-22
 	 */
@@ -616,7 +616,7 @@ public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		String ausgabeString = nz + "vCalendarInformationen:" + nz + iCalendarName + " --- " + iCalendarPfad + nz
+		String ausgabeString = nz + "vCalendarInformationen:" + nz + vCalendarName + " --- " + iCalendarPfad + nz
 				+ "vCalendarDaten:" + nz;
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");

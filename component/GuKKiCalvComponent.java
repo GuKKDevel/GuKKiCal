@@ -8,7 +8,8 @@ import java.util.logging.Logger;
 
 import enumerations.*;
 import exceptions.*;
-/** 
+
+/**
  * Grundliegende Klasse für alle Komponenten eines iCalendar
  * 
  * @author GuKKDevel
@@ -23,7 +24,7 @@ public class GuKKiCalvComponent {
 	 */
 	GuKKiCalcKennung kennung = GuKKiCalcKennung.UNDEFINIERT;
 	GuKKiCalcStatus status = GuKKiCalcStatus.UNDEFINIERT;
-	GuKKiCalcSchluessel schluessel/* = new GuKKiCalcSchluessel();*/;
+	GuKKiCalcSchluessel schluessel/* = new GuKKiCalcSchluessel(); */;
 
 	boolean bearbeiteSubKomponente = false;
 	boolean vEventBearbeiten = false;
@@ -3214,6 +3215,110 @@ public class GuKKiCalvComponent {
 		}
 		return true;
 	}
+
+	/**
+	 * Bearbeitungsroutinen für die Eigenschaft Time Zone Identifier Alias
+	 * 
+	 * @formatter:off
+	 * 
+	 *	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	 *	Modifications by RFC 7808 (March 2016) item 7.2; p. 41
+	 *
+	 *	Property Name: TZID-ALIAS-OF
+	 *
+	 *	Purpose: This property specifies a time zone identifier for which
+	 *		the main time zone identifier is an alias.
+	 *
+	 *	Value Type: TEXT
+	 *
+	 *	Property Parameters: IANA and non-standard property parameters can
+	 *		be specified on this property.
+	 *
+	 *	Conformance: This property can be specified zero or more times
+	 *		within "VTIMEZONE" calendar components.
+	 *
+	 *	Description: When the "VTIMEZONE" component uses a time zone
+	 *		identifier alias for the "TZID" property value, the "TZID-ALIAS-
+	 *		OF" property is used to indicate the time zone identifier of the
+	 *		other time zone (see Section 3.7).
+	 *
+	 *	Format Definition: This property is defined by the following notation in ABNF [RFC5234]:
+	 *
+	 *		tzid-alias-of = "TZID-ALIAS-OF" tzidaliasofparam ":" [tzidprefix] text CRLF
+	 *
+	 *			tzidaliasofparam = *(";" other-param)
+	 *
+	 *		tzidprefix defined in [RFC5545].
+	 *
+	 * @formatter:on
+	 * 
+	 */
+	boolean untersuchenTZIDALIASOF(GuKKiCalcProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return true;
+	}
+	
+	/**
+	 * Bearbeitungsroutinen für die Eigenschaft Time Zone Upper Bound
+	 * 
+	 * @formatter:off
+	 * 
+	 *	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+	 *	Modifications by RFC 7808 (March 2016) item 7.1; p. 40
+	 *
+	 *
+	 *	Property Name: TZUNTIL
+	 *
+	 *	Purpose: This property specifies an upper bound for the validity
+	 *		period of data within a "VTIMEZONE" component.
+	 *
+	 *	Value Type: DATE-TIME
+	 *
+	 *	Property Parameters: IANA and non-standard property parameters can
+	 *		be specified on this property.
+	 *
+	 *	Conformance: This property can be specified zero times or one time
+	 *		within "VTIMEZONE" calendar components.
+	 *
+	 *	Description: The value MUST be specified in the UTC time format.
+	 *		Time zone data in a "VTIMEZONE" component might cover only a fixed
+	 *		period of time. The start of such a period is clearly indicated
+	 *		by the earliest observance defined by the "STANDARD" and
+	 *		"DAYLIGHT" subcomponents. However, an upper bound on the validity
+	 *		period of the time zone data cannot be simply derived from the
+	 *		observance with the latest onset time, and [RFC5545] does not
+	 *		define a way to get such an upper bound. This specification
+	 *		introduces the "TZUNTIL" property for that purpose. It specifies
+	 *		an "exclusive" UTC date-time value that indicates the last time at
+	 *		which the time zone data is to be considered valid.
+	 *		This property is also used by time zone data distribution servers
+	 *		to indicate the truncation range end point of time zone data (as
+	 *		described in Section 3.9).
+	 *
+	 *	Format Definition: This property is defined by the following notation in ABNF [RFC5234]:
+	 *
+	 *		tzuntil = "TZUNTIL" tzuntilparam ":" date-time CRLF
+	 *
+	 *			tzuntilparam = *(";" other-param)
+	 *
+	 * @formatter:on
+	 * 
+	 */
+	boolean untersuchenTZUNTIL(GuKKiCalcProperty property) {
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "begonnen");
+		}
+		if (logger.isLoggable(logLevel)) {
+			logger.log(logLevel, "beendet");
+		}
+		return true;
+	}
+
 
 	/**
 	 * Bearbeitungsroutinen für die Eigenschaft Time Zone Name

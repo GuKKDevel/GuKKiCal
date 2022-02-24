@@ -245,6 +245,13 @@ import exceptions.*;
  *
  *				)
  *
+ *	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+ *	Modifications by RFC 7808 (March 2016) item 7.; p. 40
+ *
+ *		7. New iCalendar Properties 
+ *		7.1. Time Zone Upper Bound
+ *		7.2. Time Zone Identifier Alias Property
+
  * @formatter:on
  * 
  */
@@ -263,6 +270,11 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 	 */
 	private GuKKiCalcProperty LAST_MOD = null;
 	private GuKKiCalcProperty TZURL = null;
+	private GuKKiCalcProperty TZUNTIL = null;
+	/*
+	 * The following are OPTIONAL, and MAY occur more than once.
+	 */
+	private List<GuKKiCalcProperty> TZIDALIASOFSammlung = new LinkedList<GuKKiCalcProperty>();
 	/*
 	 * One of ’standardc’ or ’daylightc’ MUST occur and each MAY occur more than
 	 * once.
@@ -358,6 +370,10 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 				LAST_MOD = new GuKKiCalcProperty(zeile, "LAST-MODIFIED");
 			} else if (zeile.length() > 4 && zeile.substring(0, 4).equals("TZID")) {
 				TZID = new GuKKiCalcProperty(zeile, "TZID");
+			} else if (zeile.length() > 13 && zeile.substring(0, 13).equals("TZID-ALIAS-OF")) {
+				TZIDALIASOFSammlung.add(new GuKKiCalcProperty(zeile, "TZID-ALIAS-OF"));
+			} else if (zeile.length() > 4 && zeile.substring(0, 4).equals("TZUNTIL")) {
+				TZUNTIL = new GuKKiCalcProperty(zeile, "TZUNTIL");
 			} else if (zeile.length() > 5 && zeile.substring(0, 5).equals("TZURL")) {
 				TZURL = new GuKKiCalcProperty(zeile, "TZURL");
 
@@ -387,6 +403,10 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 		temp.kennung = this.kennung;
 		temp.LAST_MOD = this.LAST_MOD == null ? null : this.LAST_MOD.kopieren();
 		temp.TZID = this.TZID == null ? null : this.TZID.kopieren();
+		for (GuKKiCalcProperty TZIDALIASOF : TZIDALIASOFSammlung) {
+			temp.TZIDALIASOFSammlung.add(TZIDALIASOF.kopieren());
+		}
+		temp.TZUNTIL = this.TZUNTIL == null ? null : this.TZUNTIL.kopieren();
 		temp.TZURL = this.TZURL == null ? null : this.TZURL.kopieren();
 		for (GuKKiCalvDaylight vDaylight : this.vDaylightSammlung) {
 			temp.vDaylightSammlung.add(vDaylight.kopieren());
@@ -430,6 +450,18 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 		}
 		if (!((temp.TZID == null && this.TZID == null)
 				|| (temp.TZID != null && this.TZID != null && temp.TZID.istGleich(this.TZID)))) {
+			return false;
+		}
+		if (temp.TZIDALIASOFSammlung.size() != this.TZIDALIASOFSammlung.size()) {
+			return false;
+		}
+		for (int i = 0; i < TZIDALIASOFSammlung.size(); i++) {
+			if (!temp.TZIDALIASOFSammlung.get(i).istGleich(this.TZIDALIASOFSammlung.get(i))) {
+				return false;
+			}
+		}
+		if (!((temp.TZUNTIL == null && this.TZUNTIL == null)
+				|| (temp.TZUNTIL != null && this.TZUNTIL != null && temp.TZUNTIL.istGleich(this.TZUNTIL)))) {
 			return false;
 		}
 		if (!((temp.TZURL == null && this.TZURL == null)
@@ -489,6 +521,10 @@ public class GuKKiCalvTimezone extends GuKKiCalvComponent {
 		String componentDatenstrom = ausgebenInDatenstrom("BEGIN:VTIMEZONE");
 		componentDatenstrom += this.LAST_MOD == null ? "" : ausgebenInDatenstrom(this.LAST_MOD.ausgeben());
 		componentDatenstrom += this.TZID == null ? "" : ausgebenInDatenstrom(this.TZID.ausgeben());
+		for (GuKKiCalcProperty TZIDALIASOF : TZIDALIASOFSammlung) {
+			componentDatenstrom += ausgebenInDatenstrom(TZIDALIASOF.ausgeben());
+		}
+		componentDatenstrom += this.TZUNTIL == null ? "" : ausgebenInDatenstrom(this.TZUNTIL.ausgeben());
 		componentDatenstrom += this.TZURL == null ? "" : ausgebenInDatenstrom(this.TZURL.ausgeben());
 		for (GuKKiCalvDaylight vDaylight : this.vDaylightSammlung) {
 			componentDatenstrom += vDaylight.ausgeben();

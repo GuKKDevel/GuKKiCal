@@ -68,19 +68,19 @@ public class GuKKiCalParser {
 		/*
 		 * Datenstrom zur Verarbeitung der Kalenderdaten
 		 */
-		BufferedReader vCalendarDatenstrom = null;
+		BufferedReader iCalendarDatenstrom = null;
 		String zeile = "";
 		String folgezeile = "";
 		boolean datenVorhanden = true;
 
 		try {
-			vCalendarDatenstrom = new BufferedReader(new InputStreamReader(new FileInputStream(inPath), "UTF-8"));
-			zeile = vCalendarDatenstrom.readLine();
+			iCalendarDatenstrom = new BufferedReader(new InputStreamReader(new FileInputStream(inPath), "UTF-8"));
+			zeile = iCalendarDatenstrom.readLine();
 			if (zeile == null) {
 				datenVorhanden = false;
 			}
 			while (datenVorhanden) {
-				folgezeile = vCalendarDatenstrom.readLine();
+				folgezeile = iCalendarDatenstrom.readLine();
 
 				if (folgezeile == null) {
 					neueZeile(zeile);
@@ -98,8 +98,8 @@ public class GuKKiCalParser {
 			} /* end while-Schleife */
 		} finally {
 
-			if (vCalendarDatenstrom != null) {
-				vCalendarDatenstrom.close();
+			if (iCalendarDatenstrom != null) {
+				iCalendarDatenstrom.close();
 			}
 		}
 		if (logger.isLoggable(logLevel)) {
