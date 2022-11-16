@@ -32,10 +32,9 @@ public class Ausprobieren {
 		try {
 			System.out.println(new Date());
 			for (String pkalender : kalender) {
-				parser.kalenderEinlesen(iCalendarSammlung, inPfad + kalender[0] + ".ics");
+				parser.kalenderEinlesen(iCalendarSammlung, bestimmenDateistamm("Testdaten/iCalender/" + pkalender + ".ics"));
 				System.out.println(new Date());
-				String ausgebenauf = ausPfad + pkalender + ".ics";
-				File iCalFile = new File(ausgebenauf);
+				File iCalFile = new File(bestimmenDateistamm("Testdaten/iCalender/" + pkalender + "a.ics"));
 				iCalWriter = new PrintWriter(iCalFile, "UTF-8");
 				iCalWriter.println(iCalendarSammlung.get(iCalendarSammlung.size() - 1).ausgeben());
 				iCalWriter.flush();
@@ -78,7 +77,7 @@ public class Ausprobieren {
 	}
 
 	private void loggerhandling() {
-		logger.setLevel(Level.FINE);
+		logger.setLevel(Level.INFO);
 //		Handler handler = new FileHandler("/home/programmieren/TestFiles/iCalender/temp.log");
 		Handler handler = new ConsoleHandler();
 		handler.setLevel(Level.FINEST);
@@ -112,7 +111,6 @@ public class Ausprobieren {
 //		return property;
 //	}
 
-}
 
 /* Bestimmen des Betriebssysteme */
 //		String OS = System.getProperty("os.name");
@@ -140,3 +138,24 @@ public class Ausprobieren {
 //		finally {
 //			
 //		}
+	/**
+	 * @param string
+	 * @return
+	 */
+	private String bestimmenDateistamm(String pfad) {
+
+		if (osIstLinux()) {
+			return "/home/programmieren/" + pfad.replace("\\", "/");
+		} else {
+			return System.getProperty("user.home") + "\\Desktop\\Workspace\\" + pfad.replace("/", "\\");
+		}
+	}
+
+	/**
+	 * Feststellen ob unter Linux oder Windows gearbeitet wird
+	 */
+	private boolean osIstLinux() {
+		return System.getProperty("os.name").equals("Linux");
+	}
+
+}

@@ -468,7 +468,7 @@ public class JavaTeileGenerieren {
 	
 	/* @formatter:on */
 
-	String verzeichnis = "../../Git-Repositories/GuKKiCal/IgnoreForGit/";
+	String verzeichnis = bestimmenDateistamm("Git-Repositories/GuKKiCal/IgnoreForGit/");
 	String version = "V 0.0.3 " + " (RFC 5545, RFC 7968) "
 			+ new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
 
@@ -494,9 +494,9 @@ public class JavaTeileGenerieren {
 
 		try (PrintWriter pWriter = new PrintWriter(
 				new FileWriter(new File(verzeichnis + "GuKKiCalProperty-generiert")));) {
-			
+
 			System.out.println("Generieren der Methode parameterBestimmen für GuKKiCalProperty");
-			
+
 			pWriter.println("    /**");
 			pWriter.println("     * übertragen der Parameter in das korrekte Feld");
 			pWriter.println("     * Version " + version);
@@ -529,7 +529,7 @@ public class JavaTeileGenerieren {
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("    } // Ende der generierten Methode parameterBestimmen für GuKKiCalProperty " + version);
 			pWriter.println(" ");
-			
+
 			System.out.println("Generieren der Methode kopieren für GuKKiCalProperty");
 
 			pWriter.println("    /**");
@@ -569,7 +569,7 @@ public class JavaTeileGenerieren {
 			pWriter.println("    } // Ende der generierten Methode kopieren für GuKKiCalProperty " + version);
 			pWriter.println(" ");
 
-		System.out.println("Generieren der Methode istGleich für GuKKiCalProperty");
+			System.out.println("Generieren der Methode istGleich für GuKKiCalProperty");
 
 			pWriter.println("    /**");
 			pWriter.println("     * Vergleichen aller Parameter des Attributs");
@@ -700,11 +700,11 @@ public class JavaTeileGenerieren {
 			pWriter.println(" ");
 
 			System.out.println("Generieren der Getter- und Setter-Methoden für GuKKiCalProperty");
-			
+
 			for (String[] strings : parameter) {
 				if (strings[0].equals("1")) {
 					pWriter.println("    public String get" + strings[1] + "() {");
-					pWriter.println("        return "+ strings[1] +";");
+					pWriter.println("        return " + strings[1] + ";");
 					pWriter.println("    }");
 					pWriter.println("    public boolean set" + strings[1] + "(String p" + strings[1] + ") {");
 					pWriter.println("        this." + strings[1] + " = p" + strings[1] + ";");
@@ -714,7 +714,7 @@ public class JavaTeileGenerieren {
 
 				} else if (strings[0].equals("2")) {
 					pWriter.println("    public String [] getAll" + strings[1] + "() {");
-					pWriter.println("        return "+ strings[1] +"Sammlung.toArray();");
+					pWriter.println("        return " + strings[1] + "Sammlung.toArray();");
 					pWriter.println("    }");
 //					pWriter.println("    public boolean set" + strings[1] + "(String p" + strings[1] + ") {");
 //					pWriter.println("        this." + strings[1] + " = p" + strings[1] + ";");
@@ -726,7 +726,7 @@ public class JavaTeileGenerieren {
 			pWriter.println("    public String [] getAllX_PARM() {");
 			pWriter.println("        return X_PARMSammlung.toArray();");
 			pWriter.println("    }");
-			
+
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {
@@ -747,8 +747,7 @@ public class JavaTeileGenerieren {
 
 			String elseLit = "";
 			/*
-			 * Parameterfeld für getrennte Verarbeitung von Komponente und
-			 * Subkomponenten
+			 * Parameterfeld für getrennte Verarbeitung von Komponente und Subkomponenten
 			 */
 			String parameter = "this";
 			for (int j = 0; j < subcomponent[i].length; j++) {
@@ -764,7 +763,7 @@ public class JavaTeileGenerieren {
 			}
 
 			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-generiert"));) {
-			System.out.println("Generieren der Methode neueZeile für " + component[i][1]);
+				System.out.println("Generieren der Methode neueZeile für " + component[i][1]);
 				pWriter.println(einzug + "/**");
 				pWriter.println(
 						einzug + " * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten) Zeilen");
@@ -865,9 +864,7 @@ public class JavaTeileGenerieren {
 //
 //			}
 
-
-
-			System.out.println("Generieren der Methode kopieren für " + component[i][1]);
+				System.out.println("Generieren der Methode kopieren für " + component[i][1]);
 //			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-kopieren"));) {
 				pWriter.println(einzug + "/**");
 				pWriter.println(einzug + " * Diese Methode kopiert die iCalendar-Komponente");
@@ -926,7 +923,7 @@ public class JavaTeileGenerieren {
 //
 //			}
 
-			System.out.println("Generieren der Methode istGleich für " + component[i][1]);
+				System.out.println("Generieren der Methode istGleich für " + component[i][1]);
 //			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-istGleich"));) {
 
 				pWriter.println(einzug + "/**");
@@ -1029,8 +1026,8 @@ public class JavaTeileGenerieren {
 //			} finally {
 //
 //			}
-			
-			System.out.println("Generieren der Methode ausgeben für " + component[i][1]);
+
+				System.out.println("Generieren der Methode ausgeben für " + component[i][1]);
 //			try (PrintWriter pWriter = new PrintWriter(new FileWriter(verzeichnis + component[i][1] + "-ausgeben"));) {
 				elseLit = "";
 				pWriter.println(einzug + "/**");
@@ -1051,8 +1048,8 @@ public class JavaTeileGenerieren {
 					} else if (property[j][i].equals("2")) {
 						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
 								+ "Sammlung) {");
-						pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom("
-								+ property[j][9] + ".ausgeben());");
+						pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(" + property[j][9]
+								+ ".ausgeben());");
 						pWriter.println(einzug + "    }");
 					} else if (property[j][i].equals("8")) {
 						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
@@ -1098,4 +1095,26 @@ public class JavaTeileGenerieren {
 			}
 		}
 	}
+
+	/**
+	 * Je nach Testumgebung den entsprechenden Startordner einfügen und evtl. die Dateitrenner der OS-Logik anpassen
+	 * @param string
+	 * @return
+	 */
+	private String bestimmenDateistamm(String pfad) {
+
+		if (osIstLinux()) {
+			return "/home/programmieren/" + pfad.replace("\\", "/");
+		} else {
+			return "C:\\Users\\GuKKDevel\\Desktop\\Workspace\\" + pfad.replace("/", "\\");
+		}
+	}
+
+	/**
+	 * Feststellen ob unter Linux oder Windows gearbeitet wird
+	 */
+	private boolean osIstLinux() {
+		return System.getProperty("os.name").equals("Linux");
+	}
+
 }
