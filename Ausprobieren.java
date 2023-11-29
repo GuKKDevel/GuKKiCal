@@ -21,8 +21,8 @@ public class Ausprobieren {
 
 //	BufferedWriter iCalWriter = null;
 	PrintWriter iCalWriter = null;
-	String inPfad = machineHandling("TestFiles/iCalender/");
-	String ausPfad = machineHandling("TestFiles/iCalender/a");
+	String inPfad = machineHandling("testfiles/iCalender/");
+	String ausPfad = machineHandling("testfiles/iCalender/a");
 	String[] kalender = { "TestKalender", "Standard-KHG", "Google", "temp", "Abfallkalender" };
 //	String[] kalender = { "Abfallkalender" };
 

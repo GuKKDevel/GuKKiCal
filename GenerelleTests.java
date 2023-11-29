@@ -1,8 +1,8 @@
 
 
-public class GenaralTests {
+public class GenerelleTests {
 
-	public GenaralTests() {
+	public GenerelleTests() {
 		// TODO Automatisch generierter Konstruktorstub
 	}
 
