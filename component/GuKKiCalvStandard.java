@@ -1,10 +1,20 @@
-package main;
+package component;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class GuKKiCalcDaylight extends GuKKiCalComponent {
+import enumerations.*;
+import exceptions.*;
+
+/**
+ * 
+ * Die Klasse Standard ist eine Subklasse zu Timezone
+ * @author GuKKDevel
+ *
+ */
+class GuKKiCalvStandard extends GuKKiCalvComponent {
 
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
@@ -12,58 +22,64 @@ class GuKKiCalcDaylight extends GuKKiCalComponent {
 	/*
 	 * The following are REQUIRED, but MUST NOT occur more than once.
 	 */
-	GuKKiCalProperty DTSTART = null;
-	GuKKiCalProperty TZOFFSETTO = null;
-	GuKKiCalProperty TZOFFSETFROM = null;
+	GuKKiCalcProperty DTSTART = null;
+	GuKKiCalcProperty TZOFFSETTO = null;
+	GuKKiCalcProperty TZOFFSETFROM = null;
 	/*
 	 * The following is OPTIONAL, but SHOULD NOT occur more than once.
 	 */
-	GuKKiCalProperty RRULE = null;
+	GuKKiCalcProperty RRULE = null;
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 */
-	private ArrayList<GuKKiCalProperty> COMMENTSammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> RDATESammlung = new ArrayList<GuKKiCalProperty>();
-	private ArrayList<GuKKiCalProperty> TZNAMESammlung = new ArrayList<GuKKiCalProperty>();
+	private List<GuKKiCalcProperty> COMMENTSammlung = new LinkedList<GuKKiCalcProperty>();
+	private List<GuKKiCalcProperty> RDATESammlung = new LinkedList<GuKKiCalcProperty>();
+	private List<GuKKiCalcProperty> TZNAMESammlung = new LinkedList<GuKKiCalcProperty>();
 	/*
 	 * Here are the x-prop and iana-prop are to be stored
 	 */
-	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
-	private ArrayList<String> Restinformationen = new ArrayList<String>();
+	private List<String> X_PROPSammlung = new LinkedList<String>();
+	private List<String> Restinformationen = new LinkedList<String>();
 
-	protected GuKKiCalcDaylight() {
+
+	protected GuKKiCalvStandard() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		kennung = GuKKiCalcKennung.DAYLIGHT;
+		this.kennung = GuKKiCalcKennung.STANDARD;
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
 	}
-
+	protected void abschliessen(String pNAME, String pTZID) throws GuKKiCalException{
+		String tempDTSTART = this.DTSTART == null ? "" : this.DTSTART.getWert();
+		String tempTZOFFSETFROM = this.TZOFFSETFROM == null ? "" : this.TZOFFSETFROM.getWert();
+		this.schluessel = new GuKKiCalcSchluessel(this.kennung, pNAME,pTZID, tempDTSTART, tempTZOFFSETFROM);
+		status = GuKKiCalcStatus.GELESEN;
+	}
     /**
      * Mit dieser Methode werden die einzelnen kompletten (zusammengesetzten) Zeilen
      * untersucht und die jeweilige Eigenschaft wird abgespeichert
      * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      */
-    protected void neueZeile(String zeile) throws Exception {
+    protected void neueZeile(String zeile) {
         if (logger.isLoggable(logLevel)) {
             logger.log(logLevel, "begonnen");
         }
         if (zeile.length() > 7 && zeile.substring(0, 7).equals("COMMENT")) {
-            COMMENTSammlung.add(new GuKKiCalProperty(zeile, "COMMENT"));
+            COMMENTSammlung.add(new GuKKiCalcProperty(zeile, "COMMENT"));
         } else if (zeile.length() > 7 && zeile.substring(0, 7).equals("DTSTART")) {
-            DTSTART = new GuKKiCalProperty(zeile, "DTSTART");
+            DTSTART = new GuKKiCalcProperty(zeile, "DTSTART");
         } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("RDATE")) {
-            RDATESammlung.add(new GuKKiCalProperty(zeile, "RDATE"));
+            RDATESammlung.add(new GuKKiCalcProperty(zeile, "RDATE"));
         } else if (zeile.length() > 5 && zeile.substring(0, 5).equals("RRULE")) {
-            RRULE = new GuKKiCalProperty(zeile, "RRULE");
+            RRULE = new GuKKiCalcProperty(zeile, "RRULE");
         } else if (zeile.length() > 6 && zeile.substring(0, 6).equals("TZNAME")) {
-            TZNAMESammlung.add(new GuKKiCalProperty(zeile, "TZNAME"));
+            TZNAMESammlung.add(new GuKKiCalcProperty(zeile, "TZNAME"));
         } else if (zeile.length() > 12 && zeile.substring(0, 12).equals("TZOFFSETFROM")) {
-            TZOFFSETFROM = new GuKKiCalProperty(zeile, "TZOFFSETFROM");
+            TZOFFSETFROM = new GuKKiCalcProperty(zeile, "TZOFFSETFROM");
         } else if (zeile.length() > 10 && zeile.substring(0, 10).equals("TZOFFSETTO")) {
-            TZOFFSETTO = new GuKKiCalProperty(zeile, "TZOFFSETTO");
+            TZOFFSETTO = new GuKKiCalcProperty(zeile, "TZOFFSETTO");
  
 /* Abschluss und Fallbackparameter */
  
@@ -79,22 +95,22 @@ class GuKKiCalcDaylight extends GuKKiCalComponent {
  
     /**
      * Diese Methode kopiert die iCalendar-Komponente
-     * GuKKiCalcDaylight und gibt diese Kopie zurück
+     * GuKKiCalvStandard und gibt diese Kopie zurück
      * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      */
-    protected GuKKiCalcDaylight kopieren() {
+    protected GuKKiCalvStandard kopieren() {
         if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
-        GuKKiCalcDaylight temp = new GuKKiCalcDaylight();
+        GuKKiCalvStandard temp = new GuKKiCalvStandard();
         temp.kennung = this.kennung;
-        for (GuKKiCalProperty COMMENT : COMMENTSammlung) {
+        for (GuKKiCalcProperty COMMENT : COMMENTSammlung) {
             temp.COMMENTSammlung.add(COMMENT.kopieren());
         }
         temp.DTSTART = this.DTSTART == null ? null : this.DTSTART.kopieren();
-        for (GuKKiCalProperty RDATE : RDATESammlung) {
+        for (GuKKiCalcProperty RDATE : RDATESammlung) {
             temp.RDATESammlung.add(RDATE.kopieren());
         }
         temp.RRULE = this.RRULE == null ? null : this.RRULE.kopieren();
-        for (GuKKiCalProperty TZNAME : TZNAMESammlung) {
+        for (GuKKiCalcProperty TZNAME : TZNAMESammlung) {
             temp.TZNAMESammlung.add(TZNAME.kopieren());
         }
         temp.TZOFFSETFROM = this.TZOFFSETFROM == null ? null : this.TZOFFSETFROM.kopieren();
@@ -113,7 +129,7 @@ class GuKKiCalcDaylight extends GuKKiCalComponent {
         return temp;
     } // Ende kopieren V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
     /**
-     * Vergleichen aller Attribute der Komponente GuKKiCalcDaylight
+     * Vergleichen aller Attribute der Komponente GuKKiCalvStandard
      * Version V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
      *
      * @return boolean
@@ -123,7 +139,7 @@ class GuKKiCalcDaylight extends GuKKiCalComponent {
         if (!dasAndere.getClass().equals(this.getClass())) {
             return false;
         }
-        GuKKiCalcDaylight temp = (GuKKiCalcDaylight) dasAndere;
+        GuKKiCalvStandard temp = (GuKKiCalvStandard) dasAndere;
         if (temp.COMMENTSammlung.size() != this.COMMENTSammlung.size()) {
             return false;
         }
@@ -195,16 +211,16 @@ class GuKKiCalcDaylight extends GuKKiCalComponent {
         if (logger.isLoggable(logLevel)) {
             logger.log(logLevel, "begonnen");
         }
-        String componentDatenstrom = ausgebenInDatenstrom("BEGIN:DAYLIGHT");
-        for (GuKKiCalProperty COMMENT : COMMENTSammlung) {
+        String componentDatenstrom = ausgebenInDatenstrom("BEGIN:STANDARD");
+        for (GuKKiCalcProperty COMMENT : COMMENTSammlung) {
             componentDatenstrom += ausgebenInDatenstrom(COMMENT.ausgeben());
         }
         componentDatenstrom +=  this.DTSTART == null ? "" : ausgebenInDatenstrom(this.DTSTART.ausgeben());
-        for (GuKKiCalProperty RDATE : RDATESammlung) {
+        for (GuKKiCalcProperty RDATE : RDATESammlung) {
             componentDatenstrom += ausgebenInDatenstrom(RDATE.ausgeben());
         }
         componentDatenstrom +=  this.RRULE == null ? "" : ausgebenInDatenstrom(this.RRULE.ausgeben());
-        for (GuKKiCalProperty TZNAME : TZNAMESammlung) {
+        for (GuKKiCalcProperty TZNAME : TZNAMESammlung) {
             componentDatenstrom += ausgebenInDatenstrom(TZNAME.ausgeben());
         }
         componentDatenstrom +=  this.TZOFFSETFROM == null ? "" : ausgebenInDatenstrom(this.TZOFFSETFROM.ausgeben());
@@ -218,12 +234,24 @@ class GuKKiCalcDaylight extends GuKKiCalComponent {
         for (String Restinformation : this.Restinformationen) {
             componentDatenstrom += ausgebenInDatenstrom(Restinformation);
         }
-        componentDatenstrom += ausgebenInDatenstrom("END:DAYLIGHT");
+        componentDatenstrom += ausgebenInDatenstrom("END:STANDARD");
         if (logger.isLoggable(logLevel)) {
             logger.log(logLevel, "beendet");
         }
         return componentDatenstrom;
     } // Ende ausgeben V 0.0.3  (RFC 5545, RFC 7968) 2021-12-22T15-12-22
-    protected void abschliessen(){status = GuKKiCalcStatus.GELESEN;}
- 
+    /**
+	 * Gibt Identifikationsdaten der VTIMEZONE-Komponente aus
+	 */
+    @Override
+	public String toString() {
+		return this.schluessel.toString();
+	}
+
+	/**
+	 * Gibt einige Daten der VTIMEZONE-Komponente aus
+	 */
+	public String toString(String ausgabeLevel) {
+		return "Standard-Identifikation=" + this.toString()+nz;
+	}
 }

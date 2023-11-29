@@ -1,5 +1,5 @@
-package main;
+package enumerations;
 
-enum GuKKiCalcKennung {
+public enum GuKKiCalcKennung {
 	CALENDAR, EVENT, TODO, JOURNAL, ALARM, TIMEZONE, DAYLIGHT, STANDARD, FREEBUSY, PROPERTY, UNDEFINIERT
 }

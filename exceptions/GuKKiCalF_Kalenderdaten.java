@@ -6,8 +6,8 @@ package exceptions;
 public class GuKKiCalF_Kalenderdaten extends GuKKiCalFehler {
 
 	public GuKKiCalF_Kalenderdaten() {}
-	public GuKKiCalF_Kalenderdaten(String fehlerGrund) {
-		super (fehlerGrund);
-	}
+//	public GuKKiCalF_Kalenderdaten(String fehlerGrund) {
+//		super (fehlerGrund);
+//	}
 
 }

@@ -8,7 +8,7 @@ package exceptions;
  *
  * Diese Exceptions dienen rein der Information und müssen nicht behandelt werden
  */
-public class GuKKiCalnformation
-        extends Exception {
+public class GuKKiCalInformation
+        extends GuKKiCalException {
 
 }

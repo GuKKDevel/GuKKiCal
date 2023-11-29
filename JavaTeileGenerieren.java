@@ -19,7 +19,7 @@ public class JavaTeileGenerieren {
 //			+------------+---------+-------------------------+-------------------+
 //			| Component  | Status  | Reference       	     | Java-Klasse		 |	
 //			+------------+---------+-------------------------+-------------------+
-//			|VCALENDAR 	 | Current | RFC 5545, Section 3.4   | GuKKiCaliCalendar |
+//			|VCALENDAR 	 | Current | RFC 5545, Section 3.4   | GuKKiCalvCalendar |
 //			+------------+---------+-------------------------+-------------------+
 //			|VEVENT    	 | Current | RFC 5545, Section 3.6.1 | GuKKiCalvEvent    |
 //			+------------+---------+-------------------------+-------------------+
@@ -31,9 +31,9 @@ public class JavaTeileGenerieren {
 //			+------------+---------+-------------------------+-------------------+
 //			|VTIMEZONE   | Current | RFC 5545, Section 3.6.5 | GuKKiCalvTimezone |
 //			+------------+---------+-------------------------+-------------------+
-//			|DAYLIGHT    | Current | RFC 5545, Section 3.6.5 | GuKKiCalcDaylight |
+//			|DAYLIGHT    | Current | RFC 5545, Section 3.6.5 | GuKKiCalvDaylight |
 //			+------------+---------+-------------------------+-------------------+
-//			|STANDARD    | Current | RFC 5545, Section 3.6.5 | GuKKiCalcStandard |
+//			|STANDARD    | Current | RFC 5545, Section 3.6.5 | GuKKiCalvStandard |
 //			+------------+---------+-------------------------+-------------------+
 //			|VFREEBUSY   | Current | RFC 5545, Section 3.6.4 | GuKKiCalvFreeBusy |
 //			+------------+---------+-------------------------+-------------------+
@@ -45,8 +45,8 @@ public class JavaTeileGenerieren {
 			{"3", "GuKKiCalvJournal", "VJOURNAL","vJournal","4"},
 			{"4", "GuKKiCalvAlarm", "VALARM", "VALARM","4"},
 			{"5", "GuKKiCalvTimezone", "VTIMEZONE","vTimezone","4"},
-			{"6", "GuKKiCalcDaylight","DAYLIGHT","cDaylight","4"},
-			{"7", "GuKKiCalcStandard","STANDARD","cStandard","4"},
+			{"6", "GuKKiCalvDaylight","DAYLIGHT","cDaylight","4"},
+			{"7", "GuKKiCalvStandard","STANDARD","cStandard","4"},
 			{"8", "GuKKiCalvFreeBusy","VFREEBUSY","vFreeBusy","4"}
 	};
 	
@@ -57,7 +57,7 @@ public class JavaTeileGenerieren {
 			{{"vAlarm","GuKKiCalvAlarm", "VALARM"}},
 			{{"vAlarm","GuKKiCalvAlarm", "VALARM"}},
 			{},
-			{{"cDaylight","GuKKiCalcDaylight","DAYLIGHT"},{"cStandard","GuKKiCalcStandard","STANDARD"}},
+			{{"cDaylight","GuKKiCalvDaylight","DAYLIGHT"},{"cStandard","GuKKiCalvStandard","STANDARD"}},
 			{},
 			{},
 			{}
@@ -69,7 +69,7 @@ public class JavaTeileGenerieren {
 	
 //			Properties Registry
 //		
-//			RFC 5545, RFC 7986
+//			RFC 5545, RFC 7808. RFC 7986
 //		
 //			+-------------------+---------------+-------------------------------+-------------------+
 //			| Property		   	| Status		| Reference						| 					|
@@ -169,11 +169,15 @@ public class JavaTeileGenerieren {
 //			+-------------------+---------------+-------------------------------+-------------------+
 //			| TZID				| Current		| RFC 5545, Section 3.8.3.1 	| TZID				|
 //			+-------------------+---------------+-------------------------------+-------------------+
+//			| TZID-ALIAS-OF		| Current		| RFC 7808, Section 7.2		 	| TZIDALIASOF		|
+//			+-------------------+---------------+-------------------------------+-------------------+
 //			| TZNAME			| Current		| RFC 5545, Section 3.8.3.2 	| TZNAME			|
 //			+-------------------+---------------+-------------------------------+-------------------+
 //			| TZOFFSETFROM		| Current		| RFC 5545, Section 3.8.3.3 	| TZOFFSETFROM		|
 //			+-------------------+---------------+-------------------------------+-------------------+
 //			| TZOFFSETTO		| Current		| RFC 5545, Section 3.8.3.4 	| TZOFFSETTO		|
+//			+-------------------+---------------+-------------------------------+-------------------+
+//			| TZUNTIL			| Current		| RFC 7808, Section 7.1		 	| TZURL				|
 //			+-------------------+---------------+-------------------------------+-------------------+
 //			| TZURL				| Current		| RFC 5545, Section 3.8.3.5 	| TZURL				|
 //			+-------------------+---------------+-------------------------------+-------------------+
@@ -287,6 +291,8 @@ public class JavaTeileGenerieren {
 //			+-------------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 //			| TZID				|   		|			|			|			|			|	1:1		|			|			|			|
 //			+-------------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+//			| TZIDALIASOF		|   		|			|			|			|			|	0:n		|			|			|			|
+//			+-------------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 //			| TZNAME			|   		|			|			|			|			|			|	0:n		|	0:n		|			|
 //			+-------------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 //			| TZOFFSETFROM		|   		|			|			|			|			|			|	1:1		|	1:1		|			|
@@ -294,6 +300,8 @@ public class JavaTeileGenerieren {
 //			| TZOFFSETTO		|   		|			|			|			|			|			|	1:1		|	1:1		|			|
 //			+-------------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 //			| TZURL				|   		|			|			|			|			|	0:1		|			|			|			|
+//			+-------------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+//			| TZUNTIL			|   		|			|			|			|			|	0:1		|			|			|			|
 //			+-------------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 //			| UID				|   0:1		|	1:1		|	1:1		|	1:1		|			|			|			|			|	1:1		|
 //			+-------------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
@@ -360,10 +368,12 @@ public class JavaTeileGenerieren {
 			{"-","1","-","-","-","-","-","-","-","TRANSP","TRANSP"},
 			{"-","-","-","-","1","-","-","-","-","TRIGGER","TRIGGER"},
 			{"-","-","-","-","-","1","-","-","-","TZID","TZID"},
+			{"-","-","-","-","-","2","-","-","-","TZIDALIASOF","TZID-ALIAS-OF"},
 			{"-","-","-","-","-","-","2","2","-","TZNAME","TZNAME"},
 			{"-","-","-","-","-","-","1","1","-","TZOFFSETFROM","TZOFFSETFROM"},
 			{"-","-","-","-","-","-","1","1","-","TZOFFSETTO","TZOFFSETTO"},
 			{"-","-","-","-","-","1","-","-","-","TZURL","TZURL"},
+			{"-","-","-","-","-","1","-","-","-","TZUNTIL","TZUNTIL"},
 			{"1","1","1","1","-","-","-","-","1","UID","UID"},
 			{"1","1","1","1","-","-","-","-","1","URL","URL"},
 			{"1","-","-","-","-","-","-","-","-","VERSION","VERSION"}
@@ -468,6 +478,7 @@ public class JavaTeileGenerieren {
 	
 	/* @formatter:on */
 
+
 	String verzeichnis = bestimmenDateistamm("Git-Repositories/GuKKiCal/IgnoreForGit/");
 	String version = "V 0.0.3 " + " (RFC 5545, RFC 7968) "
 			+ new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date());
@@ -490,13 +501,14 @@ public class JavaTeileGenerieren {
 	}
 
 	private void generierenPropertyMethodenteile() {
-		System.out.println("Generieren der Codebestandteile für Klasse GuKKiCalProperty " + version);
+		System.out.println("Generieren der Codebestandteile für Klasse GuKKiCalcProperty " + version);
 
 		try (PrintWriter pWriter = new PrintWriter(
-				new FileWriter(new File(verzeichnis + "GuKKiCalProperty-generiert")));) {
 
-			System.out.println("Generieren der Methode parameterBestimmen für GuKKiCalProperty");
-
+			new FileWriter(new File(verzeichnis + "GuKKiCalcProperty-generiert")));) {
+			
+			System.out.println("Generieren der Methode parameterBestimmen für GuKKiCalcProperty");
+			
 			pWriter.println("    /**");
 			pWriter.println("     * übertragen der Parameter in das korrekte Feld");
 			pWriter.println("     * Version " + version);
@@ -527,20 +539,22 @@ public class JavaTeileGenerieren {
 			pWriter.println("            this.Restinformationen.add(parameter + trenner);");
 			pWriter.println("        }");
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
-			pWriter.println("    } // Ende der generierten Methode parameterBestimmen für GuKKiCalProperty " + version);
+			pWriter.println("    } // Ende der generierten Methode parameterBestimmen für GuKKiCalcProperty " + version);
 			pWriter.println(" ");
 
-			System.out.println("Generieren der Methode kopieren für GuKKiCalProperty");
+			
+			System.out.println("Generieren der Methode kopieren für GuKKiCalcProperty");
+
 
 			pWriter.println("    /**");
 			pWriter.println("     * Kopieren aller Parameter der Eigenschaft");
 			pWriter.println("     * Version " + version);
 			pWriter.println("     *");
-			pWriter.println("     * @return GuKKiCalProperty");
+			pWriter.println("     * @return GuKKiCalcProperty");
 			pWriter.println("     */");
-			pWriter.println("    protected GuKKiCalProperty kopieren() {");
+			pWriter.println("    protected GuKKiCalcProperty kopieren() {");
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"begonnen\");}");
-			pWriter.println("        GuKKiCalProperty temp = new GuKKiCalProperty();");
+			pWriter.println("        GuKKiCalcProperty temp = new GuKKiCalcProperty();");
 			pWriter.println("        temp.literal = this.literal;");
 			pWriter.println("        temp.wert = this.wert;");
 			for (String[] strings : parameter) {
@@ -566,10 +580,12 @@ public class JavaTeileGenerieren {
 			pWriter.println("        temp.status = GuKKiCalcStatus.KOPIERT;");
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("        return temp;");
-			pWriter.println("    } // Ende der generierten Methode kopieren für GuKKiCalProperty " + version);
+			pWriter.println("    } // Ende der generierten Methode kopieren für GuKKiCalcProperty " + version);
 			pWriter.println(" ");
 
-			System.out.println("Generieren der Methode istGleich für GuKKiCalProperty");
+
+		System.out.println("Generieren der Methode istGleich für GuKKiCalcProperty");
+
 
 			pWriter.println("    /**");
 			pWriter.println("     * Vergleichen aller Parameter des Attributs");
@@ -582,7 +598,7 @@ public class JavaTeileGenerieren {
 			pWriter.println("        if (!dasAndere.getClass().equals(this.getClass())) {");
 			pWriter.println("            return false;");
 			pWriter.println("        }");
-			pWriter.println("        GuKKiCalProperty temp = (GuKKiCalProperty) dasAndere;");
+			pWriter.println("        GuKKiCalcProperty temp = (GuKKiCalcProperty) dasAndere;");
 			for (String[] strings : parameter) {
 				if (strings[0].equals("1")) {
 					pWriter.println(
@@ -625,10 +641,10 @@ public class JavaTeileGenerieren {
 			pWriter.println("        }");
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("        return true;");
-			pWriter.println("    } // Ende der generierten Methode istGleich für GuKKiCalProperty " + version);
+			pWriter.println("    } // Ende der generierten Methode istGleich für GuKKiCalcProperty " + version);
 			pWriter.println(" ");
 
-			System.out.println("Generieren der Methode ausgeben für GuKKiCalProperty");
+			System.out.println("Generieren der Methode ausgeben für GuKKiCalcProperty");
 
 			pWriter.println("    /**");
 			pWriter.println("     * Datenstromausgabe aller Parameter des Attributs");
@@ -696,10 +712,12 @@ public class JavaTeileGenerieren {
 			pWriter.println("        }");
 			pWriter.println("        if (logger.isLoggable(logLevel)) {logger.log(logLevel, \"beendet\");}");
 			pWriter.println("        return this.literal + schreibText + \":\" + this.wert;");
-			pWriter.println("    } // Ende der generierten Methode ausgeben für GuKKiCalProperty " + version);
+			pWriter.println("    } // Ende der generierten Methode ausgeben für GuKKiCalcProperty " + version);
 			pWriter.println(" ");
 
-			System.out.println("Generieren der Getter- und Setter-Methoden für GuKKiCalProperty");
+
+			System.out.println("Generieren der Getter- und Setter-Methoden für GuKKiCalcProperty");
+			
 
 			for (String[] strings : parameter) {
 				if (strings[0].equals("1")) {
@@ -816,7 +834,7 @@ public class JavaTeileGenerieren {
 						pWriter.println(einzug + "    " + elseLit + "if (zeile.length() > " + property[j][10].length()
 								+ " && zeile.substring(0, " + property[j][10].length() + ").equals(\"" + property[j][10]
 								+ "\")) {");
-						pWriter.println(einzug + "        " + property[j][9] + " = new GuKKiCalProperty(zeile, \""
+						pWriter.println(einzug + "        " + property[j][9] + " = new GuKKiCalcProperty(zeile, \""
 								+ property[j][10] + "\");");
 						elseLit = "} else ";
 					} else if (property[j][i].equals("2")) {
@@ -824,7 +842,7 @@ public class JavaTeileGenerieren {
 								+ " && zeile.substring(0, " + property[j][10].length() + ").equals(\"" + property[j][10]
 								+ "\")) {");
 						pWriter.println(einzug + "        " + property[j][9]
-								+ "Sammlung.add(new GuKKiCalProperty(zeile, \"" + property[j][10] + "\"));");
+								+ "Sammlung.add(new GuKKiCalcProperty(zeile, \"" + property[j][10] + "\"));");
 						elseLit = "} else ";
 					} else if (property[j][i].equals("8")) {
 						pWriter.println(einzug + "    " + elseLit + " if (zeile.length() > " + property[j][10].length()
@@ -880,7 +898,7 @@ public class JavaTeileGenerieren {
 						pWriter.println(einzug + "    temp." + property[j][9] + " = this." + property[j][9]
 								+ " == null ? null : this." + property[j][9] + ".kopieren();");
 					} else if (property[j][i].equals("2")) {
-						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
+						pWriter.println(einzug + "    for (GuKKiCalcProperty " + property[j][9] + " : " + property[j][9]
 								+ "Sammlung) {");
 						pWriter.println(einzug + "        temp." + property[j][9] + "Sammlung.add(" + property[j][9]
 								+ ".kopieren());");
@@ -1046,13 +1064,13 @@ public class JavaTeileGenerieren {
 						pWriter.println(einzug + "    componentDatenstrom +=  this." + property[j][9]
 								+ " == null ? \"\" : ausgebenInDatenstrom(this." + property[j][9] + ".ausgeben());");
 					} else if (property[j][i].equals("2")) {
-						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
+						pWriter.println(einzug + "    for (GuKKiCalcProperty " + property[j][9] + " : " + property[j][9]
 								+ "Sammlung) {");
 						pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(" + property[j][9]
 								+ ".ausgeben());");
 						pWriter.println(einzug + "    }");
 					} else if (property[j][i].equals("8")) {
-						pWriter.println(einzug + "    for (GuKKiCalProperty " + property[j][9] + " : " + property[j][9]
+						pWriter.println(einzug + "    for (GuKKiCalcProperty " + property[j][9] + " : " + property[j][9]
 								+ "Sammlung) {");
 						pWriter.println(einzug + "        componentDatenstrom += ausgebenInDatenstrom(ausgeben(this."
 								+ property[j][9] + "));");

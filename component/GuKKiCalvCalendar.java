@@ -1,12 +1,16 @@
-package main;
-
-import exceptions.*;
+package component;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import enumerations.*;
+import exceptions.*;
 
 /**
  * Die Klasse GuKKiCalvEvent enthält alle Daten für eine VEVENT-Komponente im iCal Format
@@ -16,7 +20,7 @@ import java.util.logging.Logger;
  * @formatter:off
  * 
  * 
- *         Die Klasse GuKKiCaliCalendar enthält alle Daten für einen Kalender im
+ *         Die Klasse GuKKiCalvCalendar enthält alle Daten für einen Kalender im
  *         iCal Format
  * 
  *         Definition nach RFC 5545 und Ergänzung nach RFC 7986
@@ -64,14 +68,14 @@ import java.util.logging.Logger;
  * @formatter:on
  *	
  */
-public class GuKKiCaliCalendar extends GuKKiCalComponent {
+public class GuKKiCalvCalendar extends GuKKiCalvComponent {
 	Logger logger = Logger.getLogger("GuKKiCal");
 	Level logLevel = Level.FINEST;
 
 	/*
 	 * Daten für die KalenderDatei
 	 */
-	String iCalendarName = null;
+	String vCalendarName = null;
 	String iCalendarPfad = null;
 
 	/* Daten für das VCALENDAR-Element */
@@ -79,66 +83,50 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 	/*
 	 * The following are REQUIRED, but MUST NOT occur more than once.
 	 */
-	GuKKiCalProperty PRODID = null;
-	GuKKiCalProperty VERSION = null;
-	GuKKiCalProperty UID = null;
+	GuKKiCalcProperty PRODID = null;
+	GuKKiCalcProperty VERSION = null;
+	GuKKiCalcProperty UID = null;
 	/*
 	 * The following are OPTIONAL, but MUST NOT occur more than once.
 	 */
-	GuKKiCalProperty CALSCALE = null;
-	GuKKiCalProperty COLOR = null;
-	GuKKiCalProperty LAST_MOD = null;
-	GuKKiCalProperty METHOD = null;
-	GuKKiCalProperty REFRESH = null;
-	GuKKiCalProperty SOURCE = null;
-	GuKKiCalProperty URL = null;
+	GuKKiCalcProperty CALSCALE = null;
+	GuKKiCalcProperty COLOR = null;
+	GuKKiCalcProperty LAST_MOD = null;
+	GuKKiCalcProperty METHOD = null;
+	GuKKiCalcProperty REFRESH = null;
+	GuKKiCalcProperty SOURCE = null;
+	GuKKiCalcProperty URL = null;
 	/*
 	 * The following are OPTIONAL, and MAY occur more than once.
 	 */
-	ArrayList<GuKKiCalProperty> CATEGORIESSammlung = new ArrayList<GuKKiCalProperty>();
-	ArrayList<GuKKiCalProperty> DESCRIPTIONSammlung = new ArrayList<GuKKiCalProperty>();
-	ArrayList<GuKKiCalProperty> IMAGESammlung = new ArrayList<GuKKiCalProperty>();
-	ArrayList<GuKKiCalProperty> NAMESammlung = new ArrayList<GuKKiCalProperty>();
+	List<GuKKiCalcProperty> CATEGORIESSammlung = new LinkedList<GuKKiCalcProperty>();
+	List<GuKKiCalcProperty> DESCRIPTIONSammlung = new LinkedList<GuKKiCalcProperty>();
+	List<GuKKiCalcProperty> IMAGESammlung = new LinkedList<GuKKiCalcProperty>();
+	List<GuKKiCalcProperty> NAMESammlung = new LinkedList<GuKKiCalcProperty>();
 	/*
 	 * Here are the x-prop and iana-prop are to be stored
 	 */
-	private ArrayList<String> X_PROPSammlung = new ArrayList<String>();
-	private ArrayList<String> Restinformationen = new ArrayList<String>();
+	private List<String> X_PROPSammlung = new LinkedList<String>();
+	private List<String> Restinformationen = new LinkedList<String>();
 	/*
 	 * Sammlungen der Kalender-Komponenten
 	 */
-	ArrayList<GuKKiCalvEvent> vEventSammlung = new ArrayList<GuKKiCalvEvent>();
-	ArrayList<GuKKiCalvTodo> vTodoSammlung = new ArrayList<GuKKiCalvTodo>();
-	ArrayList<GuKKiCalvJournal> vJournalSammlung = new ArrayList<GuKKiCalvJournal>();
-	ArrayList<GuKKiCalvFreeBusy> vFreeBusySammlung = new ArrayList<GuKKiCalvFreeBusy>();
-	ArrayList<GuKKiCalvTimezone> vTimezoneSammlung = new ArrayList<GuKKiCalvTimezone>();
+	List<GuKKiCalvComponent> vComponentSammlung = new LinkedList<GuKKiCalvComponent>();
+
+	List<GuKKiCalvEvent> vEventSammlung = new LinkedList<GuKKiCalvEvent>();
+	List<GuKKiCalvTodo> vTodoSammlung = new LinkedList<GuKKiCalvTodo>();
+	List<GuKKiCalvJournal> vJournalSammlung = new LinkedList<GuKKiCalvJournal>();
+	List<GuKKiCalvFreeBusy> vFreeBusySammlung = new LinkedList<GuKKiCalvFreeBusy>();
+	List<GuKKiCalvTimezone> vTimezoneSammlung = new LinkedList<GuKKiCalvTimezone>();
 	/*
 	 * Aufbereitete Komponenten
 	 */
 	HashMap<String, GuKKiCalvTimezone> vTimezones = new HashMap<String, GuKKiCalvTimezone>();
-//	/*
-//	 * Generelle Verarbeitungsvariablen
-//	 */
-//	String nz = "\n";
-//	String zeile = "";
-//	/*
-//	 * Hilfsdaten zur Weiterverarbeitung der Kalenderinformationen
-//	 */
-//	String vComponentDaten = "";
-//	boolean iCalendarBearbeiten = false;
-//	String iCalendarDaten = "";
-//	boolean vEventDatenSammeln = false;
-//	ArrayList<String> vEventDatenArray = new ArrayList<String>();
-//	boolean vTodoDatenSammeln = false;
-//	ArrayList<String> vTodoDatenArray = new ArrayList<String>();
-//	boolean vJournalDatenSammeln = false;
-//	ArrayList<String> vJournalDatenArray = new ArrayList<String>();
-//	boolean vFreeBusyDatenSammeln = false;
-//	ArrayList<String> vFreeBusyDatenArray = new ArrayList<String>();
-//	boolean vTimezoneDatenSammeln = false;
-//	ArrayList<String> vTimezoneDatenArray = new ArrayList<String>();
+	/*
+	 * Generelle Verarbeitungsvariablen
+	 */
 
-	public GuKKiCaliCalendar() {
+	public GuKKiCalvCalendar() throws GuKKiCalException {
 		/*	@formatter:off */
 		if (logger.isLoggable(logLevel)) {logger.log(logLevel, "begonnen");}
 		this.kennung = GuKKiCalcKennung.CALENDAR;
@@ -150,29 +138,53 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 	 * Mit dieser Methode wird die Zeilenweise Bearbeitung des Kalenders
 	 * beendet.
 	 * 
+	 * @throws Exception
+	 * 
 	 */
-	protected void abschliessen(String iCalendarName, String iCalendarPfad) {
+	public void abschliessen(String vCalendarName, String iCalendarPfad) throws Exception {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
 		this.iCalendarPfad = this.SOURCE == null ? iCalendarPfad : this.SOURCE.getWert();
-		this.iCalendarName = "";
+		this.vCalendarName = "";
 		boolean langDE = false;
 		boolean langEN = false;
-		for (GuKKiCalProperty NAME : NAMESammlung) {
+		for (GuKKiCalcProperty NAME : NAMESammlung) {
 			if (NAME.getLANGUAGE().equals("de")) {
-				this.iCalendarName = NAME.getWert();
+				this.vCalendarName = NAME.getWert();
 				langDE = true;
 				break;
-			} else if (NAME.getLANGUAGE().equals("en")) {
-				this.iCalendarName = NAME.getWert();
+			} else if (NAME.getLANGUAGE().equals("en") && !langDE) {
+				this.vCalendarName = NAME.getWert();
 				langEN = true;
 			}
 		}
-		if (this.iCalendarName.equals("")) {
-			this.iCalendarName = iCalendarName;
+		if (this.vCalendarName.equals("")) {
+			this.vCalendarName = vCalendarName;
 		}
-		this.schluessel = this.iCalendarName;
+		this.schluessel = new GuKKiCalcSchluessel(kennung, this.vCalendarName);
+		for (Iterator iterator = vComponentSammlung.iterator(); iterator.hasNext();) {
+			GuKKiCalvComponent vComponent = (GuKKiCalvComponent) iterator.next();
+			switch (vComponent.kennung) {
+				case EVENT:
+					GuKKiCalvEvent vEvent = (GuKKiCalvEvent) vComponent;
+					vEvent.abschliessen(this.vCalendarName);
+					break;
+				case TODO:
+					GuKKiCalvTodo vTodo = (GuKKiCalvTodo) vComponent;
+					vTodo.abschliessen(this.vCalendarName);
+					break;
+				case JOURNAL:
+					GuKKiCalvJournal vJournal = (GuKKiCalvJournal) vComponent;
+					vJournal.abschliessen(this.vCalendarName);
+					break;
+				case TIMEZONE:
+					GuKKiCalvTimezone vTimezone = (GuKKiCalvTimezone) vComponent;
+					vTimezone.abschliessen(this.vCalendarName);
+					break;
+			}
+
+		}
 		status = GuKKiCalcStatus.GELESEN;
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
@@ -184,15 +196,16 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 	 * Zeilen untersucht und die jeweilige Eigenschaft wird abgespeichert
 	 * Version V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 	 */
-	protected void neueZeile(String zeile) throws Exception {
+	public void neueZeile(String zeile) throws GuKKiCalException {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
 		if (bearbeiteSubKomponente) {
 			if (vEventBearbeiten) {
 				if (zeile.equals("END:VEVENT")) {
-					vEventNeu.abschliessen();
+//					vEventNeu.abschliessen();
 					vEventSammlung.add(vEventNeu);
+					vComponentSammlung.add(vEventNeu);
 					vEventBearbeiten = false;
 					bearbeiteSubKomponente = false;
 				} else {
@@ -200,8 +213,9 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 				}
 			} else if (vTodoBearbeiten) {
 				if (zeile.equals("END:VTODO")) {
-					vTodoNeu.abschliessen();
+//					vTodoNeu.abschliessen();
 					vTodoSammlung.add(vTodoNeu);
+					vComponentSammlung.add(vTodoNeu);
 					vTodoBearbeiten = false;
 					bearbeiteSubKomponente = false;
 				} else {
@@ -209,8 +223,9 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 				}
 			} else if (vJournalBearbeiten) {
 				if (zeile.equals("END:VJOURNAL")) {
-					vJournalNeu.abschliessen();
+//					vJournalNeu.abschliessen();
 					vJournalSammlung.add(vJournalNeu);
+					vComponentSammlung.add(vJournalNeu);
 					vJournalBearbeiten = false;
 					bearbeiteSubKomponente = false;
 				} else {
@@ -218,8 +233,9 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 				}
 			} else if (vTimezoneBearbeiten) {
 				if (zeile.equals("END:VTIMEZONE")) {
-					vTimezoneNeu.abschliessen();
+//					vTimezoneNeu.abschliessen();
 					vTimezoneSammlung.add(vTimezoneNeu);
+					vComponentSammlung.add(vTimezoneNeu);
 					vTimezoneBearbeiten = false;
 					bearbeiteSubKomponente = false;
 				} else {
@@ -227,8 +243,9 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 				}
 			} else if (vFreeBusyBearbeiten) {
 				if (zeile.equals("END:VFREEBUSY")) {
-					vFreeBusyNeu.abschliessen();
+//					vFreeBusyNeu.abschliessen();
 					vFreeBusySammlung.add(vFreeBusyNeu);
+					vComponentSammlung.add(vFreeBusyNeu);
 					vFreeBusyBearbeiten = false;
 					bearbeiteSubKomponente = false;
 				} else {
@@ -257,33 +274,33 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 				vFreeBusyBearbeiten = true;
 				bearbeiteSubKomponente = true;
 			} else if (zeile.length() > 8 && zeile.substring(0, 8).equals("CALSCALE")) {
-				CALSCALE = new GuKKiCalProperty(zeile, "CALSCALE");
+				CALSCALE = new GuKKiCalcProperty(zeile, "CALSCALE");
 			} else if (zeile.length() > 10 && zeile.substring(0, 10).equals("CATEGORIES")) {
-				CATEGORIESSammlung.add(new GuKKiCalProperty(zeile, "CATEGORIES"));
+				CATEGORIESSammlung.add(new GuKKiCalcProperty(zeile, "CATEGORIES"));
 			} else if (zeile.length() > 5 && zeile.substring(0, 5).equals("COLOR")) {
-				COLOR = new GuKKiCalProperty(zeile, "COLOR");
+				COLOR = new GuKKiCalcProperty(zeile, "COLOR");
 			} else if (zeile.length() > 11 && zeile.substring(0, 11).equals("DESCRIPTION")) {
-				DESCRIPTIONSammlung.add(new GuKKiCalProperty(zeile, "DESCRIPTION"));
+				DESCRIPTIONSammlung.add(new GuKKiCalcProperty(zeile, "DESCRIPTION"));
 			} else if (zeile.length() > 5 && zeile.substring(0, 5).equals("IMAGE")) {
-				IMAGESammlung.add(new GuKKiCalProperty(zeile, "IMAGE"));
+				IMAGESammlung.add(new GuKKiCalcProperty(zeile, "IMAGE"));
 			} else if (zeile.length() > 13 && zeile.substring(0, 13).equals("LAST-MODIFIED")) {
-				LAST_MOD = new GuKKiCalProperty(zeile, "LAST-MODIFIED");
+				LAST_MOD = new GuKKiCalcProperty(zeile, "LAST-MODIFIED");
 			} else if (zeile.length() > 6 && zeile.substring(0, 6).equals("METHOD")) {
-				METHOD = new GuKKiCalProperty(zeile, "METHOD");
+				METHOD = new GuKKiCalcProperty(zeile, "METHOD");
 			} else if (zeile.length() > 4 && zeile.substring(0, 4).equals("NAME")) {
-				NAMESammlung.add(new GuKKiCalProperty(zeile, "NAME"));
+				NAMESammlung.add(new GuKKiCalcProperty(zeile, "NAME"));
 			} else if (zeile.length() > 6 && zeile.substring(0, 6).equals("PRODID")) {
-				PRODID = new GuKKiCalProperty(zeile, "PRODID");
+				PRODID = new GuKKiCalcProperty(zeile, "PRODID");
 			} else if (zeile.length() > 16 && zeile.substring(0, 16).equals("REFRESH-INTERVAL")) {
-				REFRESH = new GuKKiCalProperty(zeile, "REFRESH-INTERVAL");
+				REFRESH = new GuKKiCalcProperty(zeile, "REFRESH-INTERVAL");
 			} else if (zeile.length() > 6 && zeile.substring(0, 6).equals("SOURCE")) {
-				SOURCE = new GuKKiCalProperty(zeile, "SOURCE");
+				SOURCE = new GuKKiCalcProperty(zeile, "SOURCE");
 			} else if (zeile.length() > 3 && zeile.substring(0, 3).equals("UID")) {
-				UID = new GuKKiCalProperty(zeile, "UID");
+				UID = new GuKKiCalcProperty(zeile, "UID");
 			} else if (zeile.length() > 3 && zeile.substring(0, 3).equals("URL")) {
-				URL = new GuKKiCalProperty(zeile, "URL");
+				URL = new GuKKiCalcProperty(zeile, "URL");
 			} else if (zeile.length() > 7 && zeile.substring(0, 7).equals("VERSION")) {
-				VERSION = new GuKKiCalProperty(zeile, "VERSION");
+				VERSION = new GuKKiCalcProperty(zeile, "VERSION");
 
 				/* Abschluss und Fallbackparameter */
 
@@ -299,30 +316,30 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 	} // Ende neueZeile V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
-	 * Diese Methode kopiert die iCalendar-Komponente GuKKiCaliCalendar und gibt
+	 * Diese Methode kopiert die vCalendar-Komponente GuKKiCalvCalendar und gibt
 	 * diese Kopie zurück Version V 0.0.3 (RFC 5545, RFC 7968)
 	 * 2021-12-22T15-12-22
 	 */
-	protected GuKKiCaliCalendar kopieren() {
+	protected GuKKiCalvCalendar kopieren() throws GuKKiCalException {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		GuKKiCaliCalendar temp = new GuKKiCaliCalendar();
+		GuKKiCalvCalendar temp = new GuKKiCalvCalendar();
 		temp.kennung = this.kennung;
 		temp.CALSCALE = this.CALSCALE == null ? null : this.CALSCALE.kopieren();
-		for (GuKKiCalProperty CATEGORIES : CATEGORIESSammlung) {
+		for (GuKKiCalcProperty CATEGORIES : CATEGORIESSammlung) {
 			temp.CATEGORIESSammlung.add(CATEGORIES.kopieren());
 		}
 		temp.COLOR = this.COLOR == null ? null : this.COLOR.kopieren();
-		for (GuKKiCalProperty DESCRIPTION : DESCRIPTIONSammlung) {
+		for (GuKKiCalcProperty DESCRIPTION : DESCRIPTIONSammlung) {
 			temp.DESCRIPTIONSammlung.add(DESCRIPTION.kopieren());
 		}
-		for (GuKKiCalProperty IMAGE : IMAGESammlung) {
+		for (GuKKiCalcProperty IMAGE : IMAGESammlung) {
 			temp.IMAGESammlung.add(IMAGE.kopieren());
 		}
 		temp.LAST_MOD = this.LAST_MOD == null ? null : this.LAST_MOD.kopieren();
 		temp.METHOD = this.METHOD == null ? null : this.METHOD.kopieren();
-		for (GuKKiCalProperty NAME : NAMESammlung) {
+		for (GuKKiCalcProperty NAME : NAMESammlung) {
 			temp.NAMESammlung.add(NAME.kopieren());
 		}
 		temp.PRODID = this.PRODID == null ? null : this.PRODID.kopieren();
@@ -363,7 +380,7 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 	} // Ende kopieren V 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 
 	/**
-	 * Vergleichen aller Attribute der Komponente GuKKiCaliCalendar Version V
+	 * Vergleichen aller Attribute der Komponente GuKKiCalvCalendar Version V
 	 * 0.0.3 (RFC 5545, RFC 7968) 2021-12-22T15-12-22
 	 *
 	 * @return boolean
@@ -375,7 +392,7 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 		if (!dasAndere.getClass().equals(this.getClass())) {
 			return false;
 		}
-		GuKKiCaliCalendar temp = (GuKKiCaliCalendar) dasAndere;
+		GuKKiCalvCalendar temp = (GuKKiCalvCalendar) dasAndere;
 		if (!((temp.CALSCALE == null && this.CALSCALE == null)
 				|| (temp.CALSCALE != null && this.CALSCALE != null && temp.CALSCALE.istGleich(this.CALSCALE)))) {
 			return false;
@@ -518,25 +535,25 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 	 * Parameterkette ausgegeben Version V 0.0.3 (RFC 5545, RFC 7968)
 	 * 2021-12-22T15-12-22
 	 */
-	protected String ausgeben() throws Exception {
+	public String ausgeben() throws Exception {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
 		String componentDatenstrom = ausgebenInDatenstrom("BEGIN:VCALENDAR");
 		componentDatenstrom += this.CALSCALE == null ? "" : ausgebenInDatenstrom(this.CALSCALE.ausgeben());
-		for (GuKKiCalProperty CATEGORIES : CATEGORIESSammlung) {
+		for (GuKKiCalcProperty CATEGORIES : CATEGORIESSammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(CATEGORIES.ausgeben());
 		}
 		componentDatenstrom += this.COLOR == null ? "" : ausgebenInDatenstrom(this.COLOR.ausgeben());
-		for (GuKKiCalProperty DESCRIPTION : DESCRIPTIONSammlung) {
+		for (GuKKiCalcProperty DESCRIPTION : DESCRIPTIONSammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(DESCRIPTION.ausgeben());
 		}
-		for (GuKKiCalProperty IMAGE : IMAGESammlung) {
+		for (GuKKiCalcProperty IMAGE : IMAGESammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(IMAGE.ausgeben());
 		}
 		componentDatenstrom += this.LAST_MOD == null ? "" : ausgebenInDatenstrom(this.LAST_MOD.ausgeben());
 		componentDatenstrom += this.METHOD == null ? "" : ausgebenInDatenstrom(this.METHOD.ausgeben());
-		for (GuKKiCalProperty NAME : NAMESammlung) {
+		for (GuKKiCalcProperty NAME : NAMESammlung) {
 			componentDatenstrom += ausgebenInDatenstrom(NAME.ausgeben());
 		}
 		componentDatenstrom += this.PRODID == null ? "" : ausgebenInDatenstrom(this.PRODID.ausgeben());
@@ -593,24 +610,25 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 			logger.log(logLevel, "beendet");
 		}
 	}
-
-	/**
-	 * 
-	 * @param ausgabeLevel
-	 * @return
-	 */
+	
 	@Override
 	public String toString() {
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "begonnen");
 		}
-		String ausgabeString = nz + "vCalendarInformationen:" + nz + iCalendarName + " --- " + iCalendarPfad + nz
+		String ausgabeString = nz + "vCalendarInformationen:" + nz + vCalendarName + " --- " + iCalendarPfad + nz
 				+ "vCalendarDaten:" + nz;
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
 		}
 		return ausgabeString;
 	}
+
+	/**
+	 * 
+	 * @param ausgabeLevel
+	 * @return
+	 */
 
 	public String toString(String ausgabeLevel) {
 		if (logger.isLoggable(logLevel)) {
@@ -629,30 +647,26 @@ public class GuKKiCaliCalendar extends GuKKiCalComponent {
 				ausgabeString += "CALSCALE:(GREGORIAN)" + nz;
 			if (METHOD != null)
 				ausgabeString += "METHOD:" + METHOD.getWert() + nz;
-			// if (vCalendarRestinformationen != null)
-			// ausgabeString +=
-			// nz+"vCalendarRestinformationen:"+nz+vCalendarRestinformationen;
 		}
 		if (ausgabeLevel.toUpperCase().indexOf("E") >= 0) {
-			ausgabeString += nz;
 			for (GuKKiCalvEvent vEvent : vEventSammlung) {
-				ausgabeString += schluessel + ":" + vEvent.toString(ausgabeLevel) + nz;
+				ausgabeString +=  vEvent.toString(ausgabeLevel);
 			}
 		}
 		if (ausgabeLevel.toUpperCase().indexOf("T") >= 0) {
-			ausgabeString += nz;
 			for (GuKKiCalvTodo vTodo : vTodoSammlung) {
-				ausgabeString += schluessel + ":" + vTodo.toString(ausgabeLevel) + nz;
+				ausgabeString +=  vTodo.toString(ausgabeLevel);
+			}
+		}
+		if (ausgabeLevel.toUpperCase().indexOf("J") >= 0) {
+			for (GuKKiCalvJournal vJournal : vJournalSammlung) {
+				ausgabeString += vJournal.toString(ausgabeLevel);
 			}
 		}
 		if (ausgabeLevel.toUpperCase().indexOf("Z") >= 0) {
-			ausgabeString += nz;
 			for (GuKKiCalvTimezone vTimezone : vTimezoneSammlung) {
-				ausgabeString += "Schlüssel: " + vTimezone.toString() + "\n";
+				ausgabeString += vTimezone.toString(ausgabeLevel);
 			}
-//			for (GuKKiCalvTimezone vTimezone : vTimezoneSammlung) {
-//				ausgabeString += schluessel + ":" + vTimezone.toString(ausgabeLevel) + nz;
-//			}
 		}
 		if (logger.isLoggable(logLevel)) {
 			logger.log(logLevel, "beendet");
